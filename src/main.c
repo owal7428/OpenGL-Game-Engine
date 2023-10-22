@@ -1,6 +1,4 @@
-#include "CSCIx229.h"
-
-#include <stdio.h>
+#include "util.h"
 
 #define WOOD 0
 #define STEEL 1

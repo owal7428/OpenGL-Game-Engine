@@ -1,5 +1,5 @@
-# Homework 6
-EXE =hw6
+# Final Project
+EXE = main
 
 # Main target
 all: $(EXE)
@@ -24,16 +24,15 @@ endif
 CLEAN=rm -f $(EXE) *.o *.a
 endif
 
-hw6.o: hw6.c CSCIx229.h
-fatal.o: fatal.c CSCIx229.h
-errcheck.o: errcheck.c CSCIx229.h
-print.o: print.c CSCIx229.h
-loadtexbmp.o: loadtexbmp.c CSCIx229.h
-loadobj.o: loadobj.c CSCIx229.h
-projection.o: projection.c CSCIx229.h
+main.o: main.c util.h
+fatal.o: fatal.c util.h
+errcheck.o: errcheck.c util.h
+print.o: print.c util.h
+loadtexbmp.o: loadtexbmp.c util.h
+loadobj.o: loadobj.c util.h
 
 #  Create archive
-CSCIx229.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o projection.o
+util.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
 	ar -rcs $@ $^
 
 # Compile rules
@@ -43,7 +42,7 @@ CSCIx229.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o projection.o
 	g++ -c $(CFLG)  $<
 
 #  Link
-hw6:hw6.o   CSCIx229.a
+main:main.o   util.a
 	gcc $(CFLG) -o $@ $^  $(LIBS)
 
 #  Clean
