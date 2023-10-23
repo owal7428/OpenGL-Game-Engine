@@ -1,4 +1,5 @@
-#include "util/util.h"
+#include "Engine/Window.hpp"
+#include "Engine/Utility/util.h"
 
 #define WOOD 0
 #define STEEL 1

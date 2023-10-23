@@ -2,9 +2,8 @@
 #define UTIL_H
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 

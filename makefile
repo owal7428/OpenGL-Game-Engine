@@ -6,12 +6,13 @@ SRC = src/
 OUT = bin/
 
 # Src sub paths
-UTIL = $(SRC)util/
+ENGINE = $(SRC)Engine/
+UTIL = $(ENGINE)Utility/
 
 # Out sub paths
 OBJ = $(OUT)obj/
 
-VPATH = src : src/util
+VPATH = src : src/Engine : src/Engine/Utility
 
 # Main target
 all: $(EXE)
@@ -41,13 +42,13 @@ util.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
 	cd $(OBJ) && ar -rcs $@ $^
 
 # Compile rules
-.c.o:
+%.o: %.c
 	gcc -c $(CFLG) $< -o $(OBJ)$@
-.cpp.o:
+%.o: %.cpp
 	g++ -c $(CFLG) $< -o $(OBJ)$@
 
 #  Link
-main: main.o util.a
+main: Application.o util.a
 	cd $(OBJ) && gcc $(CFLG) -o ../../$@ $^ $(LIBS)
 
 #  Clean
