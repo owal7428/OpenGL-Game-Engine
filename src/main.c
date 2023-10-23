@@ -1,4 +1,4 @@
-#include "util.h"
+#include "util/util.h"
 
 #define WOOD 0
 #define STEEL 1
@@ -962,16 +962,16 @@ int main(int argc, char* argv[])
 
     asp = 1300 / 900;
 
-    texture[0] = LoadTexBMP("../resources/textures/wood.bmp");
-    texture[1] = LoadTexBMP("../resources/textures/steel.bmp");
-    texture[2] = LoadTexBMP("../resources/textures/water.bmp");
+    texture[0] = LoadTexBMP("resources/textures/wood.bmp");
+    texture[1] = LoadTexBMP("resources/textures/steel.bmp");
+    texture[2] = LoadTexBMP("resources/textures/water.bmp");
 
-    skybox[SKYBOX_LEFT] = LoadTexBMP("../resources/textures/skybox/left.bmp");
-    skybox[SKYBOX_FRONT] = LoadTexBMP("../resources/textures/skybox/front.bmp");
-    skybox[SKYBOX_RIGHT] = LoadTexBMP("../resources/textures/skybox/right.bmp");
-    skybox[SKYBOX_BACK] = LoadTexBMP("../resources/textures/skybox/back.bmp");
-    skybox[SKYBOX_TOP] = LoadTexBMP("../resources/textures/skybox/top.bmp");
-    skybox[SKYBOX_BOTTOM] = LoadTexBMP("../resources/textures/skybox/bottom.bmp");
+    skybox[SKYBOX_LEFT] = LoadTexBMP("resources/textures/skybox/left.bmp");
+    skybox[SKYBOX_FRONT] = LoadTexBMP("resources/textures/skybox/front.bmp");
+    skybox[SKYBOX_RIGHT] = LoadTexBMP("resources/textures/skybox/right.bmp");
+    skybox[SKYBOX_BACK] = LoadTexBMP("resources/textures/skybox/back.bmp");
+    skybox[SKYBOX_TOP] = LoadTexBMP("resources/textures/skybox/top.bmp");
+    skybox[SKYBOX_BOTTOM] = LoadTexBMP("resources/textures/skybox/bottom.bmp");
 
     ErrCheck("init");
     glutMainLoop();

@@ -1,6 +1,18 @@
 # Final Project
 EXE = main
 
+# Root paths
+SRC = src/
+OUT = bin/
+
+# Src sub paths
+UTIL = $(SRC)util/
+
+# Out sub paths
+OBJ = $(OUT)obj/
+
+VPATH = src : src/util
+
 # Main target
 all: $(EXE)
 
@@ -24,27 +36,20 @@ endif
 CLEAN=rm -f $(EXE) *.o *.a
 endif
 
-main.o: main.c util.h
-fatal.o: fatal.c util.h
-errcheck.o: errcheck.c util.h
-print.o: print.c util.h
-loadtexbmp.o: loadtexbmp.c util.h
-loadobj.o: loadobj.c util.h
-
 #  Create archive
 util.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
-	ar -rcs $@ $^
+	cd $(OBJ) && ar -rcs $@ $^
 
 # Compile rules
 .c.o:
-	gcc -c $(CFLG)  $<
+	gcc -c $(CFLG) $< -o $(OBJ)$@
 .cpp.o:
-	g++ -c $(CFLG)  $<
+	g++ -c $(CFLG) $< -o $(OBJ)$@
 
 #  Link
-main:main.o   util.a
-	gcc $(CFLG) -o $@ $^  $(LIBS)
+main: main.o util.a
+	cd $(OBJ) && gcc $(CFLG) -o ../../$@ $^ $(LIBS)
 
 #  Clean
 clean:
-	$(CLEAN)
+	cd $(OBJ) && $(CLEAN)
