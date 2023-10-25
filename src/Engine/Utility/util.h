@@ -7,6 +7,10 @@
 #include <string.h>
 #include <math.h>
 
+//#define USEGLEW
+#define SDL2
+//#define GLUT
+
 // GLEW _MUST_ be included first
 #ifdef USEGLEW
 #include <GL/glew.h>
@@ -27,6 +31,15 @@
 #else
 #include <GL/glut.h>
 #endif
+
+#if defined(GLUT)
+#if defined(__APPLE__)
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+#endif
+
 //  Make sure GLU and GL are included
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
@@ -43,14 +56,23 @@
 #define RES 1
 #endif
 
-//  cos and sin in degrees
+//  Cos and Sin in degrees
 #define Cos(th) cos(3.14159265/180*(th))
 #define Sin(th) sin(3.14159265/180*(th))
+
+// Support usage by c++ files
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
 unsigned int LoadTexBMP(const char* file);
 void ErrCheck(const char* where);
 int  LoadOBJ(const char* file);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UTIL_H

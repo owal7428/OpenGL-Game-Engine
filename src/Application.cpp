@@ -202,7 +202,7 @@ void drawStar_Textured(int textureFile, float x, float y, float z, float scale_x
 {
     //  Set specular color to white
     float white[] = {1,1,1,1};
-    float Emission[]  = {0.0,0.0,0.01*emission,1.0};
+    float Emission[]  = {0.0f,0.0f,0.01f*emission,1.0f};
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
@@ -479,7 +479,7 @@ static void ball(double x,double y,double z,double r)
    glScaled(r,r,r);
    //  White ball with yellow specular
    float yellow[]   = {1.0,1.0,0.0,1.0};
-   float Emission[] = {0.0,0.0,0.01*emission,1.0};
+   float Emission[] = {0.0f,0.0f,0.01f*emission,1.0f};
    glColor3f(1,1,1);
    glMaterialf(GL_FRONT,GL_SHININESS,shiny);
    glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
@@ -578,22 +578,21 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
 
 void Project()
 {
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     if (mode == 0)
         glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
     else
-        gluPerspective(fov,asp,0.5,20);
+        gluPerspective(fov,asp,0.5,30);
 
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    glutPostRedisplay();
 }
 
-void draw()
+void draw(SDL_Window* window)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -632,11 +631,11 @@ void draw()
    if (light)
    {
         //  Translate intensity to color vectors
-        float Ambient[]   = {0.01*ambient ,0.01*ambient ,0.01*ambient ,1.0};
-        float Diffuse[]   = {0.01*diffuse ,0.01*diffuse ,0.01*diffuse ,1.0};
-        float Specular[]  = {0.01*specular,0.01*specular,0.01*specular,1.0};
+        float Ambient[]   = {0.01f*ambient ,0.01f*ambient ,0.01f*ambient ,1.0f};
+        float Diffuse[]   = {0.01f*diffuse ,0.01f*diffuse ,0.01f*diffuse ,1.0f};
+        float Specular[]  = {0.01f*specular,0.01f*specular,0.01f*specular,1.0f};
         //  Light position
-        float Position[]  = {distance*Cos(zh),ylight,distance*Sin(zh),1.0};
+        float Position[]  = {distance*(float)Cos(zh),ylight,distance*(float)Sin(zh),1.0};
         //  Draw light position as ball (still no lighting here)
         glColor3f(1,1,1);
         ball(Position[0],Position[1],Position[2] , 0.1);
@@ -742,112 +741,165 @@ void draw()
     ErrCheck("display");
 
     glFlush();
-    //glutSwapBuffers();
+    SDL_GL_SwapWindow(window);
 }
 
-void keyDown(unsigned char key, int x, int y)
+/* \returns 0 if program is to be closed, 1 otherwise */
+int keyDown(SDL_Scancode code)
 {
-    // Exit program if ESC is pressed
-    if (key == 27)
-        exit(0);
-    
-    else if (key == 'm' || key == 'M')
+    switch (code)
     {
-        mode = (mode + 1) % 3;
-
-        if (mode == 2)
-        {
-            xPos = 0; yPos = 0; zPos = -1;
-        }
-
-        Project();
+        case SDL_SCANCODE_ESCAPE:
+            return 0;
+        
+        case SDL_SCANCODE_M:
+            mode = (mode + 1) % 3;
+            if (mode == 2)
+            {
+                xPos = 0; yPos = 0; zPos = -1;
+            }
+            Project();
+            break;
+        
+        case SDL_SCANCODE_W:
+            wKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_A:
+            aKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_S:
+            sKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_D:
+            dKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_SPACE:
+            spaceKeyToggle = (spaceKeyToggle + 1) % 2;
+            break;
+        
+        case SDL_SCANCODE_LEFTBRACKET:
+            if (spaceKeyToggle == 1) zh -= 1;
+            break;
+        
+        case SDL_SCANCODE_RIGHTBRACKET:
+            if (spaceKeyToggle == 1) zh += 1;
+            break;
+        
+        case SDL_SCANCODE_O:
+            objectMode = (objectMode + 1) % 3;
+            break;
+        
+        case SDL_SCANCODE_RIGHT:
+            rightKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_LEFT:
+            leftKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_UP:
+            upKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_DOWN:
+            downKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_F1:
+            if (ambient < 100) ambient += 5;
+            break;
+        
+        case SDL_SCANCODE_F2:
+            if (ambient > 0) ambient -= 5;
+            break;
+        
+        case SDL_SCANCODE_F3:
+            if (diffuse < 100) diffuse += 5;
+            break;
+        
+        case SDL_SCANCODE_F4:
+            if (diffuse > 0) diffuse -= 5;
+            break;
+        
+        case SDL_SCANCODE_F5:
+            if (specular < 100) specular += 5;
+            break;
+        
+        case SDL_SCANCODE_F6:
+            if (specular > 0) specular -= 5;
+            break;
+        
+        case SDL_SCANCODE_F7:
+            if (emission < 100) emission += 5;
+            break;
+        
+        case SDL_SCANCODE_F8:
+            if (emission > 0) emission -= 5;
+            break;
+        
+        case SDL_SCANCODE_F9:
+            if (shiny < 10) shiny += 1;
+            break;
+        
+        case SDL_SCANCODE_F11:
+            if (shiny > 0) shiny -= 1;
+            break;
+        
+        default:
+            break;
     }
 
-    else if (key == 'w' || key == 'W')
-        wKeyDown = 1;
-    else if (key == 'a' || key == 'A')
-        aKeyDown = 1;
-    else if (key == 's' || key == 'S')
-        sKeyDown = 1;
-    else if (key == 'd' || key == 'D')
-        dKeyDown = 1;
-    
-    else if (key == ' ')
-        spaceKeyToggle = (spaceKeyToggle + 1) % 2;
-    
-    else if (key == '[' && spaceKeyToggle == 1)
-        zh -= 1;
-    else if (key == ']' && spaceKeyToggle == 1)
-        zh += 1;
-    
-    else if (key == 'o')
-        objectMode = (objectMode + 1) % 3;
+    return 1;
 }
 
-void keyUp(unsigned char key, int x, int y)
+void keyUp(SDL_Scancode code)
 {
-    if (key == 'w' || key == 'W')
-        wKeyDown = 0;
-    else if (key == 'a' || key == 'A')
-        aKeyDown = 0;
-    else if (key == 's' || key == 'S')
-        sKeyDown = 0;
-    else if (key == 'd' || key == 'D')
-        dKeyDown = 0;
-}
-
-void specialKeyDown(int key,int x,int y)
-{
-    if (key == GLUT_KEY_RIGHT)
-        rightKeyDown = 1;
-    else if (key == GLUT_KEY_LEFT)
-        leftKeyDown = 1;
-    if (key == GLUT_KEY_UP)
-        upKeyDown = 1;
-    else if (key == GLUT_KEY_DOWN)
-        downKeyDown = 1;
-    
-    else if (key == GLUT_KEY_F1 && ambient < 100)
-        ambient += 5;
-    else if (key == GLUT_KEY_F2 && ambient > 0)
-        ambient -= 5;
-    else if (key == GLUT_KEY_F3 && diffuse < 100)
-        diffuse += 5;
-    else if (key == GLUT_KEY_F4 && diffuse > 0)
-        diffuse -= 5;
-    else if (key == GLUT_KEY_F5 && specular < 100)
-        specular += 5;
-    else if (key == GLUT_KEY_F6 && specular > 0)
-        specular -= 5;
-    else if (key == GLUT_KEY_F7 && emission < 100)
-        emission += 5;
-    else if (key == GLUT_KEY_F8 && emission > 0)
-        emission -= 5;
-    else if (key == GLUT_KEY_F9 && shiny < 10)
-        shiny += 1;
-    else if (key == GLUT_KEY_F11 && shiny > 0)
-        shiny -= 1;
-   
-    glutPostRedisplay();
-}
-
-void specialKeyUp(int key,int x,int y)
-{
-    if (key == GLUT_KEY_RIGHT)
-        rightKeyDown = 0;
-    else if (key == GLUT_KEY_LEFT)
-        leftKeyDown = 0;
-    if (key == GLUT_KEY_UP)
-        upKeyDown = 0;
-    else if (key == GLUT_KEY_DOWN)
-        downKeyDown = 0;
+    switch (code)
+    {
+        case SDL_SCANCODE_W:
+            wKeyDown = 0;
+            break;
         
-    glutPostRedisplay();
+        case SDL_SCANCODE_A:
+            aKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_S:
+            sKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_D:
+            dKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_RIGHT:
+            rightKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_LEFT:
+            leftKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_UP:
+            upKeyDown = 0;
+            break;
+        
+        case SDL_SCANCODE_DOWN:
+            downKeyDown = 0;
+            break;
+        
+        default:
+            break;
+    }
 }
 
 /* This function is used for smooth rotation;
 *  Checks for key presses every 10 milliseconds and updates rotation accordingly. */
-void timer(int val)
+void timer()
 {
     /* Check if keys are pressed down 
     *  If yes, continue rotating. */
@@ -919,16 +971,16 @@ void timer(int val)
     x_rot_time %= 360;
     y_rot_time %= 360;
     z_rot_time %= 360;
-
-    glutPostRedisplay();
-
-    // Call this function again in 10 milliseconds
-    glutTimerFunc(10, timer, 0);
 }
 
-void reshape(int width,int height)
+void reshape(SDL_Window* window)
 {
+    int width, height;
+
+    SDL_GetWindowSize(window, &width, &height);
+
     asp = (height>0) ? (double)width/height : 1;
+
     glViewport(0,0, RES*width,RES*height);
 
     Project();
@@ -936,32 +988,23 @@ void reshape(int width,int height)
 
 int main(int argc, char* argv[]) 
 {
-    // Initialize glut
     glutInit(&argc, argv);
-    //glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH);
 
-    // Create window
-    glutInitWindowSize(1300,900);
-    glutCreateWindow("OwenAllison_FinalProject");
+    SDL_Init(SDL_INIT_VIDEO);
 
+    SDL_Window* window = SDL_CreateWindow("OwenAllison_FinalProject", 
+                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1300, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+
+    SDL_GL_CreateContext(window);                          
+    
     #ifdef USEGLEW
     //  Initialize GLEW
     if (glewInit()!=GLEW_OK) fprintf(stderr, "Error initializing GLEW\n");
     #endif
 
-    // Function specifications
-    glutDisplayFunc(draw);
-    glutKeyboardFunc(keyDown);
-    glutKeyboardUpFunc(keyUp);
-    glutSpecialFunc(specialKeyDown);
-    glutSpecialUpFunc(specialKeyUp);
-    glutReshapeFunc(reshape);
-
-    // Start timer
-    glutTimerFunc(10, timer, 0);
-
-    asp = 1300 / 900;
+    asp = (float) 1300 / 900;
+    
+    reshape(window);
 
     texture[0] = LoadTexBMP("resources/textures/wood.bmp");
     texture[1] = LoadTexBMP("resources/textures/steel.bmp");
@@ -975,6 +1018,50 @@ int main(int argc, char* argv[])
     skybox[SKYBOX_BOTTOM] = LoadTexBMP("resources/textures/skybox/bottom.bmp");
 
     ErrCheck("init");
-    glutMainLoop();
+
+    int run = 1;
+    double time = 0;
+
+    while (run)
+    {
+        double newTime = SDL_GetTicks64()/1000.0;
+        double deltaTime = newTime - time;
+
+        if (deltaTime >= 0.01)
+        {
+            time = newTime;
+            timer();
+        }
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                    {
+                        SDL_SetWindowSize(window,event.window.data1,event.window.data2);
+                        reshape(window);
+                    }
+                    break;
+                case SDL_QUIT:
+                    run = 0;
+                    break;
+                case SDL_KEYDOWN:
+                    run = keyDown(event.key.keysym.scancode);
+                    break;
+                case SDL_KEYUP:
+                    keyUp(event.key.keysym.scancode);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        draw(window);
+    }
+
+    SDL_Quit();
     return 0;
 }
