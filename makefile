@@ -26,7 +26,7 @@ else
 #  OSX
 ifeq "$(shell uname)" "Darwin"
 RES=$(shell uname -r|sed -E 's/(.).*/\1/'|tr 12 21)
-CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES) -DGLUT
+CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES) -DGLUT -I/opt/homebrew/include -L/opt/homebrew/lib -Qunused-arguments
 LIBS=-framework GLUT -lSDL2main -lSDL2 -lSDL2_mixer -framework Cocoa -framework OpenGL
 #  Linux/Unix/Solaris
 else
