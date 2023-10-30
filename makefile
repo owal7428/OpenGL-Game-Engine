@@ -13,10 +13,10 @@ UTIL = $(ENGINE)Utility/
 OBJ = $(OUT)obj/
 
 # Include directories
-VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb
+VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb : src/Engine/Objects
 
 # Source files
-SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o
 
 # Main target
 all: $(EXE)
