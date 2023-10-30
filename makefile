@@ -13,7 +13,7 @@ UTIL = $(ENGINE)Utility/
 OBJ = $(OUT)obj/
 
 # Include directories
-VPATH = src : src/Engine : src/Engine/Utility
+VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb
 
 # Source files
 SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
@@ -24,7 +24,7 @@ all: $(EXE)
 #  Msys/MinGW
 ifeq "$(OS)" "Windows_NT"
 CFLG=-O3 -Wall -DUSEGLEW -DGLUT
-LIBS=-lfreeglut -lmingw32 -lSDL2main -lSDL2 -mwindows -lSDL2_mixer -lglew32 -lglu32 -lopengl32 -lm
+LIBS=-lfreeglut -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -lglew32 -lglu32 -lopengl32 -lm
 CLEAN=rm -f *.exe *.o *.a
 else
 #  OSX
@@ -53,7 +53,7 @@ tempObjs.a:$(SRC)
 
 #  Link
 main: Application.o tempObjs.a
-	cd $(OBJ) && gcc $(CFLG) -o ../../$@ $^ $(LIBS)
+	cd $(OBJ) && g++ $(CFLG) -o ../../$@ $^ $(LIBS)
 
 #  Clean
 clean:
