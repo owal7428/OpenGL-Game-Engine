@@ -1,4 +1,5 @@
 #include "Engine/Window.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Utility/util.h"
 
 #define WOOD 0
@@ -62,8 +63,11 @@ float ylight  =   0;  // Elevation of light
 
 int objectMode = 0;
 
-unsigned int texture[3];
-unsigned int skybox[6];
+//unsigned int texture[3];
+//unsigned int skybox[6];
+
+Texture* texture[3];
+Texture* skybox[6];
 
 const float depth = 0.5;
 
@@ -218,7 +222,8 @@ void drawStar_Textured(int textureFile, float x, float y, float z, float scale_x
     //  Enable textures
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    glBindTexture(GL_TEXTURE_2D,texture[textureFile]);
+
+    texture[textureFile] -> Bind();
 
     glBegin(GL_TRIANGLES);
     
@@ -249,6 +254,8 @@ void drawStar_Textured(int textureFile, float x, float y, float z, float scale_x
     }
 
     glEnd();
+
+    //texture[textureFile] -> Unbind();
     
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
@@ -418,7 +425,8 @@ void drawRhombus_Textured(int textureFile, float x, float y, float z, float scal
         //  Enable textures
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    glBindTexture(GL_TEXTURE_2D,texture[textureFile]);
+
+    texture[textureFile] -> Bind();
 
     glBegin(GL_QUADS);
     
@@ -451,6 +459,8 @@ void drawRhombus_Textured(int textureFile, float x, float y, float z, float scal
         glTexCoord2f(1,1); glVertex3f(x3, y3, z3); 
         glTexCoord2f(0,1); glVertex3f(x4, y4, z4);
     }
+
+    //texture[textureFile] -> Unbind();
 
     glEnd();
     glPopMatrix();
@@ -512,7 +522,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
 
     //  Front
     glColor3f(1,1,1);
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_FRONT]);
+    skybox[SKYBOX_FRONT] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f( 0, 0, -1);
     glTexCoord2f(0,0); glVertex3f(-1,-1, 1);
@@ -522,7 +532,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glEnd();
 
     //  Back
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_BACK]);
+    skybox[SKYBOX_BACK] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f( 0,0,1);
     glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
@@ -532,7 +542,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glEnd();
     
     //  Left
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_LEFT]);
+    skybox[SKYBOX_LEFT] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f(1, 0, 0);
     glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -542,7 +552,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glEnd();
 
     //  Right
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_RIGHT]);
+    skybox[SKYBOX_RIGHT] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f(-1, 0, 0);
     glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
@@ -552,7 +562,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glEnd();
     
     //  Top
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_TOP]);
+    skybox[SKYBOX_TOP] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f( 0,-1, 0);
     glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
@@ -562,7 +572,7 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glEnd();
 
     //  Bottom
-    glBindTexture(GL_TEXTURE_2D,skybox[SKYBOX_BOTTOM]);
+    skybox[SKYBOX_BOTTOM] -> Bind();
     glBegin(GL_QUADS);
     glNormal3f( 0,1, 0);
     glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -570,6 +580,8 @@ void GenerateSkybox(float x, float y, float z, float scale_x, float scale_y, flo
     glTexCoord2f(1,1); glVertex3f(+1,-1,+1);
     glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
     glEnd();
+
+    //skybox[SKYBOX_BOTTOM] -> Unbind();
 
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
@@ -627,6 +639,8 @@ void draw(SDL_Window* window)
     //  Flat or smooth shading
    glShadeModel(smooth ? GL_SMOOTH : GL_FLAT);
 
+   ErrCheck("display1");
+
    //  Light switch
    if (light)
    {
@@ -675,6 +689,8 @@ void draw(SDL_Window* window)
     glVertex3f(0,0,1);
     glEnd();
 
+    ErrCheck("display2");
+
     if (objectMode == 0)
     {
         // Draw the stars
@@ -722,8 +738,12 @@ void draw(SDL_Window* window)
         drawRhombus_Textured(WATER,0,0,0,0.15,0.3,0.3,0,0,0);
     }
 
+    ErrCheck("display3");
+
     if (mode != 0)
         GenerateSkybox(xPos, yPos, -zPos, 10, 10, 10);
+    
+    ErrCheck("display4");
 
     glColor3f(1,1,1);
     glWindowPos2i(5,55);
@@ -1006,7 +1026,7 @@ int main(int argc, char* argv[])
     
     reshape(window);
 
-    texture[0] = LoadTexBMP("resources/textures/wood.bmp");
+    /*texture[0] = LoadTexBMP("resources/textures/wood.bmp");
     texture[1] = LoadTexBMP("resources/textures/steel.bmp");
     texture[2] = LoadTexBMP("resources/textures/water.bmp");
 
@@ -1015,7 +1035,29 @@ int main(int argc, char* argv[])
     skybox[SKYBOX_RIGHT] = LoadTexBMP("resources/textures/skybox/right.bmp");
     skybox[SKYBOX_BACK] = LoadTexBMP("resources/textures/skybox/back.bmp");
     skybox[SKYBOX_TOP] = LoadTexBMP("resources/textures/skybox/top.bmp");
-    skybox[SKYBOX_BOTTOM] = LoadTexBMP("resources/textures/skybox/bottom.bmp");
+    skybox[SKYBOX_BOTTOM] = LoadTexBMP("resources/textures/skybox/bottom.bmp");*/
+
+    Texture wood = Texture("resources/textures/wood.bmp");
+    Texture steel = Texture("resources/textures/steel.bmp");
+    Texture water = Texture("resources/textures/water.bmp");
+
+    Texture skyLeft = Texture("resources/textures/skybox/left.bmp");
+    Texture skyFront = Texture("resources/textures/skybox/front.bmp");
+    Texture skyRight = Texture("resources/textures/skybox/right.bmp");
+    Texture skyBack = Texture("resources/textures/skybox/back.bmp");
+    Texture skyTop = Texture("resources/textures/skybox/top.bmp");
+    Texture skyBottom = Texture("resources/textures/skybox/bottom.bmp");
+
+    texture[0] = &wood;
+    texture[1] = &steel;
+    texture[2] = &water;
+
+    skybox[SKYBOX_LEFT] = &skyLeft;
+    skybox[SKYBOX_FRONT] = &skyFront;
+    skybox[SKYBOX_RIGHT] = &skyRight;
+    skybox[SKYBOX_BACK] = &skyBack;
+    skybox[SKYBOX_TOP] = &skyTop;
+    skybox[SKYBOX_BOTTOM] = &skyBottom;
 
     ErrCheck("init");
 

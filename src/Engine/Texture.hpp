@@ -6,12 +6,16 @@
 class Texture
 {
 private:
+    // Set by user
+    const char* filePath;
+
+    // Used by OpenGL - Should not be set
     unsigned int ID;
-    std::string filePath;
-    unsigned char* buffer;
-    int width, height, BPP;
+    unsigned char* data;
+    int width, height, bitDepth;
 public:
-    Texture(unsigned int ID, const std::string path);
+    Texture(const char* path);
+    Texture() {};
     ~Texture();
     
     void Bind();
