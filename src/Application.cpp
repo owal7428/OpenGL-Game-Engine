@@ -63,9 +63,6 @@ float ylight  =   0;  // Elevation of light
 
 int objectMode = 0;
 
-//unsigned int texture[3];
-//unsigned int skybox[6];
-
 Texture* texture[3];
 Texture* skybox[6];
 
@@ -639,8 +636,6 @@ void draw(SDL_Window* window)
     //  Flat or smooth shading
    glShadeModel(smooth ? GL_SMOOTH : GL_FLAT);
 
-   ErrCheck("display1");
-
    //  Light switch
    if (light)
    {
@@ -689,8 +684,6 @@ void draw(SDL_Window* window)
     glVertex3f(0,0,1);
     glEnd();
 
-    ErrCheck("display2");
-
     if (objectMode == 0)
     {
         // Draw the stars
@@ -738,12 +731,8 @@ void draw(SDL_Window* window)
         drawRhombus_Textured(WATER,0,0,0,0.15,0.3,0.3,0,0,0);
     }
 
-    ErrCheck("display3");
-
     if (mode != 0)
         GenerateSkybox(xPos, yPos, -zPos, 10, 10, 10);
-    
-    ErrCheck("display4");
 
     glColor3f(1,1,1);
     glWindowPos2i(5,55);
@@ -1025,17 +1014,6 @@ int main(int argc, char* argv[])
     asp = (float) 1300 / 900;
     
     reshape(window);
-
-    /*texture[0] = LoadTexBMP("resources/textures/wood.bmp");
-    texture[1] = LoadTexBMP("resources/textures/steel.bmp");
-    texture[2] = LoadTexBMP("resources/textures/water.bmp");
-
-    skybox[SKYBOX_LEFT] = LoadTexBMP("resources/textures/skybox/left.bmp");
-    skybox[SKYBOX_FRONT] = LoadTexBMP("resources/textures/skybox/front.bmp");
-    skybox[SKYBOX_RIGHT] = LoadTexBMP("resources/textures/skybox/right.bmp");
-    skybox[SKYBOX_BACK] = LoadTexBMP("resources/textures/skybox/back.bmp");
-    skybox[SKYBOX_TOP] = LoadTexBMP("resources/textures/skybox/top.bmp");
-    skybox[SKYBOX_BOTTOM] = LoadTexBMP("resources/textures/skybox/bottom.bmp");*/
 
     Texture wood = Texture("resources/textures/wood.bmp");
     Texture steel = Texture("resources/textures/steel.bmp");

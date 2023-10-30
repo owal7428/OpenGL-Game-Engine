@@ -1,36 +1,44 @@
 #include "Texture.hpp"
 
 #include "Utility/util.h"
+#include "../Vendor/stb/stb_image.h"
 
-//#define STBI_MSC_SECURE_CRT
-//#define STB_IMAGE_IMPLEMENTATION
-//#include "../Vendor/stb/stb_image.h"
+//#define USE_STB
 
 Texture::Texture(const char* path)
 {
     filePath = path;
     
-    //glGenTextures(1, &ID);
-    //glBindTexture(GL_TEXTURE_2D, ID);
+    glGenTextures(1, &ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
 
-    //data = stbi_load(filePath, &width, &height, &bitDepth, 4);
-    ID = LoadTexBMP(path);
+    #ifdef USE_STB
 
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    stbi_set_flip_vertically_on_load(1);
+    data = stbi_load(filePath, &width, &height, &bitDepth, 3);
+    
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB8, GL_UNSIGNED_BYTE, data);*/
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     //glGenerateMipmap(GL_TEXTURE_2D);
 
-    //glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Check failure to load
     if (!data)
         fprintf(stderr, "ERROR: Failed to load texture from %s\n", filePath);
-    //else
-        //stbi_image_free(data);
+    else
+        stbi_image_free(data);
+    
+    #else
+
+    ID = LoadTexBMP(path);
+
+    #endif
 }
 
 Texture::~Texture()
