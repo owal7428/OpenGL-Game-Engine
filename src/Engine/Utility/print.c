@@ -1,6 +1,7 @@
 //  CSCIx239 library
 //  Willem A. (Vlakkies) Schreuder
 #include "util.h"
+#include "../../Common.h"
 
 //
 //  Convenience routine to output raster text

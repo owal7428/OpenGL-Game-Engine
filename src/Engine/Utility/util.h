@@ -1,12 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
 //#define USEGLEW
 #define SDL2
 //#define GLUT

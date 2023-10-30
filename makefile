@@ -12,7 +12,11 @@ UTIL = $(ENGINE)Utility/
 # Out sub paths
 OBJ = $(OUT)obj/
 
+# Include directories
 VPATH = src : src/Engine : src/Engine/Utility
+
+# Source files
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
 
 # Main target
 all: $(EXE)
@@ -38,7 +42,7 @@ CLEAN=rm -f $(EXE) *.o *.a
 endif
 
 #  Create archive
-util.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
+tempObjs.a:$(SRC)
 	cd $(OBJ) && ar -rcs $@ $^
 
 # Compile rules
@@ -48,7 +52,7 @@ util.a:fatal.o errcheck.o print.o loadtexbmp.o loadobj.o
 	g++ -c $(CFLG) $< -o $(OBJ)$@
 
 #  Link
-main: Application.o util.a
+main: Application.o tempObjs.a
 	cd $(OBJ) && gcc $(CFLG) -o ../../$@ $^ $(LIBS)
 
 #  Clean

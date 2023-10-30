@@ -1,6 +1,8 @@
 //  CSCIx239 library
 //  Willem A. (Vlakkies) Schreuder
 #include "util.h"
+#include "../../Common.h"
+
 #include <ctype.h>
 
 //  Load an OBJ file
