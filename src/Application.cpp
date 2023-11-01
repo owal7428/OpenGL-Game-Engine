@@ -2,10 +2,11 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Utility/util.h"
 #include "Engine/Objects/Star.hpp"
+#include "Engine/Objects/Rhombus.hpp"
 
-#define WOOD 0
-#define STEEL 1
-#define WATER 2
+#define WOOD "resources/textures/wood.bmp"
+#define STEEL "resources/textures/steel.bmp"
+#define WATER "resources/textures/water.bmp"
 
 #define SKYBOX_LEFT 0
 #define SKYBOX_FRONT 1
@@ -64,146 +65,32 @@ float ylight  =   0;  // Elevation of light
 
 int objectMode = 0;
 
-Texture* texture[3];
 Texture* skybox[6];
-
-const float depth = 0.5;
-
-float vertexData[] = 
-{
-    // Top point                // RGB colors       // Normal vectors
-    0, 0, depth,                1, 0, 0,            -0.75, 0.2724535, 1.22604075,
-    0, 2.25, 0,                 1, 0, 0,            -0.75, 0.2724535, 1.22604075,
-    -0.544907, 0.75, 0,         1, 0, 0,            -0.75, 0.2724535, 1.22604075,  
-    0, 0, depth,                1, 1, 0,            0.75, 0.2724535, 1.22604075,
-    0.544907, 0.75, 0,          1, 1, 0,            0.75, 0.2724535, 1.22604075,
-    0, 2.25, 0,                 1, 1, 0,            0.75, 0.2724535, 1.22604075,
-
-    // Top-right point
-    0, 0, depth,                0, 1, 0,            0.0277125, 0.7976465, 1.226671220475,
-    2.1402, 0.694575, 0,        0, 1, 0,            0.0277125, 0.7976465, 1.226671220475,
-    0.544907, 0.75, 0,          0, 1, 0,            0.0277125, 0.7976465, 1.226671220475,
-    0, 0, depth,                0, 1, 1,            0.49068275, -0.6292935, 1.226135377575,
-    0.881613, -0.2867905, 0,    0, 1, 1,            0.49068275, -0.6292935, 1.226135377575,
-    2.1402, 0.694575, 0,        0, 1, 1,            0.49068275, -0.6292935, 1.226135377575,
-
-    // Bottom-right point
-    0, 0, depth,                0, 0, 1,            0.76672975, 0.2204685, 1.225461287475,
-    1.32255, -1.82025, 0,       0, 0, 1,            0.76672975, 0.2204685, 1.225461287475,
-    0.881613, -0.2867905, 0,    0, 0, 1,            0.76672975, 0.2204685, 1.225461287475,
-    0, 0, depth,                1, 0, 1,            -0.446602, -0.661275, 1.2260646873,
-    0, -0.927046, 0,            1, 0, 1,            -0.446602, -0.661275, 1.2260646873,
-    1.32255, -1.82025, 0,       1, 0, 1,            -0.446602, -0.661275, 1.2260646873,
-
-    // Bottom-left point
-    0, 0, depth,                1, 0.5, 1,          0.446602, -0.661275, 1.2260646873,
-    -1.32255, -1.82025, 0,      1, 0.5, 1,          0.446602, -0.661275, 1.2260646873,
-    0, -0.927046, 0,            1, 0.5, 1,          0.446602, -0.661275, 1.2260646873,
-    0, 0, depth,                1, 1, 1,            -0.76672975, 0.2204685, 1.225461287475,
-    -0.881613, -0.2867905, 0,   1, 1, 1,            -0.76672975, 0.2204685, 1.225461287475,
-    -1.32255, -1.82025, 0,      1, 1, 1,            -0.76672975, 0.2204685, 1.225461287475,
-
-    // Top-left
-    0, 0, depth,                0.75, 0.25, 1,      -0.49068275, -0.6292935, 1.226135377575,
-    -2.1402, 0.694575, 0,       0.75, 0.25, 1,      -0.49068275, -0.6292935, 1.226135377575,
-    -0.881613, -0.2867905, 0,   0.75, 0.25, 1,      -0.49068275, -0.6292935, 1.226135377575,
-    0, 0, depth,                0.5, 0.5, 1,        -0.0277125, 0.7976465, 1.226671220475,
-    -0.544907, 0.75, 0,         0.5, 0.5, 1,        -0.0277125, 0.7976465, 1.226671220475,
-    -2.1402, 0.694575, 0,       0.5, 0.5, 1,        -0.0277125, 0.7976465, 1.226671220475,
-
-    // These points are for the back side
-
-    // Top point                // RGB colors       // Normals
-    0, 0, -depth,               1, 0, 0,            -0.75, 0.2724535, -1.22604075,
-    -0.544907, 0.75, 0,         1, 0, 0,            -0.75, 0.2724535, -1.22604075,       
-    0, 2.25, 0,                 1, 0, 0,            -0.75, 0.2724535, -1.22604075,
-    0, 0, -depth,               1, 1, 0,            0.75, 0.2724535, -1.22604075,
-    0, 2.25, 0,                 1, 1, 0,            0.75, 0.2724535, -1.22604075,
-    0.544907, 0.75, 0,          1, 1, 0,            0.75, 0.2724535, -1.22604075,
-
-    // Top-right point
-    0, 0, -depth,               0, 1, 0,            0.0277125, 0.7976465, -1.226671220475,
-    0.544907, 0.75, 0,          0, 1, 0,            0.0277125, 0.7976465, -1.226671220475,
-    2.1402, 0.694575, 0,        0, 1, 0,            0.0277125, 0.7976465, -1.226671220475,
-    0, 0, -depth,               0, 1, 1,            0.49068275, -0.6292935, -1.226135377575,
-    2.1402, 0.694575, 0,        0, 1, 1,            0.49068275, -0.6292935, -1.226135377575,
-    0.881613, -0.2867905, 0,    0, 1, 1,            0.49068275, -0.6292935, -1.226135377575,
-
-    // Bottom-right point
-    0, 0, -depth,               0, 0, 1,            0.76672975, 0.2204685, -1.225461287475,
-    0.881613, -0.2867905, 0,    0, 0, 1,            0.76672975, 0.2204685, -1.225461287475,
-    1.32255, -1.82025, 0,       0, 0, 1,            0.76672975, 0.2204685, -1.225461287475,
-    0, 0, -depth,               1, 0, 1,            -0.446602, -0.661275, -1.2260646873,
-    1.32255, -1.82025, 0,       1, 0, 1,            -0.446602, -0.661275, -1.2260646873,
-    0, -0.927046, 0,            1, 0, 1,            -0.446602, -0.661275, -1.2260646873,
-
-    // Bottom-left point
-    0, 0, -depth,               1, 0.5, 1,          0.446602, -0.661275, -1.2260646873,
-    0, -0.927046, 0,            1, 0.5, 1,          0.446602, -0.661275, -1.2260646873,
-    -1.32255, -1.82025, 0,      1, 0.5, 1,          0.446602, -0.661275, -1.2260646873,
-    0, 0, -depth,               1, 1, 1,            -0.76672975, 0.2204685, -1.225461287475,
-    -1.32255, -1.82025, 0,      1, 1, 1,            -0.76672975, 0.2204685, -1.225461287475,
-    -0.881613, -0.2867905, 0,   1, 1, 1,            -0.76672975, 0.2204685, -1.225461287475,
-
-    // Top-left
-    0, 0, -depth,               0.75, 0.25, 1,      -0.49068275, -0.6292935, -1.226135377575,
-    -0.881613, -0.2867905, 0,   0.75, 0.25, 1,      -0.49068275, -0.6292935, -1.226135377575,
-    -2.1402, 0.694575, 0,       0.75, 0.25, 1,      -0.49068275, -0.6292935, -1.226135377575,
-    0, 0, -depth,               0.5, 0.5, 1,        -0.0277125, 0.7976465, -1.226671220475,
-    -2.1402, 0.694575, 0,       0.5, 0.5, 1,        -0.0277125, 0.7976465, -1.226671220475,
-    -0.544907, 0.75, 0,         0.5, 0.5, 1,        -0.0277125, 0.7976465, -1.226671220475,
-};
 
 const int numVertices = 64;
 
 void drawStar(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-
-    //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 9 * sizeof(float), (void*) 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    //  Define colors for each vertex
-    glColorPointer(3,GL_FLOAT, 9 * sizeof(float), (void*)12);
-    glEnableClientState(GL_COLOR_ARRAY);
-    // Define normal vector for each vertex
-    glNormalPointer(GL_FLOAT, 9 * sizeof(float), (void*)24);
-    glEnableClientState(GL_NORMAL_ARRAY);
-
-    //  Set specular color to white
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
-
-    glPushMatrix();
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);
-    glPopMatrix();
-
-    //  Disable vertex array
-    glDisableClientState(GL_VERTEX_ARRAY);
-    //  Disable color array
-    glDisableClientState(GL_COLOR_ARRAY);
-    // Disable normal array
-    glDisableClientState(GL_NORMAL_ARRAY);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    Star star = Star(x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    star.Draw(emission, shiny);
 }
 
-void drawStar_Textured(int textureFile, float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
+void drawStar_Textured(const char* textureFile, float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
-    Star star = Star("resources/textures/wood.bmp",x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    Star star = Star(textureFile,x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
     star.Draw(emission, shiny);
+}
+
+void drawRhombus(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
+{
+    Rhombus rhombus = Rhombus(x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    rhombus.Draw(emission, shiny);
+}
+
+void drawRhombus_Textured(const char* textureFile, float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
+{
+    Rhombus rhombus = Rhombus(textureFile,x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    rhombus.Draw(emission,shiny);
 }
 
 float cubeVertexData[] = 
@@ -267,149 +154,6 @@ void drawWiredCube(float x, float y, float z, float scale_x, float scale_y, floa
     glDisableClientState(GL_VERTEX_ARRAY);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-float rhombusVertexData[] =
-{
-    // Front face   // Normals
-    -1, -1, -1,     0, -1, 1,
-    1, -1, -1,      0, -1, 1,
-    1, 1, 1,        0, -1, 1,
-    -1, 1, 1,       0, -1, 1,
-
-    //  Back face
-    1, -1, -3,      0, 1, -1,
-    -1, -1, -3,     0, 1, -1,
-    -1, 1, -1,      0, 1, -1,
-    1, 1, -1,       0, 1, -1,
-    
-    //  Right face
-    1, -1, -1,      1, 0, 0,
-    1, -1, -3,      1, 0, 0,
-    1, 1, -1,       1, 0, 0,
-    1, 1, 1,        1, 0, 0,
-    
-    //  Left face
-    -1, -1, -3,     -1, 0, 0,
-    -1, -1, -1,     -1, 0, 0,
-    -1, 1, 1,       -1, 0, 0,
-    -1, 1, -1,      -1, 0, 0,
-    
-    //  Top face
-    -1, 1, 1,       0, 1, 0,
-    1, 1, 1,        0, 1, 0,
-    1, 1, -1,       0, 1, 0,
-    -1, 1, -1,      0, 1, 0,
-    
-    //  Bottom face
-    -1, -1, -3,     0, -1, 0,
-    1, -1, -3,      0, -1, 0,
-    1, -1, -1,      0, -1, 0,
-    -1, -1, -1,     0, -1, 0,
-};
-
-void drawRhombus(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
-{
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(rhombusVertexData), rhombusVertexData, GL_STATIC_DRAW);
-
-    //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 6 * sizeof(float), (void*) 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    // Define normals
-    glNormalPointer(GL_FLOAT, 6 * sizeof(float), (void*)12);
-    glEnableClientState(GL_NORMAL_ARRAY);
-
-    //  Set specular color to white
-    float green[] = {0,1,0,1};
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glColor4fv(green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
-
-    glPushMatrix();
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
-    glDrawArrays(GL_QUADS, 0, 24);
-    glPopMatrix();
-
-    //  Disable vertex array
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void drawRhombus_Textured(int textureFile, float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
-{
-    //  Set specular color to white
-    float green[] = {0,1,0,1};
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glColor4fv(green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
-
-    glPushMatrix();
-
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
-
-        //  Enable textures
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
-    texture[textureFile] -> Bind();
-
-    glBegin(GL_QUADS);
-    
-    // Read info from rhombusVertexData to actually draw
-    for (int i = 0; i < 6; i++) 
-    {
-        // Starting address for current face
-        int base = 24 * i;
-        glColor3f(1,1,1);
-        glNormal3f(rhombusVertexData[base + 3], rhombusVertexData[base + 4], rhombusVertexData[base + 5]);
-        
-        float x1 = rhombusVertexData[base + 0];
-        float y1 = rhombusVertexData[base + 1];
-        float z1 = rhombusVertexData[base + 2];
-
-        float x2 = rhombusVertexData[base + 6 + 0];
-        float y2 = rhombusVertexData[base + 6 + 1];
-        float z2 = rhombusVertexData[base + 6 + 2];
-        
-        float x3 = rhombusVertexData[base + 12 + 0];
-        float y3 = rhombusVertexData[base + 12 + 1];
-        float z3 = rhombusVertexData[base + 12 + 2];
-
-        float x4 = rhombusVertexData[base + 18 + 0];
-        float y4 = rhombusVertexData[base + 18 + 1];
-        float z4 = rhombusVertexData[base + 18 + 2];
-
-        glTexCoord2f(0,0); glVertex3f(x1, y1, z1); 
-        glTexCoord2f(1,0); glVertex3f(x2, y2, z2); 
-        glTexCoord2f(1,1); glVertex3f(x3, y3, z3); 
-        glTexCoord2f(0,1); glVertex3f(x4, y4, z4);
-    }
-
-    //texture[textureFile] -> Unbind();
-
-    glEnd();
-    glPopMatrix();
-    glDisable(GL_TEXTURE_2D);
 }
 
 // Vertex method taken from ex13.c
@@ -963,20 +707,12 @@ int main(int argc, char* argv[])
     
     reshape(window);
 
-    Texture wood = Texture("resources/textures/wood.bmp");
-    Texture steel = Texture("resources/textures/steel.bmp");
-    Texture water = Texture("resources/textures/water.bmp");
-
     Texture skyLeft = Texture("resources/textures/skybox/left.bmp");
     Texture skyFront = Texture("resources/textures/skybox/front.bmp");
     Texture skyRight = Texture("resources/textures/skybox/right.bmp");
     Texture skyBack = Texture("resources/textures/skybox/back.bmp");
     Texture skyTop = Texture("resources/textures/skybox/top.bmp");
     Texture skyBottom = Texture("resources/textures/skybox/bottom.bmp");
-
-    texture[0] = &wood;
-    texture[1] = &steel;
-    texture[2] = &water;
 
     skybox[SKYBOX_LEFT] = &skyLeft;
     skybox[SKYBOX_FRONT] = &skyFront;

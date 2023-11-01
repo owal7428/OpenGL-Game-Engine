@@ -16,7 +16,7 @@ OBJ = $(OUT)obj/
 VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb : src/Engine/Objects
 
 # Source files
-SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o Rhombus.o
 
 # Main target
 all: $(EXE)
@@ -42,7 +42,7 @@ CLEAN=rm -f $(EXE) *.o *.a
 endif
 
 #  Create archive
-tempObjs.a:$(SRC)
+objects.a:$(SRC)
 	cd $(OBJ) && ar -rcs $@ $^
 
 # Compile rules
@@ -52,7 +52,7 @@ tempObjs.a:$(SRC)
 	g++ -c $(CFLG) $< -o $(OBJ)$@
 
 #  Link
-main: Application.o tempObjs.a
+main: Application.o objects.a
 	cd $(OBJ) && g++ $(CFLG) -o ../../$@ $^ $(LIBS)
 
 #  Clean
