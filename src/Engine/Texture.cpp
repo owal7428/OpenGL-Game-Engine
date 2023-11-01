@@ -17,7 +17,6 @@ Texture::Texture(const char* path)
     stbi_set_flip_vertically_on_load(1);
     data = stbi_load(filePath, &width, &height, &bitDepth, 3);
     
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);	
@@ -37,6 +36,8 @@ Texture::Texture(const char* path)
     #else
 
     ID = LoadTexBMP(path);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     #endif
 }

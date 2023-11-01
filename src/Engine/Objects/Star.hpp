@@ -9,7 +9,7 @@ private:
     bool hasTexture;
     float x, y, z, scale_x, scale_y, scale_z, th, ph, ze;
 
-    Texture texture;
+    Texture* texture;
 
     void drawUntextured(int emission, float shiny);
     void drawTextured(int emission, float shiny);

@@ -1,6 +1,7 @@
 #include "Engine/Window.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Utility/util.h"
+#include "Engine/Objects/Star.hpp"
 
 #define WOOD 0
 #define STEEL 1
@@ -201,61 +202,8 @@ void drawStar(float x, float y, float z, float scale_x, float scale_y, float sca
 
 void drawStar_Textured(int textureFile, float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
-    //  Set specular color to white
-    float white[] = {1,1,1,1};
-    float Emission[]  = {0.0f,0.0f,0.01f*emission,1.0f};
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
-
-    glPushMatrix();
-    
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
-
-    //  Enable textures
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
-    texture[textureFile] -> Bind();
-
-    glBegin(GL_TRIANGLES);
-    
-    // Read info from vertexData to actually draw
-    for (int i = 0; i < 20; i++) 
-    {
-        // Starting address for current face
-        int base = 27 * i;
-        //glColor3f(vertexData[base + 3], vertexData[base + 4], vertexData[base + 5]);
-        glColor3f(1,1,1);
-        glNormal3f(vertexData[base + 6], vertexData[base + 7], vertexData[base + 8]);
-
-        float x1 = vertexData[base + 0];
-        float y1 = vertexData[base + 1];
-        float z1 = vertexData[base + 2];
-
-        float x2 = vertexData[base + 9 + 0];
-        float y2 = vertexData[base + 9 + 1];
-        float z2 = vertexData[base + 9 + 2];
-        
-        float x3 = vertexData[base + 18 + 0];
-        float y3 = vertexData[base + 18 + 1];
-        float z3 = vertexData[base + 18 + 2];
-
-        glTexCoord2f(0,0); glVertex3f(x1, y1, z1); 
-        glTexCoord2f(1,0); glVertex3f(x2, y2, z2); 
-        glTexCoord2f(1,1); glVertex3f(x3, y3, z3); 
-    }
-
-    glEnd();
-
-    //texture[textureFile] -> Unbind();
-    
-    glPopMatrix();
-    glDisable(GL_TEXTURE_2D);
+    Star star = Star("resources/textures/wood.bmp",x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    star.Draw(emission, shiny);
 }
 
 float cubeVertexData[] = 

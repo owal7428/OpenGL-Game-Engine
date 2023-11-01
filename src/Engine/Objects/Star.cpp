@@ -3,7 +3,7 @@
 #include "../Utility/util.h"
 
 // Vertex data for star object
-float vertexData[] = 
+static float vertexData[] = 
 {
     // Top point                // RGB colors       // Normal vectors
     0, 0, 0.5,                1, 0, 0,            -0.75, 0.2724535, 1.22604075,
@@ -94,7 +94,7 @@ Star::Star(const char* textureFile, float x, float y, float z,
          float scale_x, float scale_y, float scale_z,
          float th, float ph, float ze)
 {
-    texture = Texture(textureFile);
+    texture = new Texture(textureFile);
 
     hasTexture = true;
 
@@ -132,7 +132,7 @@ Star::Star(float x, float y, float z,
 
 Star::~Star()
 {
-    texture.~Texture();
+    delete texture;
 }
 
 void Star::Draw(int emission, float shiny)
@@ -164,7 +164,7 @@ void Star::drawTextured(int emission, float shiny)
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
-    texture.Bind();
+    texture -> Bind();
 
     glBegin(GL_TRIANGLES);
     
