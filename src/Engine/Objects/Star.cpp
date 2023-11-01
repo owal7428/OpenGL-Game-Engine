@@ -115,6 +115,8 @@ Star::Star(float x, float y, float z,
          float scale_x, float scale_y, float scale_z,
          float th, float ph, float ze)
 {
+    texture = nullptr;
+    
     hasTexture = false;
 
     this -> x = x;
@@ -132,7 +134,8 @@ Star::Star(float x, float y, float z,
 
 Star::~Star()
 {
-    delete texture;
+    if (texture != nullptr)
+        delete texture;
 }
 
 void Star::Draw(int emission, float shiny)

@@ -69,6 +69,8 @@ Rhombus::Rhombus(float x, float y, float z,
          float scale_x, float scale_y, float scale_z,
          float th, float ph, float ze)
 {
+    texture = nullptr;
+
     hasTexture = false;
 
     this -> x = x;
@@ -86,7 +88,8 @@ Rhombus::Rhombus(float x, float y, float z,
 
 Rhombus::~Rhombus()
 {
-    delete texture;
+    if (texture != nullptr)
+        delete texture;
 }
 
 void Rhombus::Draw(int emission, float shiny)
