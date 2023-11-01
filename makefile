@@ -16,7 +16,7 @@ OBJ = $(OUT)obj/
 VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb : src/Engine/Objects
 
 # Source files
-SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o Rhombus.o
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o Rhombus.o Cube.o
 
 # Main target
 all: $(EXE)

@@ -14,6 +14,7 @@ Texture::Texture(const char* path)
 
     #ifdef USE_STB
 
+    // Flip is necessary due to images being displayed bottom-left to top-right
     stbi_set_flip_vertically_on_load(1);
     data = stbi_load(filePath, &width, &height, &bitDepth, 3);
     

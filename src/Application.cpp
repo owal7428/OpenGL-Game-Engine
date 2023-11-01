@@ -3,6 +3,7 @@
 #include "Engine/Utility/util.h"
 #include "Engine/Objects/Star.hpp"
 #include "Engine/Objects/Rhombus.hpp"
+#include "Engine/Objects/Cube.hpp"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -67,8 +68,6 @@ int objectMode = 0;
 
 Texture* skybox[6];
 
-const int numVertices = 64;
-
 void drawStar(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
     Star star = Star(x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
@@ -93,7 +92,7 @@ void drawRhombus_Textured(const char* textureFile, float x, float y, float z, fl
     rhombus.Draw(emission,shiny);
 }
 
-float cubeVertexData[] = 
+/*float cubeVertexData[] = 
 {
     // Front edges
     1, -1, 1, 
@@ -124,11 +123,11 @@ float cubeVertexData[] =
     1, 1, -1,
     1, 1, -1, 
     1, -1, -1,
-};
+};*/
 
 void drawWiredCube(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
-    unsigned int buffer;
+    /*unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertexData), cubeVertexData, GL_STATIC_DRAW);
@@ -153,7 +152,15 @@ void drawWiredCube(float x, float y, float z, float scale_x, float scale_y, floa
     //  Disable vertex array
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glDisable(GL_LIGHTING);
+
+    Cube newCube = Cube(x,y,z,scale_x,scale_y,scale_z,th,ph,ze);
+    newCube.Draw(emission,shiny);
+
+    glEnable(GL_LIGHTING);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 }
 
 // Vertex method taken from ex13.c
