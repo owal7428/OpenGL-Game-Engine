@@ -92,67 +92,8 @@ void drawRhombus_Textured(const char* textureFile, float x, float y, float z, fl
     rhombus.Draw(emission,shiny);
 }
 
-/*float cubeVertexData[] = 
-{
-    // Front edges
-    1, -1, 1, 
-    -1, -1, 1,
-    -1, -1, 1, 
-    -1, 1, 1,
-    -1, 1, 1, 
-    1, 1, 1,
-    1, 1, 1, 
-    1, -1, 1,
-
-    // Side edges
-    1, -1, 1, 
-    1, -1, -1,
-    -1, -1, 1, 
-    -1, -1, -1,
-    -1, 1, 1, 
-    -1, 1, -1,
-    1, 1, 1, 
-    1, 1, -1,
-
-    // Back face edges
-    1, -1, -1, 
-    -1, -1, -1,
-    -1, -1, -1, 
-    -1, 1, -1,
-    -1, 1, -1, 
-    1, 1, -1,
-    1, 1, -1, 
-    1, -1, -1,
-};*/
-
 void drawWiredCube(float x, float y, float z, float scale_x, float scale_y, float scale_z, float th, float ph, float ze)
 {
-    /*unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertexData), cubeVertexData, GL_STATIC_DRAW);
-
-    //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), (void*) 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    glDisable(GL_LIGHTING);
-
-    glPushMatrix();
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
-    glDrawArrays(GL_LINES, 0, 24);
-    glPopMatrix();
-
-    glEnable(GL_LIGHTING);
-
-    //  Disable vertex array
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glDisable(GL_LIGHTING);
 
@@ -738,6 +679,7 @@ int main(int argc, char* argv[])
         double newTime = SDL_GetTicks64()/1000.0;
         double deltaTime = newTime - time;
 
+        // Do this every 0.01 seconds
         if (deltaTime >= 0.01)
         {
             time = newTime;
