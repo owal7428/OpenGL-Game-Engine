@@ -13,7 +13,7 @@ UTIL = $(ENGINE)Utility/
 OBJ = $(OUT)obj/
 
 # Include directories
-VPATH = src : src/Engine : src/Engine/Utility : src/Dependencies/stb_image : src/Engine/Objects/Brushes
+VPATH = src : src/Engine : src/Engine/Utility : src/Vendor/stb_image : src/Engine/Objects/Brushes
 
 # Source files
 SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o Rhombus.o Cube.o

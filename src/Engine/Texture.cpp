@@ -1,7 +1,7 @@
 #include "Texture.hpp"
 
 #include "Utility/util.h"
-#include "../Dependencies/stb_image/stb_image.h"
+#include "../Vendor/stb_image/stb_image.h"
 
 //#define USE_STB
 
