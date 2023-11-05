@@ -1,57 +1,54 @@
-#include "Cube.hpp"
+#include "Rhombus.hpp"
 
-#include "../Utility/util.h"
+#include "../../Utility/util.h"
 
 // Vertex data for star object
 static float vertexData[] = 
 {
-    // Front        // Normals
-    -1, -1, 1,      0, 0, 1,  
-    1, -1, 1,       0, 0, 1,
-    1, 1, 1,        0, 0, 1,
-    -1, 1, 1,       0, 0, 1,
+    // Front face   // Normals
+    -1, -1, -1,     0, -1, 1,
+    1, -1, -1,      0, -1, 1,
+    1, 1, 1,        0, -1, 1,
+    -1, 1, 1,       0, -1, 1,
 
-    //  Back
-    1, -1, -1,      0, 0, -1,
-    -1, -1, -1,     0, 0, -1,
-    -1, 1, -1,      0, 0, -1,
-    1, 1, -1,       0, 0, -1,
+    //  Back face
+    1, -1, -3,      0, 1, -1,
+    -1, -1, -3,     0, 1, -1,
+    -1, 1, -1,      0, 1, -1,
+    1, 1, -1,       0, 1, -1,
     
-    //  Left
-    -1, -1, -1,     -1, 0, 0,
-    -1, -1, 1,      -1, 0, 0,
-    -1, 1, 1,       -1, 0, 0,
-    -1, 1, -1,      -1, 0, 0,
-
-    //  Right
-    1, -1, 1,       1, 0, 0,
+    //  Right face
     1, -1, -1,      1, 0, 0,
+    1, -1, -3,      1, 0, 0,
     1, 1, -1,       1, 0, 0,
     1, 1, 1,        1, 0, 0,
     
-    //  Top
+    //  Left face
+    -1, -1, -3,     -1, 0, 0,
+    -1, -1, -1,     -1, 0, 0,
+    -1, 1, 1,       -1, 0, 0,
+    -1, 1, -1,      -1, 0, 0,
+    
+    //  Top face
     -1, 1, 1,       0, 1, 0,
     1, 1, 1,        0, 1, 0,
     1, 1, -1,       0, 1, 0,
     -1, 1, -1,      0, 1, 0,
-
-    //  Bottom
-    -1, -1, -1,     0, -1, 0,
+    
+    //  Bottom face
+    -1, -1, -3,     0, -1, 0,
+    1, -1, -3,      0, -1, 0,
     1, -1, -1,      0, -1, 0,
-    1, -1, 1,       0, -1, 0,
-    -1, -1, 1,      0, -1, 0,
+    -1, -1, -1,     0, -1, 0,
 };
 
 const int numVertices = 24;
 
-Cube::Cube(const char* textureFiles[6], float x, float y, float z,
+Rhombus::Rhombus(const char* textureFile, float x, float y, float z,
          float scale_x, float scale_y, float scale_z,
          float th, float ph, float ze)
 {
-    for (int i = 0; i < 6; i++)
-    {
-        textures[i] = new Texture(textureFiles[i]);
-    }
+    texture = new Texture(textureFile);
 
     hasTexture = true;
 
@@ -68,15 +65,12 @@ Cube::Cube(const char* textureFiles[6], float x, float y, float z,
     this -> ze = ze;
 }
 
-Cube::Cube(float x, float y, float z,
+Rhombus::Rhombus(float x, float y, float z,
          float scale_x, float scale_y, float scale_z,
          float th, float ph, float ze)
 {
-    for (int i = 0; i < 6; i++)
-    {
-        textures[i] = nullptr;
-    }
-    
+    texture = nullptr;
+
     hasTexture = false;
 
     this -> x = x;
@@ -92,16 +86,13 @@ Cube::Cube(float x, float y, float z,
     this -> ze = ze;
 }
 
-Cube::~Cube()
+Rhombus::~Rhombus()
 {
-    for (int i = 0; i < 6; i++)
-    {
-    if (textures[i] != nullptr)
-        delete textures[i];
-    }
+    if (texture != nullptr)
+        delete texture;
 }
 
-void Cube::Draw(int emission, float shiny)
+void Rhombus::Draw(int emission, float shiny)
 {
     if (hasTexture)
         drawTextured(emission, shiny);
@@ -109,7 +100,7 @@ void Cube::Draw(int emission, float shiny)
         drawUntextured(emission, shiny);
 }
 
-void Cube::drawTextured(int emission, float shiny)
+void Rhombus::drawTextured(int emission, float shiny)
 {
     //  Set specular color to white
     float green[] = {0,1,0,1};
@@ -133,14 +124,13 @@ void Cube::drawTextured(int emission, float shiny)
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
+    texture -> Bind();
+
+    glBegin(GL_QUADS);
     
     // Read info from vertexData to actually draw
     for (int i = 0; i < 6; i++) 
     {
-        textures[i] -> Bind();
-
-        glBegin(GL_QUADS);
-
         // Starting address for current face
         int base = 24 * i;
         glColor3f(1,1,1);
@@ -166,17 +156,16 @@ void Cube::drawTextured(int emission, float shiny)
         glTexCoord2f(1,0); glVertex3f(x2, y2, z2); 
         glTexCoord2f(1,1); glVertex3f(x3, y3, z3); 
         glTexCoord2f(0,1); glVertex3f(x4, y4, z4);
-        
-        glEnd();
-
-        textures[i] -> Unbind();
     }
 
+    //texture[textureFile] -> Unbind();
+
+    glEnd();
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
 }
 
-void Cube::drawUntextured(int emission, float shiny)
+void Rhombus::drawUntextured(int emission, float shiny)
 {
     unsigned int buffer;
     glGenBuffers(1, &buffer);
@@ -189,6 +178,16 @@ void Cube::drawUntextured(int emission, float shiny)
     // Define normals
     glNormalPointer(GL_FLOAT, 6 * sizeof(float), (void*)12);
     glEnableClientState(GL_NORMAL_ARRAY);
+
+    //  Set specular color to white
+    float green[] = {0,1,0,1};
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glColor4fv(green);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,green);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
 
     glPushMatrix();
     glTranslatef(x,y,z);

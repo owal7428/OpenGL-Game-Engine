@@ -1,9 +1,9 @@
 #include "Engine/Window.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Utility/util.h"
-#include "Engine/Objects/Star.hpp"
-#include "Engine/Objects/Rhombus.hpp"
-#include "Engine/Objects/Cube.hpp"
+#include "Engine/Objects/Brushes/Star.hpp"
+#include "Engine/Objects/Brushes/Rhombus.hpp"
+#include "Engine/Objects/Brushes/Cube.hpp"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"

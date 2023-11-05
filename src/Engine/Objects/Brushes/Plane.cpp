@@ -1,6 +1,6 @@
 #include "Plane.hpp"
 
-#include "../Utility/util.h"
+#include "../../Utility/util.h"
 
 // Vertex data for star object
 static float vertexData[] = 

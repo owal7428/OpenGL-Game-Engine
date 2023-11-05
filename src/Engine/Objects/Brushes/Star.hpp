@@ -1,7 +1,7 @@
 #ifndef STAR_H
 #define STAR_H
 
-#include "../Texture.hpp"
+#include "../../Texture.hpp"
 
 class Star
 {

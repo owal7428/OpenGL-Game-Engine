@@ -1,7 +1,7 @@
 #ifndef RHOMBUS_H
 #define RHOMBUS_H
 
-#include "../Texture.hpp"
+#include "../../Texture.hpp"
 
 class Rhombus
 {

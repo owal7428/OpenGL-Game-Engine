@@ -1,7 +1,7 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include "../Texture.hpp"
+#include "../../Texture.hpp"
 
 class Cube
 {
