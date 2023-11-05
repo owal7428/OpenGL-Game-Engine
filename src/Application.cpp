@@ -637,8 +637,6 @@ void reshape(SDL_Window* window)
 
 int main(int argc, char* argv[]) 
 {
-    glutInit(&argc, argv);
-
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window* window = SDL_CreateWindow("OwenAllison_FinalProject", 

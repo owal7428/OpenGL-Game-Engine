@@ -23,18 +23,18 @@ all: $(EXE)
 
 #  Msys/MinGW
 ifeq "$(OS)" "Windows_NT"
-CFLG=-O3 -Wall -DUSEGLEW -DGLUT
+CFLG=-O3 -Wall -DUSEGLEW
 LIBS=-lfreeglut -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -lglew32 -lglu32 -lopengl32 -lm
 CLEAN=rm -f *.exe *.o *.a
 else
 #  OSX
 ifeq "$(shell uname)" "Darwin"
 RES=$(shell uname -r|sed -E 's/(.).*/\1/'|tr 12 21)
-CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES) -DGLUT -I/opt/homebrew/include -L/opt/homebrew/lib -Qunused-arguments
+CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES) -I/opt/homebrew/include -L/opt/homebrew/lib -Qunused-arguments
 LIBS=-framework GLUT -lSDL2main -lSDL2 -lSDL2_mixer -framework Cocoa -framework OpenGL
 #  Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall -DGLUT
+CFLG=-O3 -Wall
 LIBS=-lglut -lSDL2 -lSDL2_mixer -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris

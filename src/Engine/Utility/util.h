@@ -3,7 +3,6 @@
 
 //#define USEGLEW
 #define SDL2
-//#define GLUT
 
 // GLEW _MUST_ be included first
 #ifdef USEGLEW
@@ -24,14 +23,6 @@
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
-#endif
-
-#if defined(GLUT)
-#if defined(__APPLE__)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 #endif
 
 //  Make sure GLU and GL are included
