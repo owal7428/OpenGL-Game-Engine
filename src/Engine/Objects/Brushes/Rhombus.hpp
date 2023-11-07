@@ -1,14 +1,13 @@
 #ifndef RHOMBUS_H
 #define RHOMBUS_H
 
+#include "Brush.hpp"
+
 #include "../../Texture.hpp"
 
-class Rhombus
+class Rhombus : public Brush
 {
 private:
-    bool hasTexture;
-    float x, y, z, scale_x, scale_y, scale_z, th, ph, ze;
-
     Texture* texture;
 
     void drawUntextured(int emission, float shiny);

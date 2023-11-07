@@ -1,14 +1,13 @@
 #ifndef PLANE_H
 #define PLANE_H
 
+#include "Brush.hpp"
+
 #include "../../Texture.hpp"
 
-class Plane
+class Plane : public Brush
 {
 private:
-    bool hasTexture;
-    float x, y, z, scale_x, scale_y, scale_z, th, ph, ze;
-
     Texture* texture;
 
     void drawUntextured(int emission, float shiny);

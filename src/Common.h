@@ -12,6 +12,7 @@
 #ifdef __cplusplus
 
 #include <string>
+#include <array>
 
 #endif // __cplusplus
 

@@ -1,14 +1,13 @@
 #ifndef STAR_H
 #define STAR_H
 
+#include "Brush.hpp"
+
 #include "../../Texture.hpp"
 
-class Star
+class Star : public Brush
 {
 private:
-    bool hasTexture;
-    float x, y, z, scale_x, scale_y, scale_z, th, ph, ze;
-
     Texture* texture;
 
     void drawUntextured(int emission, float shiny);
