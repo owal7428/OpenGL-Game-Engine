@@ -15,14 +15,10 @@ private:
 
 public:
     // Textured constructor
-    Star(const char* textureFile, float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Star(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
     
     // Non-textured constructor
-    Star(float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Star(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     ~Star();
 

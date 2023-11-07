@@ -90,46 +90,26 @@ static float vertexData[] =
 
 const int numVertices = 64;
 
-Star::Star(const char* textureFile, float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze)
+Star::Star(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     texture = new Texture(textureFile);
 
     hasTexture = true;
 
-    this -> x = x;
-    this -> y = y;
-    this -> z = z;
-
-    this -> scale_x = scale_x;
-    this -> scale_y = scale_y;
-    this -> scale_z = scale_z;
-
-    this -> th = th;
-    this -> ph = ph;
-    this -> ze = ze;
+    this -> position    = position;
+    this -> rotation    = rotation;
+    this -> scale       = scale;
 }
 
-Star::Star(float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze)
+Star::Star(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     texture = nullptr;
     
     hasTexture = false;
 
-    this -> x = x;
-    this -> y = y;
-    this -> z = z;
-
-    this -> scale_x = scale_x;
-    this -> scale_y = scale_y;
-    this -> scale_z = scale_z;
-
-    this -> th = th;
-    this -> ph = ph;
-    this -> ze = ze;
+    this -> position    = position;
+    this -> rotation    = rotation;
+    this -> scale       = scale;
 }
 
 Star::~Star()
@@ -157,11 +137,11 @@ void Star::drawTextured(int emission, float shiny)
 
     glPushMatrix();
     
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
+    glTranslatef(position[0], position[1], position[2]);
+    glRotatef(rotation[0], 1,0,0);
+    glRotatef(rotation[1], 0,1,0);
+    glRotatef(rotation[2], 0,0,1);
+    glScalef(scale[0], scale[1], scale[2]);
 
     //  Enable textures
     glEnable(GL_TEXTURE_2D);
@@ -231,11 +211,11 @@ void Star::drawUntextured(int emission, float shiny)
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
 
     glPushMatrix();
-    glTranslatef(x,y,z);
-    glRotatef(th, 1,0,0);
-    glRotatef(ph, 0,1,0);
-    glRotatef(ze, 0,0,1);
-    glScalef(scale_x,scale_y,scale_z);
+    glTranslatef(position[0], position[1], position[2]);
+    glRotatef(rotation[0], 1,0,0);
+    glRotatef(rotation[1], 0,1,0);
+    glRotatef(rotation[2], 0,0,1);
+    glScalef(scale[0], scale[1], scale[2]);
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     glPopMatrix();
 

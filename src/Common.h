@@ -14,6 +14,9 @@
 #include <string>
 #include <array>
 
+#include "Vendor/glm/glm/glm.hpp"
+#include "Vendor/glm/glm/gtc/matrix_transform.hpp"
+
 #endif // __cplusplus
 
 #endif // COMMON_H

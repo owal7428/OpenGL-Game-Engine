@@ -15,14 +15,10 @@ private:
 
 public:
     // Textured constructor
-    Rhombus(const char* textureFile, float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Rhombus(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
     
     // Non-textured constructor
-    Rhombus(float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Rhombus(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     ~Rhombus();
 

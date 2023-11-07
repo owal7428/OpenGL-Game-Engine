@@ -15,14 +15,10 @@ private:
 
 public:
     // Textured constructor
-    Cube(const char* textureFiles[6], float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Cube(const char* textureFiles[6], glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
     
     // Non-textured constructor
-    Cube(float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Cube(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     ~Cube();
 

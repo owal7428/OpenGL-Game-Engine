@@ -15,14 +15,10 @@ private:
 
 public:
     // Textured constructor
-    Plane(const char* textureFile, float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Plane(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
     
     // Non-textured constructor
-    Plane(float x, float y, float z,
-         float scale_x, float scale_y, float scale_z,
-         float th, float ph, float ze);
+    Plane(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     ~Plane();
 

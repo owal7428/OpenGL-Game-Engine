@@ -7,21 +7,17 @@ class Brush
 {
 protected:
     bool hasTexture;
-    float x, y, z, scale_x, scale_y, scale_z, th, ph, ze;
+
+    glm::vec3 position;
+    glm::vec3 rotation;
+    glm::vec3 scale;
+    
 public:
     Brush() {}
 
-    inline void Move(float x_new, float y_new, float z_new) {x = x_new; y = y_new; z = z_new;}
+    inline void Move(glm::vec3 newPosition) {position = newPosition;}
 
-    inline std::array<float, 3> getLocation() 
-    {
-        std::array<float, 3> location;
-        location[0] = x;
-        location[1] = y;
-        location[2] = z;
-
-        return location;
-    }
+    inline glm::vec3 getLocation() {return position;}
 };
 
 #endif // BRUSH_H
