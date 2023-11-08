@@ -44,49 +44,20 @@ static float vertexData[] =
 
 const int numVertices = 24;
 
-Cube::Cube(const char* textureFiles[6], glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Cube::Cube(const char* textureFile,
+           float x, float y, float z,
+           float rot_x, float rot_y, float rot_z,
+           float scale_x, float scale_y, float scale_z) : Brush(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    for (int i = 0; i < 6; i++)
-    {
-        textures[i] = new Texture(textureFiles[i]);
-    }
-
-    hasTexture = true;
-
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
+    // Do nothing for now
 }
 
-Cube::Cube(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
-{
-    for (int i = 0; i < 6; i++)
-    {
-        textures[i] = nullptr;
-    }
-    
-    hasTexture = false;
 
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
-}
-
-Cube::~Cube()
+Cube::Cube(float x, float y, float z,
+           float rot_x, float rot_y, float rot_z,
+           float scale_x, float scale_y, float scale_z) : Brush(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    for (int i = 0; i < 6; i++)
-    {
-    if (textures[i] != nullptr)
-        delete textures[i];
-    }
-}
-
-void Cube::Draw(int emission, float shiny)
-{
-    if (hasTexture)
-        drawTextured(emission, shiny);
-    else
-        drawUntextured(emission, shiny);
+    // Do nothing for now
 }
 
 void Cube::drawTextured(int emission, float shiny)
@@ -117,7 +88,7 @@ void Cube::drawTextured(int emission, float shiny)
     // Read info from vertexData to actually draw
     for (int i = 0; i < 6; i++) 
     {
-        textures[i] -> Bind();
+        texture -> Bind();
 
         glBegin(GL_QUADS);
 
@@ -149,7 +120,7 @@ void Cube::drawTextured(int emission, float shiny)
         
         glEnd();
 
-        textures[i] -> Unbind();
+        texture -> Unbind();
     }
 
     glPopMatrix();

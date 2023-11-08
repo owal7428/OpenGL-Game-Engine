@@ -8,21 +8,20 @@
 class Cube : public Brush
 {
 private:
-    Texture* textures[6];
-
     void drawUntextured(int emission, float shiny);
     void drawTextured(int emission, float shiny);
 
 public:
     // Textured constructor
-    Cube(const char* textureFiles[6], glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+    Cube(const char* textureFile,
+         float x, float y, float z,
+         float rot_x, float rot_y, float rot_z,
+         float scale_x, float scale_y, float scale_z);
     
     // Non-textured constructor
-    Cube(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
-
-    ~Cube();
-
-    void Draw(int emission, float shiny);
+    Cube(float x, float y, float z,
+         float rot_x, float rot_y, float rot_z,
+         float scale_x, float scale_y, float scale_z);
 };
 
 #endif // CUBE_H

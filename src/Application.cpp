@@ -4,6 +4,7 @@
 #include "Engine/Objects/Brushes/Star.hpp"
 #include "Engine/Objects/Brushes/Rhombus.hpp"
 #include "Engine/Objects/Brushes/Cube.hpp"
+#include "Engine/Objects/Brushes/Plane.hpp"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -38,6 +39,7 @@ int dKeyDown = 0;
 int spaceKeyToggle = 0;
 
 double asp = 1;
+int zFar = 30;
 int fov = 90;
 int mode = 0;
 
@@ -66,38 +68,36 @@ float ylight  =   0;  // Elevation of light
 
 int objectMode = 0;
 
-Cube* sky;
-
-void drawStar(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void drawStar(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
 {
-    Star star = Star(position, rotation, scale);
+    Star star = Star(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
     star.Draw(emission, shiny);
 }
 
-void drawStar_Textured(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void drawStar_Textured(const char* textureFile, float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
 {
-    Star star = Star(textureFile, position, rotation, scale);
+    Star star = Star(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
     star.Draw(emission, shiny);
 }
 
-void drawRhombus(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void drawRhombus(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
 {
-    Rhombus rhombus = Rhombus(position, rotation, scale);
+    Rhombus rhombus = Rhombus(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
     rhombus.Draw(emission, shiny);
 }
 
-void drawRhombus_Textured(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void drawRhombus_Textured(const char* textureFile, float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
 {
-    Rhombus rhombus = Rhombus(textureFile, position, rotation, scale);
+    Rhombus rhombus = Rhombus(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
     rhombus.Draw(emission,shiny);
 }
 
-void drawWiredCube(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void drawWiredCube(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
 {
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glDisable(GL_LIGHTING);
 
-    Cube newCube = Cube(position, rotation, scale);
+    Cube newCube = Cube(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
     newCube.Draw(emission,shiny);
 
     glEnable(GL_LIGHTING);
@@ -146,12 +146,27 @@ static void ball(double x,double y,double z,double r)
    glPopMatrix();
 }
 
-void GenerateSkybox(Cube* sky, float x, float y, float z)
+void GenerateSkybox(Plane sky[], float x, float y, float z)
 {
     glDisable(GL_LIGHTING);
+
+    sky[0].Move(glm::vec3(x + zFar,y,z));
+    sky[0].Draw(emission, shiny);
     
-    sky -> Move(glm::vec3(x,y,z));
-    sky -> Draw(emission, shiny);
+    sky[1].Move(glm::vec3(x - zFar,y,z));
+    sky[1].Draw(emission, shiny);
+
+    sky[2].Move(glm::vec3(x,y + zFar,z));
+    sky[2].Draw(emission, shiny);
+
+    sky[3].Move(glm::vec3(x,y - zFar,z));
+    sky[3].Draw(emission, shiny);
+
+    sky[4].Move(glm::vec3(x,y,z + zFar));
+    sky[4].Draw(emission, shiny);
+
+    sky[5].Move(glm::vec3(x,y,z - zFar));
+    sky[5].Draw(emission, shiny);
 
     glEnable(GL_LIGHTING);
 }
@@ -165,14 +180,14 @@ void Project()
     if (mode == 0)
         glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
     else
-        gluPerspective(fov,asp,0.5,30);
+        gluPerspective(fov,asp,0.5, zFar / Cos(fov));
 
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window)
+void draw(SDL_Window* window, Plane sky[])
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -258,37 +273,23 @@ void draw(SDL_Window* window)
     if (objectMode == 0)
     {
         // Draw the stars
-        glm::vec3 position = glm::vec3(2.0f, 1.0f, -2.0f);
-        glm::vec3 rotation = glm::vec3(0.0f, -35.0f, z_rot_time);
-        glm::vec3 scale = glm::vec3(0.3f, 0.3f, 0.3f);
-
-        drawStar_Textured(WOOD, position, rotation, scale);
-
-        rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        drawStar_Textured(WOOD, 2, 1, -2, 0, -35, z_rot_time, 0.3, 0.3, 0.3);
 
         glPushMatrix();
         glRotatef(x_rot_time, -1, 0, -1);
         glTranslatef(0.5, 0, -0.5);
         glRotatef(x_rot_time, 1, 0, 0);
-        drawStar_Textured(STEEL, position, rotation, scale);
+        drawStar_Textured(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
         glPopMatrix();
-
-        position = glm::vec3(-0.25f, -1.0f, 0.4f);
-        rotation = glm::vec3(0.0f, y_rot_time, 0.0f);
-        scale = glm::vec3(0.15f, 0.3f, 0.3f);
 
         glPushMatrix();
         //glColor3f(0, 1, 0.7);
         //drawStar_Colorless(-3, -1, -0.5, 0.3, 0.3, 3, 0, y_rot_time * 1.5, 0);
         glColor3f(0, 1, 0.2);
-        drawRhombus_Textured(WATER, position, rotation, scale);
+        drawRhombus_Textured(WATER, -0.25, -1, 0.4, 0, y_rot_time, 0, 0.15, 0.3, 0.3);
         glPopMatrix();
 
-        position = glm::vec3(-2.0f, 0.0f, -2.0f);
-        rotation = glm::vec3(0.0f, 0.0f, 20.0f);
-        scale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-        drawStar_Textured(WOOD, position, rotation, scale);
+        drawStar_Textured(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
 
         // These transformations make the star orbit the big star
         glPushMatrix();
@@ -296,54 +297,26 @@ void draw(SDL_Window* window)
         glRotatef(x_rot_time, 0,1,0);
         glTranslatef(3,0,0);
 
-        position = glm::vec3(0.0f, 0.0f, 0.0f);
-        rotation = glm::vec3(0.0f, 0.0f, z_rot_time);
-        scale = glm::vec3(0.15f, 0.15f, 0.15f);
-
-        drawStar_Textured(STEEL, position, rotation, scale);
-
-        rotation = glm::vec3(x_rot_time, 0, z_rot_time);
-        scale = glm::vec3(0.35f, 0.35f, 0.35f);
+        drawStar_Textured(STEEL, 0, 0, 0, 0, 0, z_rot_time, 0.15, 0.15, 0.15);
 
         glColor3f(0,1,0);
-        drawWiredCube(position, rotation, scale);
+        drawWiredCube(0, 0, 0, x_rot_time, 0, z_rot_time, 0.35, 0.35, 0.35);
         glPopMatrix();
 
-        position = glm::vec3(-0.25f, -1.0f, 0.4f);
-        rotation = glm::vec3(0.0f, y_rot_time, z_rot_time);
-        scale = glm::vec3(0.4f, 0.4f, 0.5f);
-
         glColor3f(0,0,1);
-        drawWiredCube(position, rotation, scale);
-
-        position = glm::vec3(2.0f, 1.0f, -2.0f);
-        rotation = glm::vec3(x_rot_time, 0.0f, 0.0f);
-        scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        drawWiredCube(-0.25, -1.0, 0.4, 0.0, y_rot_time, z_rot_time, 0.4, 0.4, 0.5);
 
         glColor3f(1,0,0);
-        drawWiredCube(position, rotation, scale);
+        drawWiredCube(2, 1, -2, x_rot_time, 0, 0, 0.5, 0.5, 0.5);
     }
     else if (objectMode == 1)
     {
-        glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-        drawStar_Textured(WOOD,position, rotation, scale);
+        drawStar_Textured(WOOD, 0, 0, 0, 0, 0, 0, 1, 1, 1);
     }
     else
     {
-        glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f, y_rot_time / 2, 0.0f);
-        glm::vec3 scale = glm::vec3(0.4f, 0.4f, 0.4f);
-
-        drawWiredCube(position, rotation, scale);
-
-        position = glm::vec3(0.0f, 0.0f, 0.0f);
-        rotation = glm::vec3(0.15f, 0.3f, 0.3f);
-        scale = glm::vec3(0.5f, 0.5f, 0.5f);
-
-        drawRhombus_Textured(WATER,position, rotation, scale);
+        drawWiredCube(0, 0, 0, 0, y_rot_time / 2, 0, 0.4, 0.4, 0.4);
+        drawRhombus_Textured(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
     }
 
     if (mode != 0)
@@ -627,11 +600,15 @@ int main(int argc, char* argv[])
     asp = (float) 1300 / 900;
     
     reshape(window);
+                                                // Position     // Rotation // Scale
+    Plane SkyboxRight = Plane(SKYBOX_RIGHT,     zFar, 0, 0,     0, 90, 0,   zFar, zFar, zFar);
+    Plane SkyboxLeft = Plane(SKYBOX_LEFT,       -zFar, 0, 0,    0, -90, 0,  zFar, zFar, zFar);
+    Plane SkyboxTop = Plane(SKYBOX_TOP,         0, zFar, 0,     -90, 0, 0,  zFar, zFar, zFar);
+    Plane SkyboxBottom = Plane(SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,   zFar, zFar, zFar);
+    Plane SkyboxFront = Plane(SKYBOX_FRONT,     0, 0, zFar,     0, 0, 0,    zFar, zFar, zFar);
+    Plane SkyboxBack = Plane(SKYBOX_BACK,       0, 0, -zFar,    0, 180, 0,  zFar, zFar, zFar);
 
-    const char* skyTextures[] = {SKYBOX_FRONT, SKYBOX_BACK, SKYBOX_LEFT, SKYBOX_RIGHT, SKYBOX_TOP, SKYBOX_BOTTOM};
-    static Cube skyCube = Cube(skyTextures, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(15.0f, 15.0f, 15.0f));
-
-    sky = &skyCube;
+    Plane sky[6] = {SkyboxRight, SkyboxLeft, SkyboxTop, SkyboxBottom, SkyboxFront, SkyboxBack};
 
     ErrCheck("init");
 
@@ -676,7 +653,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window);
+        draw(window, sky);
     }
 
     SDL_Quit();

@@ -8,21 +8,20 @@
 class Plane : public Brush
 {
 private:
-    Texture* texture;
-
     void drawUntextured(int emission, float shiny);
     void drawTextured(int emission, float shiny);
 
 public:
     // Textured constructor
-    Plane(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+    Plane(const char* textureFile,
+          float x, float y, float z,
+          float rot_x, float rot_y, float rot_z,
+          float scale_x, float scale_y, float scale_z);
     
     // Non-textured constructor
-    Plane(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
-
-    ~Plane();
-
-    void Draw(int emission, float shiny);
+    Plane(float x, float y, float z,
+          float rot_x, float rot_y, float rot_z,
+          float scale_x, float scale_y, float scale_z);
 };
 
 #endif // PLANE_H

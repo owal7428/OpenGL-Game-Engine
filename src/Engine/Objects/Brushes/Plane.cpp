@@ -6,48 +6,27 @@
 static float vertexData[] = 
 {
     // Front        // Normals
-    -1, -1, 1,      0, 0, 1,  
-    1, -1, 1,       0, 0, 1,
-    1, 1, 1,        0, 0, 1,
-    -1, 1, 1,       0, 0, 1,
+    -1, -1, 0,      0, 0, 1,  
+    1, -1, 0,       0, 0, 1,
+    1, 1, 0,        0, 0, 1,
+    -1, 1, 0,       0, 0, 1,
 };
 
 const int numVertices = 4;
 
-Plane::Plane(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Plane::Plane(const char* textureFile,
+             float x, float y, float z,
+             float rot_x, float rot_y, float rot_z,
+             float scale_x, float scale_y, float scale_z) : Brush(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    texture = new Texture(textureFile);
-
-    hasTexture = true;
-
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
+    // Do nothing for now
 }
 
-Plane::Plane(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Plane::Plane(float x, float y, float z,
+             float rot_x, float rot_y, float rot_z,
+             float scale_x, float scale_y, float scale_z) : Brush(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    texture = nullptr;
-    
-    hasTexture = false;
-
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
-}
-
-Plane::~Plane()
-{
-    if (texture != nullptr)
-        delete texture;
-}
-
-void Plane::Draw(int emission, float shiny)
-{
-    if (hasTexture)
-        drawTextured(emission, shiny);
-    else
-        drawUntextured(emission, shiny);
+    // Do nothing for now
 }
 
 void Plane::drawTextured(int emission, float shiny)

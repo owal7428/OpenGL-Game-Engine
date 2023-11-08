@@ -90,40 +90,19 @@ static float vertexData[] =
 
 const int numVertices = 64;
 
-Star::Star(const char* textureFile, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Star::Star(const char* textureFile,
+           float x, float y, float z,
+           float rot_x, float rot_y, float rot_z,
+           float scale_x, float scale_y, float scale_z) : Brush(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    texture = new Texture(textureFile);
-
-    hasTexture = true;
-
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
+    // Do nothing for now
 }
 
-Star::Star(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Star::Star(float x, float y, float z,
+           float rot_x, float rot_y, float rot_z,
+           float scale_x, float scale_y, float scale_z) : Brush(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    texture = nullptr;
-    
-    hasTexture = false;
-
-    this -> position    = position;
-    this -> rotation    = rotation;
-    this -> scale       = scale;
-}
-
-Star::~Star()
-{
-    if (texture != nullptr)
-        delete texture;
-}
-
-void Star::Draw(int emission, float shiny)
-{
-    if (hasTexture)
-        drawTextured(emission, shiny);
-    else
-        drawUntextured(emission, shiny);
+    // Do nothing for now
 }
 
 void Star::drawTextured(int emission, float shiny)
