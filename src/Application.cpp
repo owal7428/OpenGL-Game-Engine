@@ -341,14 +341,10 @@ void draw(SDL_Window* window, Plane sky[])
     SDL_GL_SwapWindow(window);
 }
 
-/* \returns 0 if program is to be closed, 1 otherwise */
-int keyDown(SDL_Scancode code)
+void keyDown(SDL_Scancode code)
 {
     switch (code)
-    {
-        case SDL_SCANCODE_ESCAPE:
-            return 0;
-        
+    { 
         case SDL_SCANCODE_M:
             mode = (mode + 1) % 3;
             if (mode == 2)
@@ -449,8 +445,6 @@ int keyDown(SDL_Scancode code)
         default:
             break;
     }
-
-    return 1;
 }
 
 void keyUp(SDL_Scancode code)
@@ -635,7 +629,9 @@ int main(int argc, char* argv[])
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED)
                     {
-                        SDL_SetWindowSize(window,event.window.data1,event.window.data2);
+                        int width = event.window.data1;
+                        int height = event.window.data2;
+                        SDL_SetWindowSize(window, width, height);
                         reshape(window);
                     }
                     break;
@@ -643,7 +639,11 @@ int main(int argc, char* argv[])
                     run = 0;
                     break;
                 case SDL_KEYDOWN:
-                    run = keyDown(event.key.keysym.scancode);
+                    // Exit event loop if escape key is pressed
+                    if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                        run = 0;
+                    else
+                        keyDown(event.key.keysym.scancode);
                     break;
                 case SDL_KEYUP:
                     keyUp(event.key.keysym.scancode);
