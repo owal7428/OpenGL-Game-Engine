@@ -116,11 +116,9 @@ void Star::drawTextured(int emission, float shiny)
 
     glPushMatrix();
     
-    glTranslatef(position[0], position[1], position[2]);
-    glRotatef(rotation[0], 1,0,0);
-    glRotatef(rotation[1], 0,1,0);
-    glRotatef(rotation[2], 0,0,1);
-    glScalef(scale[0], scale[1], scale[2]);
+    glTranslatef(position.x, position.y, position.z);
+    glMultMatrixf(glm::value_ptr(glm::toMat4(rotation)));
+    glScalef(scale.x, scale.y, scale.z);
 
     //  Enable textures
     glEnable(GL_TEXTURE_2D);
@@ -190,11 +188,9 @@ void Star::drawUntextured(int emission, float shiny)
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
 
     glPushMatrix();
-    glTranslatef(position[0], position[1], position[2]);
-    glRotatef(rotation[0], 1,0,0);
-    glRotatef(rotation[1], 0,1,0);
-    glRotatef(rotation[2], 0,0,1);
-    glScalef(scale[0], scale[1], scale[2]);
+    glTranslatef(position.x, position.y, position.z);
+    glMultMatrixf(glm::value_ptr(glm::toMat4(rotation)));
+    glScalef(scale.x, scale.y, scale.z);
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     glPopMatrix();
 

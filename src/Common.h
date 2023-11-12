@@ -16,6 +16,9 @@
 
 #include "Vendor/glm/glm/glm.hpp"
 #include "Vendor/glm/glm/gtc/matrix_transform.hpp"
+#include "Vendor/glm/glm/gtc/quaternion.hpp"
+#include "Vendor/glm/glm/gtx/quaternion.hpp"
+#include "Vendor/glm/glm/gtc/type_ptr.hpp"
 
 #endif // __cplusplus
 

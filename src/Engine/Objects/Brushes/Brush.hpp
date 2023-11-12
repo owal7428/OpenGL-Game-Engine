@@ -8,7 +8,9 @@ class Brush
 {
 protected:
     glm::vec3 position;
-    glm::vec3 rotation;
+    
+    // Rotation given as a quaternion for easy use with arbitrary rotation axies
+    glm::quat rotation;
     glm::vec3 scale;
 
     bool hasTexture;
@@ -35,8 +37,10 @@ public:
     void Draw(int emission, float shiny);
 
     void Move(glm::vec3 newPosition) {position = newPosition;}
+    void Rotate(glm::vec3 newRotation) {rotation = newRotation;}
 
     inline glm::vec3 getPosition() {return position;}
+    inline glm::quat getRotation() {return rotation;}
 
 private:
     virtual void drawUntextured(int emission, float shiny) = 0;
