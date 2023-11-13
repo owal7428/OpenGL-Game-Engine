@@ -6,6 +6,7 @@
 #include "Engine/Objects/Brushes/Cube.hpp"
 #include "Engine/Objects/Brushes/Plane.hpp"
 #include "Engine/Objects/Entities/Motor.hpp"
+#include "Engine/Objects/Entities/Rotator.hpp"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -152,7 +153,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects, std::vector<Motor*>* motorObjects)
+void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -257,12 +258,6 @@ void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects, st
         // Big star
         brushObjects -> at(0) -> Draw(emission, shiny);
 
-        // These transformations make the star orbit the big star
-        glPushMatrix();
-        glTranslatef(-2, 0, -2);
-        glRotatef(x_rot_time, 0,1,0);
-        glTranslatef(3,0,0);
-
         // Rotating star
         brushObjects -> at(3) -> Draw(emission, shiny);
 
@@ -272,7 +267,6 @@ void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects, st
         // Rotating star cube
         glColor3f(0,1,0);
         brushObjects -> at(8) -> Draw(emission, shiny);
-        glPopMatrix();
 
         // Rhombus star cube
         glColor3f(0,0,1);
@@ -595,14 +589,14 @@ int main(int argc, char* argv[])
     Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
     Star bigStarSingle  =   Star(WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
     Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
-    Star rotatingStar   =   Star(STEEL, 0, 0, 0, 0, 0, 0, 0.15, 0.15, 0.15);
+    Star rotatingStar   =   Star(STEEL, 1, 0, -2, 0, 0, 0, 0.15, 0.15, 0.15);
     Star otherStar      =   Star(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
 
     Rhombus rhombus         =   Rhombus(WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
     Rhombus rhombusSingle   =   Rhombus(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
 
     Cube spinningStarCube   =   Cube(2, 1, -2, 0, 0, 0, 0.5, 0.5, 0.5);
-    Cube rotatingStarCube   =   Cube(0, 0, 0, 0, 0, 0, 0.35, 0.35, 0.35);
+    Cube rotatingStarCube   =   Cube(1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
     Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
     Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
@@ -622,6 +616,9 @@ int main(int argc, char* argv[])
     Motor rhombusCubeMotor2 = Motor(&rhombusCube, 0, 90, 150);
 
     Motor rhombusCubeSingleMotor = Motor(&rhombusCubeSingle, 0, 90, 180);
+
+    Rotator rotatingStarRotator = Rotator(&rotatingStar, -2, 0, -2, 0, 90, 90);
+    Rotator rotatingStarCubeRotator = Rotator(&rotatingStarCube, -2, 0, -2, 0, 90, 90);
 
     std::vector<Brush*> brushObjects;
 
@@ -657,6 +654,11 @@ int main(int argc, char* argv[])
 
     motorObjects.push_back(&rhombusCubeSingleMotor);
 
+    std::vector<Rotator*> rotatorObjects;
+
+    rotatorObjects.push_back(&rotatingStarRotator);
+    rotatorObjects.push_back(&rotatingStarCubeRotator);
+
     ErrCheck("init");
 
     int run = 1;
@@ -683,6 +685,11 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < motorListSize; i++)
                 motorObjects.at(i)->Spin(deltaTime);
+
+            int rotatorListSize = rotatorObjects.size();
+
+            for (int i = 0; i < rotatorListSize; i++)
+                rotatorObjects.at(i)->Rotate(deltaTime);
         }
 
         SDL_Event event;
@@ -717,7 +724,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky, &brushObjects, &motorObjects);
+        draw(window, sky, &brushObjects);
     }
 
     SDL_Quit();

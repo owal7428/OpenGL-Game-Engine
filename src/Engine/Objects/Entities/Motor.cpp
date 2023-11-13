@@ -1,7 +1,5 @@
 #include "Motor.hpp"
 
-#include "../../Utility/util.h"
-
 Motor::Motor(Brush* brush, int axis_x, int axis_y, int axis_z, int rotation_speed)
 {
     this -> brush = brush;
