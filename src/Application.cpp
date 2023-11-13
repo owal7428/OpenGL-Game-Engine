@@ -69,42 +69,6 @@ float ylight  =   0;  // Elevation of light
 
 int objectMode = 0;
 
-void drawStar(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
-{
-    Star star = Star(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
-    star.Draw(emission, shiny);
-}
-
-void drawStar_Textured(const char* textureFile, float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
-{
-    Star star = Star(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
-    star.Draw(emission, shiny);
-}
-
-void drawRhombus(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
-{
-    Rhombus rhombus = Rhombus(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
-    rhombus.Draw(emission, shiny);
-}
-
-void drawRhombus_Textured(const char* textureFile, float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
-{
-    Rhombus rhombus = Rhombus(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
-    rhombus.Draw(emission,shiny);
-}
-
-void drawWiredCube(float x, float y, float z, float rot_x, float rot_y, float rot_z, float scale_x, float scale_y, float scale_z)
-{
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glDisable(GL_LIGHTING);
-
-    Cube newCube = Cube(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z);
-    newCube.Draw(emission,shiny);
-
-    glEnable(GL_LIGHTING);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-}
-
 // Vertex method taken from ex13.c
 static void Vertex(double th,double ph)
 {
@@ -188,7 +152,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane sky[], Star* bigStarCenter)
+void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects, std::vector<Motor*>* motorObjects)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -273,24 +237,25 @@ void draw(SDL_Window* window, Plane sky[], Star* bigStarCenter)
 
     if (objectMode == 0)
     {
-        // Draw the stars
-        drawStar_Textured(WOOD, 2, 1, -2, 0, -35, z_rot_time, 0.3, 0.3, 0.3);
+        // Spinning star
+        brushObjects -> at(2) -> Draw(emission, shiny);
 
+        // Other star
         glPushMatrix();
         glRotatef(x_rot_time, -1, 0, -1);
         glTranslatef(0.5, 0, -0.5);
         glRotatef(x_rot_time, 1, 0, 0);
-        drawStar_Textured(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
+        brushObjects -> at(4) -> Draw(emission, shiny);
         glPopMatrix();
 
+        // Rhombus
         glPushMatrix();
-        //glColor3f(0, 1, 0.7);
-        //drawStar_Colorless(-3, -1, -0.5, 0.3, 0.3, 3, 0, y_rot_time * 1.5, 0);
         glColor3f(0, 1, 0.2);
-        drawRhombus_Textured(WATER, -0.25, -1, 0.4, 0, y_rot_time, 0, 0.15, 0.3, 0.3);
+        brushObjects -> at(5) -> Draw(emission, shiny);
         glPopMatrix();
-
-        drawStar_Textured(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
+        
+        // Big star
+        brushObjects -> at(0) -> Draw(emission, shiny);
 
         // These transformations make the star orbit the big star
         glPushMatrix();
@@ -298,26 +263,47 @@ void draw(SDL_Window* window, Plane sky[], Star* bigStarCenter)
         glRotatef(x_rot_time, 0,1,0);
         glTranslatef(3,0,0);
 
-        drawStar_Textured(STEEL, 0, 0, 0, 0, 0, z_rot_time, 0.15, 0.15, 0.15);
+        // Rotating star
+        brushObjects -> at(3) -> Draw(emission, shiny);
 
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+
+        // Rotating star cube
         glColor3f(0,1,0);
-        drawWiredCube(0, 0, 0, x_rot_time, 0, z_rot_time, 0.35, 0.35, 0.35);
+        brushObjects -> at(8) -> Draw(emission, shiny);
         glPopMatrix();
 
+        // Rhombus star cube
         glColor3f(0,0,1);
-        drawWiredCube(-0.25, -1.0, 0.4, 0.0, y_rot_time, z_rot_time, 0.4, 0.4, 0.5);
+        brushObjects -> at(9) -> Draw(emission, shiny);
 
+        // Spinning star cube
         glColor3f(1,0,0);
-        drawWiredCube(2, 1, -2, x_rot_time, 0, 0, 0.5, 0.5, 0.5);
+        brushObjects -> at(7) -> Draw(emission, shiny);
+
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
     else if (objectMode == 1)
     {
-        bigStarCenter -> Draw(emission, shiny);
+        // Big star single
+        brushObjects -> at(1) -> Draw(emission, shiny);
     }
     else
     {
-        drawWiredCube(0, 0, 0, 0, y_rot_time / 2, 0, 0.4, 0.4, 0.4);
-        drawRhombus_Textured(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
+        // Rhombus single
+        glColor3f(0,0,1);
+        //drawWiredCube(0, 0, 0, 0, y_rot_time / 2, 0, 0.4, 0.4, 0.4);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+
+        brushObjects -> at(10) -> Draw(emission, shiny);
+
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+        brushObjects -> at(6) -> Draw(emission, shiny);
     }
 
     if (mode != 0)
@@ -606,19 +592,70 @@ int main(int argc, char* argv[])
     Plane sky[6] = {SkyboxRight, SkyboxLeft, SkyboxTop, SkyboxBottom, SkyboxFront, SkyboxBack};
 
     // Define objects in the scene
-    //Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
-    Star bigStar        =   Star(WOOD, 0, 0, 0, 0, -45, 0, 1, 1, 1);
-    Star rotatingStar   =   Star(STEEL, 0, 0, 0, 0, 0, z_rot_time, 0.15, 0.15, 0.15);
-    Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, z_rot_time, 0.3, 0.3, 0.3);
+    Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
+    Star bigStarSingle  =   Star(WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
+    Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
+    Star rotatingStar   =   Star(STEEL, 0, 0, 0, 0, 0, 0, 0.15, 0.15, 0.15);
     Star otherStar      =   Star(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
 
-    Rhombus rhombus     =   Rhombus(WATER, -0.25, -1, 0.4, 0, y_rot_time, 0, 0.15, 0.3, 0.3);
+    Rhombus rhombus         =   Rhombus(WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
+    Rhombus rhombusSingle   =   Rhombus(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
 
-    Cube rotatingStarCube   =   Cube(0, 0, 0, x_rot_time, 0, z_rot_time, 0.35, 0.35, 0.35);
-    Cube spinningStarCube   =   Cube(2, 1, -2, x_rot_time, 0, 0, 0.5, 0.5, 0.5);
-    Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, y_rot_time, z_rot_time, 0.4, 0.4, 0.5);
+    Cube spinningStarCube   =   Cube(2, 1, -2, 0, 0, 0, 0.5, 0.5, 0.5);
+    Cube rotatingStarCube   =   Cube(0, 0, 0, 0, 0, 0, 0.35, 0.35, 0.35);
+    Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
+    Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
-    Motor newMotor = Motor(&bigStar, -45, 0, 70);
+    // Define motor entities in the scene
+    Motor bigStarSingleMotor = Motor(&bigStarSingle, -(90 - 35), 0, 80);
+    Motor spinningStarMotor = Motor(&spinningStar, -(90 - 35), 0, 180);
+    Motor rotatingStarMotor = Motor(&rotatingStar, -90, 0, 80);
+
+    Motor rhombusMotor = Motor(&rhombus, 0, 90, 720);
+
+    Motor rotatingStarCubeMotor1 = Motor(&rotatingStarCube, -90, 0, 100);
+    Motor rotatingStarCubeMotor2 = Motor(&rotatingStarCube, 0, 0, 100);
+
+    Motor spinningStarCubeMotor = Motor(&spinningStarCube, 0, 0, 100);
+
+    Motor rhombusCubeMotor1 = Motor(&rhombusCube, -90, 0, 150);
+    Motor rhombusCubeMotor2 = Motor(&rhombusCube, 0, 90, 150);
+
+    Motor rhombusCubeSingleMotor = Motor(&rhombusCubeSingle, 0, 90, 180);
+
+    std::vector<Brush*> brushObjects;
+
+    brushObjects.push_back(&bigStar);
+    brushObjects.push_back(&bigStarSingle);
+    brushObjects.push_back(&spinningStar);
+    brushObjects.push_back(&rotatingStar);
+    brushObjects.push_back(&otherStar);
+
+    brushObjects.push_back(&rhombus);
+    brushObjects.push_back(&rhombusSingle);
+
+    brushObjects.push_back(&spinningStarCube);
+    brushObjects.push_back(&rotatingStarCube);
+    brushObjects.push_back(&rhombusCube);
+    brushObjects.push_back(&rhombusCubeSingle);
+
+    std::vector<Motor*> motorObjects;
+
+    motorObjects.push_back(&bigStarSingleMotor);
+    motorObjects.push_back(&rotatingStarMotor);
+    motorObjects.push_back(&spinningStarMotor);
+
+    motorObjects.push_back(&rhombusMotor);
+
+    motorObjects.push_back(&rotatingStarCubeMotor1);
+    motorObjects.push_back(&rotatingStarCubeMotor2);
+
+    motorObjects.push_back(&spinningStarCubeMotor);
+
+    motorObjects.push_back(&rhombusCubeMotor1);
+    motorObjects.push_back(&rhombusCubeMotor2);
+
+    motorObjects.push_back(&rhombusCubeSingleMotor);
 
     ErrCheck("init");
 
@@ -630,16 +667,22 @@ int main(int argc, char* argv[])
         double newTime = SDL_GetTicks64()/1000.0;
         double deltaTime = newTime - time;
 
-        // Do this every 0.01 (10 ms) seconds
+        // Do this every 0.01 seconds (10 ms)
         if (deltaTime >= 0.01)
         {
             time = newTime;
             timer();
             
             // Reset rotations to avoid accelerating to infinity
-            bigStar.ResetRotations();
+            int brushListSize = brushObjects.size();
+            
+            for (int i = 0; i < brushListSize; i++)
+                brushObjects.at(i)->ResetRotations();
+            
+            int motorListSize = motorObjects.size();
 
-            newMotor.Spin(deltaTime);
+            for (int i = 0; i < motorListSize; i++)
+                motorObjects.at(i)->Spin(deltaTime);
         }
 
         SDL_Event event;
@@ -674,7 +717,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky, &bigStar);
+        draw(window, sky, &brushObjects, &motorObjects);
     }
 
     SDL_Quit();

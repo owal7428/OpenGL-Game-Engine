@@ -13,6 +13,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 
 #include "Vendor/glm/glm/glm.hpp"
 #include "Vendor/glm/glm/gtc/matrix_transform.hpp"
