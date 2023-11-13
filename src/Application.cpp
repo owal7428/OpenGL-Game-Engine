@@ -5,6 +5,7 @@
 #include "Engine/Objects/Brushes/Rhombus.hpp"
 #include "Engine/Objects/Brushes/Cube.hpp"
 #include "Engine/Objects/Brushes/Plane.hpp"
+#include "Engine/Objects/Entities/Motor.hpp"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -187,7 +188,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane sky[])
+void draw(SDL_Window* window, Plane sky[], Star* bigStarCenter)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -311,7 +312,7 @@ void draw(SDL_Window* window, Plane sky[])
     }
     else if (objectMode == 1)
     {
-        drawStar_Textured(WOOD, 0, 0, 0, 0, -35, z_rot_time, 1, 1, 1);
+        bigStarCenter -> Draw(emission, shiny);
     }
     else
     {
@@ -605,7 +606,8 @@ int main(int argc, char* argv[])
     Plane sky[6] = {SkyboxRight, SkyboxLeft, SkyboxTop, SkyboxBottom, SkyboxFront, SkyboxBack};
 
     // Define objects in the scene
-    Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
+    //Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
+    Star bigStar        =   Star(WOOD, 0, 0, 0, 0, -45, 0, 1, 1, 1);
     Star rotatingStar   =   Star(STEEL, 0, 0, 0, 0, 0, z_rot_time, 0.15, 0.15, 0.15);
     Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, z_rot_time, 0.3, 0.3, 0.3);
     Star otherStar      =   Star(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
@@ -615,6 +617,8 @@ int main(int argc, char* argv[])
     Cube rotatingStarCube   =   Cube(0, 0, 0, x_rot_time, 0, z_rot_time, 0.35, 0.35, 0.35);
     Cube spinningStarCube   =   Cube(2, 1, -2, x_rot_time, 0, 0, 0.5, 0.5, 0.5);
     Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, y_rot_time, z_rot_time, 0.4, 0.4, 0.5);
+
+    Motor newMotor = Motor(&bigStar, -45, 0, 70);
 
     ErrCheck("init");
 
@@ -626,11 +630,16 @@ int main(int argc, char* argv[])
         double newTime = SDL_GetTicks64()/1000.0;
         double deltaTime = newTime - time;
 
-        // Do this every 0.01 seconds
+        // Do this every 0.01 (10 ms) seconds
         if (deltaTime >= 0.01)
         {
             time = newTime;
             timer();
+            
+            // Reset rotations to avoid accelerating to infinity
+            bigStar.ResetRotations();
+
+            newMotor.Spin(deltaTime);
         }
 
         SDL_Event event;
@@ -665,7 +674,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky);
+        draw(window, sky, &bigStar);
     }
 
     SDL_Quit();

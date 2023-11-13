@@ -17,7 +17,8 @@ Brush::Brush(const char* textureFile,
     glm::quat quat_y = glm::angleAxis(glm::radians(rot_y), glm::vec3(0,1,0));
     glm::quat quat_z = glm::angleAxis(glm::radians(rot_z), glm::vec3(0,0,1));
 
-    this -> rotation    = quat_x * quat_y * quat_z;
+    this -> rotation = quat_x * quat_y * quat_z;
+    this -> externalRotations = glm::quat(1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 Brush::Brush(float x, float y, float z,
@@ -36,7 +37,8 @@ Brush::Brush(float x, float y, float z,
     glm::quat quat_y = glm::angleAxis(glm::radians(rot_y), glm::vec3(0,1,0));
     glm::quat quat_z = glm::angleAxis(glm::radians(rot_z), glm::vec3(0,0,1));
 
-    this -> rotation    = quat_x * quat_y * quat_z;
+    this -> rotation = quat_x * quat_y * quat_z;
+    this -> externalRotations = glm::quat(1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 Brush::~Brush()

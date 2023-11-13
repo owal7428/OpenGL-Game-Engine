@@ -74,7 +74,7 @@ void Rhombus::drawTextured(int emission, float shiny)
     glPushMatrix();
 
     glTranslatef(position.x, position.y, position.z);
-    glMultMatrixf(glm::value_ptr(glm::toMat4(rotation)));
+    glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
     glScalef(scale.x, scale.y, scale.z);
 
         //  Enable textures
@@ -148,7 +148,7 @@ void Rhombus::drawUntextured(int emission, float shiny)
 
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
-    glMultMatrixf(glm::value_ptr(glm::toMat4(rotation)));
+    glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
     glScalef(scale.x, scale.y, scale.z);
     glDrawArrays(GL_QUADS, 0, numVertices);
     glPopMatrix();
