@@ -242,12 +242,7 @@ void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects)
         brushObjects -> at(2) -> Draw(emission, shiny);
 
         // Other star
-        glPushMatrix();
-        glRotatef(x_rot_time, -1, 0, -1);
-        glTranslatef(0.5, 0, -0.5);
-        glRotatef(x_rot_time, 1, 0, 0);
         brushObjects -> at(4) -> Draw(emission, shiny);
-        glPopMatrix();
 
         // Rhombus
         glPushMatrix();
@@ -288,7 +283,6 @@ void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects)
     {
         // Rhombus single
         glColor3f(0,0,1);
-        //drawWiredCube(0, 0, 0, 0, y_rot_time / 2, 0, 0.4, 0.4, 0.4);
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glDisable(GL_LIGHTING);
 
@@ -590,7 +584,7 @@ int main(int argc, char* argv[])
     Star bigStarSingle  =   Star(WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
     Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
     Star rotatingStar   =   Star(STEEL, 1, 0, -2, 0, 0, 0, 0.15, 0.15, 0.15);
-    Star otherStar      =   Star(STEEL, 2, 1, -2, 0, 0, 0, 0.3, 0.3, 0.3);
+    Star otherStar      =   Star(STEEL, 3, 1, -3, 0, 0, 0, 0.3, 0.3, 0.3);
 
     Rhombus rhombus         =   Rhombus(WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
     Rhombus rhombusSingle   =   Rhombus(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
@@ -604,6 +598,8 @@ int main(int argc, char* argv[])
     Motor bigStarSingleMotor = Motor(&bigStarSingle, -(90 - 35), 0, 80);
     Motor spinningStarMotor = Motor(&spinningStar, -(90 - 35), 0, 180);
     Motor rotatingStarMotor = Motor(&rotatingStar, -90, 0, 80);
+    Motor otherStarMotor1 = Motor(&otherStar, 0, 0, 100);
+    Motor otherStarMotor2 = Motor(&otherStar, 0, -90, 75);
 
     Motor rhombusMotor = Motor(&rhombus, 0, 90, 720);
 
@@ -619,6 +615,7 @@ int main(int argc, char* argv[])
 
     Rotator rotatingStarRotator = Rotator(&rotatingStar, -2, 0, -2, 0, 90, 90);
     Rotator rotatingStarCubeRotator = Rotator(&rotatingStarCube, -2, 0, -2, 0, 90, 90);
+    Rotator otherStarRotator = Rotator(&otherStar, 2, 1, -2, -1, 0, -1, 100);
 
     std::vector<Brush*> brushObjects;
 
@@ -641,6 +638,8 @@ int main(int argc, char* argv[])
     motorObjects.push_back(&bigStarSingleMotor);
     motorObjects.push_back(&rotatingStarMotor);
     motorObjects.push_back(&spinningStarMotor);
+    motorObjects.push_back(&otherStarMotor1);
+    motorObjects.push_back(&otherStarMotor2);
 
     motorObjects.push_back(&rhombusMotor);
 
@@ -658,6 +657,7 @@ int main(int argc, char* argv[])
 
     rotatorObjects.push_back(&rotatingStarRotator);
     rotatorObjects.push_back(&rotatingStarCubeRotator);
+    rotatorObjects.push_back(&otherStarRotator);
 
     ErrCheck("init");
 
