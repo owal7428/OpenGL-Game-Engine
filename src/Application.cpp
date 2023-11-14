@@ -112,27 +112,27 @@ static void ball(double x,double y,double z,double r)
    glPopMatrix();
 }
 
-void GenerateSkybox(Plane sky[], float x, float y, float z)
+void GenerateSkybox(Plane* sky[], float x, float y, float z)
 {
     glDisable(GL_LIGHTING);
 
-    sky[0].Move(glm::vec3(x + zFar,y,z));
-    sky[0].Draw(emission, shiny);
+    sky[0] -> Move(glm::vec3(x + zFar,y,z));
+    sky[0] -> Draw(emission, shiny);
     
-    sky[1].Move(glm::vec3(x - zFar,y,z));
-    sky[1].Draw(emission, shiny);
+    sky[1] -> Move(glm::vec3(x - zFar,y,z));
+    sky[1] -> Draw(emission, shiny);
 
-    sky[2].Move(glm::vec3(x,y + zFar,z));
-    sky[2].Draw(emission, shiny);
+    sky[2] -> Move(glm::vec3(x,y + zFar,z));
+    sky[2] -> Draw(emission, shiny);
 
-    sky[3].Move(glm::vec3(x,y - zFar,z));
-    sky[3].Draw(emission, shiny);
+    sky[3] -> Move(glm::vec3(x,y - zFar,z));
+    sky[3] -> Draw(emission, shiny);
 
-    sky[4].Move(glm::vec3(x,y,z + zFar));
-    sky[4].Draw(emission, shiny);
+    sky[4] -> Move(glm::vec3(x,y,z + zFar));
+    sky[4] -> Draw(emission, shiny);
 
-    sky[5].Move(glm::vec3(x,y,z - zFar));
-    sky[5].Draw(emission, shiny);
+    sky[5] -> Move(glm::vec3(x,y,z - zFar));
+    sky[5] -> Draw(emission, shiny);
 
     glEnable(GL_LIGHTING);
 }
@@ -153,7 +153,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane sky[], std::vector<Brush*>* brushObjects)
+void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -577,7 +577,7 @@ int main(int argc, char* argv[])
     Plane SkyboxFront = Plane(SKYBOX_FRONT,     0, 0, zFar,     0, 0, 0,        zFar, zFar, zFar);
     Plane SkyboxBack = Plane(SKYBOX_BACK,       0, 0, -zFar,    0, 180, 0,      zFar, zFar, zFar);
 
-    Plane sky[6] = {SkyboxRight, SkyboxLeft, SkyboxTop, SkyboxBottom, SkyboxFront, SkyboxBack};
+    Plane* sky[6] = {&SkyboxRight, &SkyboxLeft, &SkyboxTop, &SkyboxBottom, &SkyboxFront, &SkyboxBack};
 
     // Define objects in the scene
     Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
