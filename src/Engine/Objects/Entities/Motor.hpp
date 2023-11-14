@@ -29,7 +29,8 @@ public:
     *  @param phi Rotation of axis in y-z plane in degrees. 
     *  @param rotation_speed Angular speed of rotation in degrees per second. */
     Motor(Brush* brush, int theta, int phi, int rotation_speed);
-    //~Motor();
+    
+    ~Motor();
 
     /* Internally rotates the object tied to the motor around the initialized axis.
     *  @param deltaTime Time that has passed since last rotation in seconds. */

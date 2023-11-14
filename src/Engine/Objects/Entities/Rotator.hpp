@@ -31,7 +31,8 @@ public:
     *  @param rotation_speed Angular speed of rotation in degrees per second. */
     Rotator(Brush* brush, int pivot_x, int pivot_y, int pivot_z, 
             int theta, int phi, int rotation_speed);
-    //~Motor();
+    
+    ~Rotator();
 
     /* Externally rotates the object tied to the rotator around the initialized axis.
     *  @param deltaTime Time that has passed since last rotation in seconds. */

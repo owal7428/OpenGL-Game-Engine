@@ -30,6 +30,12 @@ Motor::Motor(Brush* brush, int theta, int phi, int rotation_speed)
     this -> rotation_speed = rotation_speed;
 }
 
+Motor::~Motor()
+{
+    if (brush != nullptr)
+        delete brush;
+}
+
 void Motor::Spin(double deltaTime)
 {   
     angle += (float) rotation_speed * (float) deltaTime;

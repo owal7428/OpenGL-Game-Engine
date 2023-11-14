@@ -36,6 +36,12 @@ Rotator::Rotator(Brush* brush, int pivot_x, int pivot_y, int pivot_z,
     this -> rotation_speed = rotation_speed;
 }
 
+Rotator::~Rotator()
+{
+    if (brush != nullptr)
+        delete brush;
+}
+
 void Rotator::Rotate(double deltaTime)
 {   
     float angle = (float) rotation_speed * (float) deltaTime;
