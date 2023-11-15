@@ -73,11 +73,17 @@ void Rhombus::drawTextured(int emission, float shiny)
 
     glPushMatrix();
 
+    if (drawWireFrame)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+    }
+
     glTranslatef(position.x, position.y, position.z);
     glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
     glScalef(scale.x, scale.y, scale.z);
 
-        //  Enable textures
+    //  Enable textures
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
@@ -90,7 +96,7 @@ void Rhombus::drawTextured(int emission, float shiny)
     {
         // Starting address for current face
         int base = 24 * i;
-        glColor3f(1,1,1);
+        glColor3f(color.x, color.y, color.z);
         glNormal3f(vertexData[base + 3], vertexData[base + 4], vertexData[base + 5]);
         
         float x1 = vertexData[base + 0];
@@ -119,6 +125,13 @@ void Rhombus::drawTextured(int emission, float shiny)
 
     glEnd();
     glPopMatrix();
+
+    if (drawWireFrame)
+    {
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
+
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -146,12 +159,25 @@ void Rhombus::drawUntextured(int emission, float shiny)
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
 
+    if (drawWireFrame)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+    }
+
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
     glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
     glScalef(scale.x, scale.y, scale.z);
+    glColor3f(color.x, color.y, color.z);
     glDrawArrays(GL_QUADS, 0, numVertices);
     glPopMatrix();
+
+    if (drawWireFrame)
+    {
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
 
     //  Disable vertex array
     glDisableClientState(GL_VERTEX_ARRAY);

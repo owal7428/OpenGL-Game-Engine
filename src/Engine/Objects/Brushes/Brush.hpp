@@ -15,11 +15,13 @@ protected:
 
     glm::vec3 scale;
 
+    glm::vec3 color;
+
     bool hasTexture;
+    bool drawWireFrame;
 
     Texture* texture;
     
-
 public:
     Brush() {}
 
@@ -52,6 +54,13 @@ public:
     /* Sets the base orientation of the object.
     *  @param newRotation quaternion representing rotation to set current rotation to. */
     void SetRotation(glm::quat newRotation) {rotation = newRotation;}
+
+    void setColor(float r, float g, float b) {color = glm::vec3(r, g, b);}
+
+    /* Enables wireframe rendering mode. */
+    inline void EnableRenderWireframe() {drawWireFrame = true;}
+    /* Disables wireframe rendering mode. */
+    inline void DisableRenderWireframe() {drawWireFrame = false;}
 
     inline glm::vec3 getPosition() {return position;}
     inline glm::quat getRotation() {return rotation;}

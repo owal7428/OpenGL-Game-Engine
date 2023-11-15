@@ -245,10 +245,7 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
         brushObjects -> at(4) -> Draw(emission, shiny);
 
         // Rhombus
-        glPushMatrix();
-        glColor3f(0, 1, 0.2);
         brushObjects -> at(5) -> Draw(emission, shiny);
-        glPopMatrix();
         
         // Big star
         brushObjects -> at(0) -> Draw(emission, shiny);
@@ -256,23 +253,14 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
         // Rotating star
         brushObjects -> at(3) -> Draw(emission, shiny);
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glDisable(GL_LIGHTING);
-
         // Rotating star cube
-        glColor3f(0,1,0);
         brushObjects -> at(8) -> Draw(emission, shiny);
 
-        // Rhombus star cube
-        glColor3f(0,0,1);
+        // Rhombus cube
         brushObjects -> at(9) -> Draw(emission, shiny);
 
         // Spinning star cube
-        glColor3f(1,0,0);
         brushObjects -> at(7) -> Draw(emission, shiny);
-
-        glEnable(GL_LIGHTING);
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
     else if (objectMode == 1)
     {
@@ -282,15 +270,7 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
     else
     {
         // Rhombus single
-        glColor3f(0,0,1);
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glDisable(GL_LIGHTING);
-
         brushObjects -> at(10) -> Draw(emission, shiny);
-
-        glEnable(GL_LIGHTING);
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
         brushObjects -> at(6) -> Draw(emission, shiny);
     }
 
@@ -593,6 +573,16 @@ int main(int argc, char* argv[])
     Cube rotatingStarCube   =   Cube(1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
     Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
     Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
+
+    spinningStarCube.setColor(1, 0, 0);
+    rotatingStarCube.setColor(0, 1, 0);
+    rhombusCube.setColor(0 ,0, 1);
+    rhombusCubeSingle.setColor(0, 0, 1);
+
+    spinningStarCube.EnableRenderWireframe();
+    rotatingStarCube.EnableRenderWireframe();
+    rhombusCube.EnableRenderWireframe();
+    rhombusCubeSingle.EnableRenderWireframe();
 
     // Define motor entities in the scene
     Motor bigStarSingleMotor = Motor(&bigStarSingle, -(90 - 35), 0, 80);

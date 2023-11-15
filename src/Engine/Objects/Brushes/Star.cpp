@@ -114,6 +114,12 @@ void Star::drawTextured(int emission, float shiny)
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
 
+    if (drawWireFrame)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+    }
+
     glPushMatrix();
     
     glTranslatef(position.x, position.y, position.z);
@@ -133,8 +139,8 @@ void Star::drawTextured(int emission, float shiny)
     {
         // Starting address for current face
         int base = 27 * i;
+        glColor3f(color.x, color.y, color.z);
         //glColor3f(vertexData[base + 3], vertexData[base + 4], vertexData[base + 5]);
-        glColor3f(1,1,1);
         glNormal3f(vertexData[base + 6], vertexData[base + 7], vertexData[base + 8]);
 
         float x1 = vertexData[base + 0];
@@ -159,6 +165,13 @@ void Star::drawTextured(int emission, float shiny)
     //texture.Unbind();
     
     glPopMatrix();
+
+    if (drawWireFrame)
+    {
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
+
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -187,12 +200,25 @@ void Star::drawUntextured(int emission, float shiny)
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
 
+    if (drawWireFrame)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glDisable(GL_LIGHTING);
+    }
+
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
     glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
     glScalef(scale.x, scale.y, scale.z);
+    glColor3f(color.x, color.y, color.z);
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     glPopMatrix();
+
+    if (drawWireFrame)
+    {
+        glEnable(GL_LIGHTING);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
 
     //  Disable vertex array
     glDisableClientState(GL_VERTEX_ARRAY);

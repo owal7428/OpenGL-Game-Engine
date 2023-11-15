@@ -19,6 +19,10 @@ Brush::Brush(const char* textureFile,
 
     this -> rotation = quat_x * quat_y * quat_z;
     this -> externalRotations = glm::quat(1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    this -> drawWireFrame = false;
+
+    this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 Brush::Brush(float x, float y, float z,
@@ -39,6 +43,10 @@ Brush::Brush(float x, float y, float z,
 
     this -> rotation = quat_x * quat_y * quat_z;
     this -> externalRotations = glm::quat(1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    this -> drawWireFrame = false;
+
+    this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 Brush::~Brush()
