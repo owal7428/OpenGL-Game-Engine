@@ -80,9 +80,14 @@ void Cube::drawTextured(int emission, float shiny)
         glDisable(GL_LIGHTING);
     }
 
-    glTranslatef(position.x, position.y, position.z);
-    glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
-    glScalef(scale.x, scale.y, scale.z);
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, position);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = model * glm::toMat4(externalRotations * rotation);
+    model = glm::scale(model, scale);
+    
+    glMultMatrixf(glm::value_ptr(view * model));
 
     //  Enable textures
     glEnable(GL_TEXTURE_2D);
@@ -157,9 +162,16 @@ void Cube::drawUntextured(int emission, float shiny)
     }
 
     glPushMatrix();
-    glTranslatef(position.x, position.y, position.z);
-    glMultMatrixf(glm::value_ptr(glm::toMat4(externalRotations * rotation)));
-    glScalef(scale.x, scale.y, scale.z);
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, position);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = model * glm::toMat4(externalRotations * rotation);
+    model = glm::scale(model, scale);
+    
+    glMultMatrixf(glm::value_ptr(view * model));
+
     glColor3f(color.x, color.y, color.z);
     glDrawArrays(GL_QUADS, 0, numVertices);
     glPopMatrix();
