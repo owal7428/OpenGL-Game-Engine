@@ -558,16 +558,17 @@ int main(int argc, char* argv[])
     // Define motor entities in the scene
     Motor bigStarSingleMotor = Motor(&bigStarSingle, -(90 - 35), 0, 80);
     Motor spinningStarMotor = Motor(&spinningStar, -(90 - 35), 0, 180);
-    Motor rotatingStarMotor = Motor(&rotatingStar, -90, 0, 80);
+    Motor rotatingStarMotor1 = Motor(&rotatingStar, -90, 0, 80);
+    Motor rotatingStarMotor2 = Motor(&rotatingStar, 0, 90, 90);
     Motor otherStarMotor1 = Motor(&otherStar, 0, 0, 100);
     Motor otherStarMotor2 = Motor(&otherStar, 0, -90, 75);
 
     Motor rhombusMotor = Motor(&rhombus, 0, 90, 720);
 
+    Motor spinningStarCubeMotor = Motor(&spinningStarCube, 0, 0, 100);
+
     Motor rotatingStarCubeMotor1 = Motor(&rotatingStarCube, -90, 0, 100);
     Motor rotatingStarCubeMotor2 = Motor(&rotatingStarCube, 0, 0, 100);
-
-    Motor spinningStarCubeMotor = Motor(&spinningStarCube, 0, 0, 100);
 
     Motor rhombusCubeMotor1 = Motor(&rhombusCube, -90, 0, 150);
     Motor rhombusCubeMotor2 = Motor(&rhombusCube, 0, 90, 150);
@@ -602,8 +603,9 @@ int main(int argc, char* argv[])
 
     std::vector<Motor*> motorObjects;
 
-    motorObjects.push_back(&rotatingStarMotor);
     motorObjects.push_back(&spinningStarMotor);
+    motorObjects.push_back(&rotatingStarMotor1);
+    motorObjects.push_back(&rotatingStarMotor2);
     motorObjects.push_back(&otherStarMotor1);
     motorObjects.push_back(&otherStarMotor2);
 
