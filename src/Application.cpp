@@ -22,10 +22,6 @@
 int th=0;         //  Angle in x-y plane
 int ph=0;         //  Angle in y-z plane
 
-int x_rot_time=0;
-int y_rot_time=0;
-int z_rot_time=0;
-
 // Current states of the arrow keys
 int leftKeyDown = 0;
 int rightKeyDown = 0;
@@ -153,7 +149,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
+void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -238,40 +234,24 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects)
 
     if (objectMode == 0)
     {
-        // Spinning star
-        brushObjects -> at(2) -> Draw(emission, shiny);
+        int size = brushObjects1->size();
 
-        // Other star
-        brushObjects -> at(4) -> Draw(emission, shiny);
-
-        // Rhombus
-        brushObjects -> at(5) -> Draw(emission, shiny);
-        
-        // Big star
-        brushObjects -> at(0) -> Draw(emission, shiny);
-
-        // Rotating star
-        brushObjects -> at(3) -> Draw(emission, shiny);
-
-        // Rotating star cube
-        brushObjects -> at(8) -> Draw(emission, shiny);
-
-        // Rhombus cube
-        brushObjects -> at(9) -> Draw(emission, shiny);
-
-        // Spinning star cube
-        brushObjects -> at(7) -> Draw(emission, shiny);
+        for (int i = 0; i < size; i++)
+            brushObjects1->at(i)->Draw(emission, shiny);
     }
     else if (objectMode == 1)
     {
-        // Big star single
-        brushObjects -> at(1) -> Draw(emission, shiny);
+        int size = brushObjects2->size();
+
+        for (int i = 0; i < size; i++)
+            brushObjects2->at(i)->Draw(emission, shiny);
     }
     else
     {
-        // Rhombus single
-        brushObjects -> at(10) -> Draw(emission, shiny);
-        brushObjects -> at(6) -> Draw(emission, shiny);
+        int size = brushObjects3->size();
+
+        for (int i = 0; i < size; i++)
+            brushObjects3->at(i)->Draw(emission, shiny);
     }
 
     if (mode != 0)
@@ -508,15 +488,6 @@ void timer()
         zh += 1;
         zh %= 360;
     }
-
-    // Update fixed timed rotation values
-    x_rot_time += 1;
-    y_rot_time += 5;
-    z_rot_time += 1;
-
-    x_rot_time %= 360;
-    y_rot_time %= 360;
-    z_rot_time %= 360;
 }
 
 void reshape(SDL_Window* window)
@@ -607,25 +578,30 @@ int main(int argc, char* argv[])
     Rotator rotatingStarCubeRotator = Rotator(&rotatingStarCube, -2, 0, -2, 0, 90, 90);
     Rotator otherStarRotator = Rotator(&otherStar, 2, 1, -2, -1, 0, -1, 100);
 
-    std::vector<Brush*> brushObjects;
+    std::vector<Brush*> brushObjects1;
 
-    brushObjects.push_back(&bigStar);
-    brushObjects.push_back(&bigStarSingle);
-    brushObjects.push_back(&spinningStar);
-    brushObjects.push_back(&rotatingStar);
-    brushObjects.push_back(&otherStar);
+    brushObjects1.push_back(&bigStar);
+    brushObjects1.push_back(&spinningStar);
+    brushObjects1.push_back(&rotatingStar);
+    brushObjects1.push_back(&otherStar);
 
-    brushObjects.push_back(&rhombus);
-    brushObjects.push_back(&rhombusSingle);
+    brushObjects1.push_back(&rhombus);
 
-    brushObjects.push_back(&spinningStarCube);
-    brushObjects.push_back(&rotatingStarCube);
-    brushObjects.push_back(&rhombusCube);
-    brushObjects.push_back(&rhombusCubeSingle);
+    brushObjects1.push_back(&spinningStarCube);
+    brushObjects1.push_back(&rotatingStarCube);
+    brushObjects1.push_back(&rhombusCube);
+
+    std::vector<Brush*> brushObjects2;
+    
+    brushObjects2.push_back(&rhombusSingle);
+    brushObjects2.push_back(&rhombusCubeSingle);
+
+    std::vector<Brush*> brushObjects3;
+    
+    brushObjects3.push_back(&bigStarSingle);
 
     std::vector<Motor*> motorObjects;
 
-    motorObjects.push_back(&bigStarSingleMotor);
     motorObjects.push_back(&rotatingStarMotor);
     motorObjects.push_back(&spinningStarMotor);
     motorObjects.push_back(&otherStarMotor1);
@@ -642,6 +618,8 @@ int main(int argc, char* argv[])
     motorObjects.push_back(&rhombusCubeMotor2);
 
     motorObjects.push_back(&rhombusCubeSingleMotor);
+    
+    motorObjects.push_back(&bigStarSingleMotor);
 
     std::vector<Rotator*> rotatorObjects;
 
@@ -666,11 +644,22 @@ int main(int argc, char* argv[])
             timer();
             
             // Reset rotations to avoid accelerating to infinity
-            int brushListSize = brushObjects.size();
+            int brushListSize1 = brushObjects1.size();
             
-            for (int i = 0; i < brushListSize; i++)
-                brushObjects.at(i)->ResetRotations();
+            for (int i = 0; i < brushListSize1; i++)
+                brushObjects1.at(i)->ResetRotations();
+
+            int brushListSize2 = brushObjects2.size();
             
+            for (int i = 0; i < brushListSize2; i++)
+                brushObjects2.at(i)->ResetRotations();
+            
+            int brushListSize3 = brushObjects3.size();
+            
+            for (int i = 0; i < brushListSize3; i++)
+                brushObjects3.at(i)->ResetRotations();
+            
+            // Call actors
             int motorListSize = motorObjects.size();
 
             for (int i = 0; i < motorListSize; i++)
@@ -714,7 +703,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky, &brushObjects);
+        draw(window, sky, &brushObjects1, &brushObjects2, &brushObjects3);
     }
 
     SDL_Quit();
