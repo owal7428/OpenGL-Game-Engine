@@ -5,41 +5,41 @@
 // Vertex data for star object
 static float vertexData[] = 
 {
-    // Front face   // Normals
-    -1, -1, -1,     0, -1, 1,
-    1, -1, -1,      0, -1, 1,
-    1, 1, 1,        0, -1, 1,
-    -1, 1, 1,       0, -1, 1,
+    // Front face   // Normals      // Texture coordinates
+    -1, -1, -1,     0, -1, 1,       0, 0,
+    1, -1, -1,      0, -1, 1,       1, 0,
+    1, 1, 1,        0, -1, 1,       1, 1,
+    -1, 1, 1,       0, -1, 1,       0, 1,
 
     //  Back face
-    1, -1, -3,      0, 1, -1,
-    -1, -1, -3,     0, 1, -1,
-    -1, 1, -1,      0, 1, -1,
-    1, 1, -1,       0, 1, -1,
+    1, -1, -3,      0, 1, -1,       0, 0,
+    -1, -1, -3,     0, 1, -1,       1, 0,
+    -1, 1, -1,      0, 1, -1,       1, 1,
+    1, 1, -1,       0, 1, -1,       0, 1,
     
     //  Right face
-    1, -1, -1,      1, 0, 0,
-    1, -1, -3,      1, 0, 0,
-    1, 1, -1,       1, 0, 0,
-    1, 1, 1,        1, 0, 0,
+    1, -1, -1,      1, 0, 0,        0, 0,
+    1, -1, -3,      1, 0, 0,        1, 0,
+    1, 1, -1,       1, 0, 0,        1, 1,
+    1, 1, 1,        1, 0, 0,        0, 1,
     
     //  Left face
-    -1, -1, -3,     -1, 0, 0,
-    -1, -1, -1,     -1, 0, 0,
-    -1, 1, 1,       -1, 0, 0,
-    -1, 1, -1,      -1, 0, 0,
+    -1, -1, -3,     -1, 0, 0,       0, 0,
+    -1, -1, -1,     -1, 0, 0,       1, 0,
+    -1, 1, 1,       -1, 0, 0,       1, 1,
+    -1, 1, -1,      -1, 0, 0,       0, 1,
     
     //  Top face
-    -1, 1, 1,       0, 1, 0,
-    1, 1, 1,        0, 1, 0,
-    1, 1, -1,       0, 1, 0,
-    -1, 1, -1,      0, 1, 0,
+    -1, 1, 1,       0, 1, 0,        0, 0,
+    1, 1, 1,        0, 1, 0,        1, 0,
+    1, 1, -1,       0, 1, 0,        1, 1,
+    -1, 1, -1,      0, 1, 0,        0, 1,
     
     //  Bottom face
-    -1, -1, -3,     0, -1, 0,
-    1, -1, -3,      0, -1, 0,
-    1, -1, -1,      0, -1, 0,
-    -1, -1, -1,     0, -1, 0,
+    -1, -1, -3,     0, -1, 0,       0, 0,
+    1, -1, -3,      0, -1, 0,       1, 0,
+    1, -1, -1,      0, -1, 0,       1, 1,
+    -1, -1, -1,     0, -1, 0,       0, 1,
 };
 
 const int numVertices = 24;
@@ -61,23 +61,45 @@ Rhombus::Rhombus(float x, float y, float z,
 
 void Rhombus::drawTextured(int emission, float shiny)
 {
-    //  Set specular color to white
-    float green[] = {0,1,0,1};
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glColor4fv(green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,green);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
+    float color_array[] = {color.x, color.y, color.z, 1};
+    float black[] = {0, 0, 0, 1};
+    
+    glColor4fv(color_array);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION, black);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, color_array);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, color_array);
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, shiny);
 
-    glPushMatrix();
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
+    //  Define vertexes
+    glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    // Define normals
+    glNormalPointer(GL_FLOAT, 8 * sizeof(float), (void*) (3 * sizeof(float)));
+    glEnableClientState(GL_NORMAL_ARRAY);
+
+    // Define texture coordinates
+    glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    //  Enable textures
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
+    texture -> Bind();
+    
     if (drawWireFrame)
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glDisable(GL_LIGHTING);
     }
+
+    glPushMatrix();
 
     glm::mat4 view = glm::mat4(1.0f);
     view = glm::translate(view, position);
@@ -88,47 +110,8 @@ void Rhombus::drawTextured(int emission, float shiny)
     
     glMultMatrixf(glm::value_ptr(view * model));
 
-    //  Enable textures
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
-    texture -> Bind();
-
-    glBegin(GL_QUADS);
+    glDrawArrays(GL_QUADS, 0, numVertices);
     
-    // Read info from vertexData to actually draw
-    for (int i = 0; i < 6; i++) 
-    {
-        // Starting address for current face
-        int base = 24 * i;
-        glColor3f(color.x, color.y, color.z);
-        glNormal3f(vertexData[base + 3], vertexData[base + 4], vertexData[base + 5]);
-        
-        float x1 = vertexData[base + 0];
-        float y1 = vertexData[base + 1];
-        float z1 = vertexData[base + 2];
-
-        float x2 = vertexData[base + 6 + 0];
-        float y2 = vertexData[base + 6 + 1];
-        float z2 = vertexData[base + 6 + 2];
-        
-        float x3 = vertexData[base + 12 + 0];
-        float y3 = vertexData[base + 12 + 1];
-        float z3 = vertexData[base + 12 + 2];
-
-        float x4 = vertexData[base + 18 + 0];
-        float y4 = vertexData[base + 18 + 1];
-        float z4 = vertexData[base + 18 + 2];
-
-        glTexCoord2f(0,0); glVertex3f(x1, y1, z1); 
-        glTexCoord2f(1,0); glVertex3f(x2, y2, z2); 
-        glTexCoord2f(1,1); glVertex3f(x3, y3, z3); 
-        glTexCoord2f(0,1); glVertex3f(x4, y4, z4);
-    }
-
-    //texture[textureFile] -> Unbind();
-
-    glEnd();
     glPopMatrix();
 
     if (drawWireFrame)
@@ -137,7 +120,16 @@ void Rhombus::drawTextured(int emission, float shiny)
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
+    texture -> Unbind();
+
     glDisable(GL_TEXTURE_2D);
+
+    //  Disable vertex array
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Rhombus::drawUntextured(int emission, float shiny)
@@ -148,11 +140,16 @@ void Rhombus::drawUntextured(int emission, float shiny)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
     //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 6 * sizeof(float), (void*) 0);
+    glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
     glEnableClientState(GL_VERTEX_ARRAY);
+
     // Define normals
-    glNormalPointer(GL_FLOAT, 6 * sizeof(float), (void*)12);
+    glNormalPointer(GL_FLOAT, 8 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableClientState(GL_NORMAL_ARRAY);
+
+    // Define texture coordinates
+    glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     //  Set specular color to white
     float green[] = {0,1,0,1};

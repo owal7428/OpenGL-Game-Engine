@@ -32,9 +32,10 @@ Plane::Plane(float x, float y, float z,
 void Plane::drawTextured(int emission, float shiny)
 {
     float color_array[] = {color.x, color.y, color.z, 1};
+    float black[] = {0, 0, 0, 1};
     
     glColor4fv(color_array);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION, color_array);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION, black);
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, color_array);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, color_array);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, shiny);
@@ -109,11 +110,16 @@ void Plane::drawUntextured(int emission, float shiny)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
     //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 6 * sizeof(float), (void*) 0);
+    glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
     glEnableClientState(GL_VERTEX_ARRAY);
+
     // Define normals
-    glNormalPointer(GL_FLOAT, 6 * sizeof(float), (void*)12);
+    glNormalPointer(GL_FLOAT, 8 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableClientState(GL_NORMAL_ARRAY);
+
+    // Define texture coordinates
+    glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     if (drawWireFrame)
     {
