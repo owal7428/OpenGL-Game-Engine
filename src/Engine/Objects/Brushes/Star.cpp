@@ -105,7 +105,7 @@ Star::Star(float x, float y, float z,
     // Do nothing for now
 }
 
-void Star::drawTextured(int emission, float shiny)
+void Star::Draw(int emission, float shiny)
 {
     float color_array[] = {color.x, color.y, color.z, 1};
     float black[] = {0, 0, 0, 1};
@@ -133,11 +133,14 @@ void Star::drawTextured(int emission, float shiny)
     glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    //  Enable textures
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+    if (hasTexture)
+    {
+        //  Enable textures
+        glEnable(GL_TEXTURE_2D);
+        glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
-    texture -> Bind();
+        texture -> Bind();
+    }
     
     if (drawWireFrame)
     {
@@ -166,78 +169,16 @@ void Star::drawTextured(int emission, float shiny)
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
-    texture -> Unbind();
-
-    glDisable(GL_TEXTURE_2D);
+    if (hasTexture)
+    {
+        texture -> Unbind();
+        glDisable(GL_TEXTURE_2D);
+    }
 
     //  Disable vertex array
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void Star::drawUntextured(int emission, float shiny)
-{
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-
-    //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    // Define normals
-    glNormalPointer(GL_FLOAT, 8 * sizeof(float), (void*) (3 * sizeof(float)));
-    glEnableClientState(GL_NORMAL_ARRAY);
-
-    // Define texture coordinates
-    glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    //  Set specular color to white
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,shiny);
-
-    if (drawWireFrame)
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glDisable(GL_LIGHTING);
-    }
-
-    glPushMatrix();
-
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, position);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = model * glm::toMat4(externalRotations * rotation);
-    model = glm::scale(model, scale);
-    
-    glMultMatrixf(glm::value_ptr(view * model));
-
-    glColor3f(color.x, color.y, color.z);
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);
-    glPopMatrix();
-
-    if (drawWireFrame)
-    {
-        glEnable(GL_LIGHTING);
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
-
-    //  Disable vertex array
-    glDisableClientState(GL_VERTEX_ARRAY);
-    //  Disable color array
-    glDisableClientState(GL_COLOR_ARRAY);
-    // Disable normal array
-    glDisableClientState(GL_NORMAL_ARRAY);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

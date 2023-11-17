@@ -54,11 +54,3 @@ Brush::~Brush()
     if (texture != nullptr)
         delete texture;
 }
-
-void Brush::Draw(int emission, float shiny)
-{
-    if (hasTexture)
-        drawTextured(emission, shiny);
-    else
-        drawUntextured(emission, shiny);
-}

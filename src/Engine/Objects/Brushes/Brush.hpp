@@ -38,7 +38,7 @@ public:
     
     ~Brush();
 
-    void Draw(int emission, float shiny);
+    virtual void Draw(int emission, float shiny) = 0;
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */
@@ -64,10 +64,6 @@ public:
 
     inline glm::vec3 getPosition() {return position;}
     inline glm::quat getRotation() {return rotation;}
-
-private:
-    virtual void drawUntextured(int emission, float shiny) = 0;
-    virtual void drawTextured(int emission, float shiny) = 0;
 };
 
 #endif // BRUSH_H

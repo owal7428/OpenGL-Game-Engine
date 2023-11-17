@@ -7,10 +7,6 @@
 
 class Cube : public Brush
 {
-private:
-    void drawUntextured(int emission, float shiny);
-    void drawTextured(int emission, float shiny);
-
 public:
     // Textured constructor
     Cube(const char* textureFile,
@@ -22,6 +18,8 @@ public:
     Cube(float x, float y, float z,
          float rot_x, float rot_y, float rot_z,
          float scale_x, float scale_y, float scale_z);
+
+    void Draw(int emission, float shiny);
 };
 
 #endif // CUBE_H
