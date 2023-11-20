@@ -17,6 +17,11 @@ protected:
 
     glm::vec3 color;
 
+    std::vector<float> vertexData;
+    std::vector<float> asdfasdf;
+    unsigned int primitiveType;
+    int numVertices;
+
     bool hasTexture;
     bool drawWireFrame;
 
@@ -38,7 +43,7 @@ public:
     
     ~Brush();
 
-    virtual void Draw(int emission, float shiny) = 0;
+    void Draw(int emission, float shiny);
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */

@@ -18,8 +18,6 @@ public:
     Rhombus(float x, float y, float z,
             float rot_x, float rot_y, float rot_z,
             float scale_x, float scale_y, float scale_z);
-    
-    void Draw(int emission, float shiny);
 };
 
 #endif // RHOMBUS_H
