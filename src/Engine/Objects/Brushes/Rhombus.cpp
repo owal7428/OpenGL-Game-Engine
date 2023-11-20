@@ -3,7 +3,7 @@
 #include "../../Utility/util.h"
 
 // Vertex data for star object
-static float vertexData[] = 
+static std::vector<float> vertexData = 
 {
     // Front face   // Normals      // Texture coordinates
     -1, -1, -1,     0, -1, 1,       0, 0,
@@ -73,7 +73,7 @@ void Rhombus::Draw(int emission, float shiny)
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 
     //  Define vertexes
     glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);

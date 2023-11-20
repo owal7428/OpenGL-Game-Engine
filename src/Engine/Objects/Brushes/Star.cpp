@@ -3,7 +3,7 @@
 #include "../../Utility/util.h"
 
 // Vertex data for star object
-static float vertexData[] = 
+static std::vector<float> vertexData = 
 {
     // Top point                    // Normal vectors                               // Texture coordinates
     0, 0, 0.5,                      -0.75, 0.2724535, 1.22604075,                   0, 0,
@@ -119,7 +119,7 @@ void Star::Draw(int emission, float shiny)
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 
     //  Define vertexes
     glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
