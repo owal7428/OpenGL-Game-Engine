@@ -2,14 +2,12 @@
 
 #include "../../Utility/util.h"
 
-const int numVertices = 64;
-
 Star::Star(const char* textureFile,
            float x, float y, float z,
            float rot_x, float rot_y, float rot_z,
            float scale_x, float scale_y, float scale_z) : Brush(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    vertexData.assign(
+    std::vector<float> temp =
     {
         // Top point                    // Normal vectors                               // Texture coordinates
         0, 0, 0.5,                      -0.75, 0.2724535, 1.22604075,                   0, 0,
@@ -92,8 +90,9 @@ Star::Star(const char* textureFile,
         0, 0, -0.5,                     -0.0277125, 0.7976465, -1.226671220475,         0, 0,
         -2.1402, 0.694575, 0,           -0.0277125, 0.7976465, -1.226671220475,         1, 0,
         -0.544907, 0.75, 0,             -0.0277125, 0.7976465, -1.226671220475,         1, 1,
-    });
+    };
 
+    this -> buffer = new VertexBuffer(&temp);
     this -> primitiveType = GL_TRIANGLES;
     this -> numVertices = 64;
 }
@@ -102,7 +101,7 @@ Star::Star(float x, float y, float z,
            float rot_x, float rot_y, float rot_z,
            float scale_x, float scale_y, float scale_z) : Brush(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
-    vertexData.assign(
+    std::vector<float> temp =
     {
         // Top point                    // Normal vectors                               // Texture coordinates
         0, 0, 0.5,                      -0.75, 0.2724535, 1.22604075,                   0, 0,
@@ -185,8 +184,9 @@ Star::Star(float x, float y, float z,
         0, 0, -0.5,                     -0.0277125, 0.7976465, -1.226671220475,         0, 0,
         -2.1402, 0.694575, 0,           -0.0277125, 0.7976465, -1.226671220475,         1, 0,
         -0.544907, 0.75, 0,             -0.0277125, 0.7976465, -1.226671220475,         1, 1,
-    });
+    };
 
+    this -> buffer = new VertexBuffer(&temp);
     this -> primitiveType = GL_TRIANGLES;
     this -> numVertices = 64;
 }

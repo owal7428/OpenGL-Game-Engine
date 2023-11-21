@@ -2,6 +2,8 @@
 #define BRUSH_H
 
 #include "../../../Common.h"
+
+#include "../../VertexBuffer.hpp"
 #include "../../Texture.hpp"
 
 class Brush
@@ -17,15 +19,13 @@ protected:
 
     glm::vec3 color;
 
-    std::vector<float> vertexData;
-    std::vector<float> asdfasdf;
-    unsigned int primitiveType;
+    VertexBuffer* buffer;
+    int primitiveType;
     int numVertices;
 
+    Texture* texture;
     bool hasTexture;
     bool drawWireFrame;
-
-    Texture* texture;
     
 public:
     Brush() {}

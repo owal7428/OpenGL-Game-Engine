@@ -55,6 +55,9 @@ Brush::~Brush()
 {
     if (texture != nullptr)
         delete texture;
+    
+    if (buffer != nullptr)
+        delete buffer;
 }
 
 void Brush::Draw(int emission, float shiny)
@@ -68,10 +71,7 @@ void Brush::Draw(int emission, float shiny)
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, color_array);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, shiny);
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+    buffer -> Bind();
 
     //  Define vertexes
     glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
@@ -132,5 +132,5 @@ void Brush::Draw(int emission, float shiny)
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    buffer -> Unbind();
 }
