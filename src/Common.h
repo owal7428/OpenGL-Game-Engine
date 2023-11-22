@@ -14,6 +14,8 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 #include "Vendor/glm/glm/glm.hpp"
 #include "Vendor/glm/glm/gtc/matrix_transform.hpp"
