@@ -10,6 +10,7 @@
 #include "Engine/Objects/Entities/Rotator.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
+#define DEFAULT_UNTEXTURED "resources/shaders/default_untextured"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -552,25 +553,26 @@ int main(int argc, char* argv[])
     Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
     Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
-    Shader lightShader(DEFAULT_SHADER);
+    Shader defaultShader(DEFAULT_SHADER);
+    Shader defaultShader_untextured(DEFAULT_UNTEXTURED);
 
-    SkyboxRight.setShader(&lightShader);
-    SkyboxLeft.setShader(&lightShader);
-    SkyboxTop.setShader(&lightShader);
-    SkyboxBottom.setShader(&lightShader);
-    SkyboxFront.setShader(&lightShader);
-    SkyboxBack.setShader(&lightShader);
-    bigStar.setShader(&lightShader);
-    bigStarSingle.setShader(&lightShader);
-    spinningStar.setShader(&lightShader);
-    rotatingStar.setShader(&lightShader);
-    otherStar.setShader(&lightShader);
-    rhombus.setShader(&lightShader);
-    rhombusSingle.setShader(&lightShader);
-    spinningStarCube.setShader(&lightShader);
-    rotatingStarCube.setShader(&lightShader);
-    rhombusCube.setShader(&lightShader);
-    rhombusCubeSingle.setShader(&lightShader);
+    SkyboxRight.setShader(&defaultShader);
+    SkyboxLeft.setShader(&defaultShader);
+    SkyboxTop.setShader(&defaultShader);
+    SkyboxBottom.setShader(&defaultShader);
+    SkyboxFront.setShader(&defaultShader);
+    SkyboxBack.setShader(&defaultShader);
+    bigStar.setShader(&defaultShader);
+    bigStarSingle.setShader(&defaultShader);
+    spinningStar.setShader(&defaultShader);
+    rotatingStar.setShader(&defaultShader);
+    otherStar.setShader(&defaultShader);
+    rhombus.setShader(&defaultShader);
+    rhombusSingle.setShader(&defaultShader);
+    spinningStarCube.setShader(&defaultShader_untextured);
+    rotatingStarCube.setShader(&defaultShader_untextured);
+    rhombusCube.setShader(&defaultShader_untextured);
+    rhombusCubeSingle.setShader(&defaultShader_untextured);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
