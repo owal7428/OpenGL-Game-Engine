@@ -16,6 +16,8 @@ public:
 
     void Activate();
     void Deactivate();
+
+    inline unsigned int getID() {return ID;}
 };
 
 #endif // SHADER_H

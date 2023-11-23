@@ -60,11 +60,11 @@ Brush::~Brush()
     if (texture != nullptr)
         delete texture;
     
-    if (buffer != nullptr)
-        delete buffer;
+    if (VAO != nullptr)
+        delete VAO;
 }
 
-void Brush::Draw(int emission, float shiny)
+void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, float shiny)
 {
     float color_array[] = {color.x, color.y, color.z, 1};
     float black[] = {0, 0, 0, 1};
@@ -75,19 +75,8 @@ void Brush::Draw(int emission, float shiny)
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, color_array);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, shiny);
 
-    buffer -> Bind();
-
-    //  Define vertexes
-    glVertexPointer(3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    // Define normals
-    glNormalPointer(GL_FLOAT, 8 * sizeof(float), (void*) (3 * sizeof(float)));
-    glEnableClientState(GL_NORMAL_ARRAY);
-
-    // Define texture coordinates
-    glTexCoordPointer(2, GL_FLOAT, 8 * sizeof(float), (void*) (6 * sizeof(float)));
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    VAO -> Bind();
+    shader -> Activate();
 
     if (hasTexture)
     {
@@ -104,30 +93,20 @@ void Brush::Draw(int emission, float shiny)
         glDisable(GL_LIGHTING);
     }
 
-    if (hasShader)
-    {
-        shader -> Activate();
-    }
+    glm::mat4 view = glm::translate(viewMatrix, position);
 
-    glPushMatrix();
-
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, position);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = model * glm::toMat4(externalRotations * rotation);
+    glm::mat4 model = glm::toMat4(externalRotations * rotation);
     model = glm::scale(model, scale);
-    
-    glMultMatrixf(glm::value_ptr(view * model));
+
+    glm::mat4 MVP = projectionMatrix * view * model;
+
+    int matrixLocation = glGetUniformLocation(shader -> getID(), "MVP");
+    glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, glm::value_ptr(MVP));
+
+    int colorLocation = glGetUniformLocation(shader -> getID(), "vertexColor");
+    glUniform4f(colorLocation, color.x, color.y, color.z, 1.0f);
 
     glDrawArrays(primitiveType, 0, numVertices);
-    
-    glPopMatrix();
-
-    if (hasShader)
-    {
-        shader -> Deactivate();
-    }
 
     if (drawWireFrame)
     {
@@ -141,10 +120,6 @@ void Brush::Draw(int emission, float shiny)
         glDisable(GL_TEXTURE_2D);
     }
 
-    //  Disable vertex array
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    buffer -> Unbind();
+    shader -> Deactivate();
+    VAO -> Unbind();
 }

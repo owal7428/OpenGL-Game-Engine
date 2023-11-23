@@ -3,7 +3,7 @@
 
 #include "../../../Common.h"
 
-#include "../../VertexBuffer.hpp"
+#include "../../VertexArray.hpp"
 #include "../../Texture.hpp"
 #include "../../Shader.hpp"
 
@@ -20,7 +20,7 @@ protected:
 
     glm::vec3 color;
 
-    VertexBuffer* buffer;
+    VertexArray* VAO;
     int primitiveType;
     int numVertices;
 
@@ -49,7 +49,7 @@ public:
     
     ~Brush();
 
-    void Draw(int emission, float shiny);
+    void Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, float shiny);
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */

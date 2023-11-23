@@ -52,6 +52,9 @@ double xOffset = 0;
 double yOffset = 0;
 double zOffset = 1;
 
+glm::mat4 projectionMatrix;
+glm::mat4 viewMatrix;
+
 // Light values taken from ex13.c
 int light     =   1;  // Lighting
 int distance  =   5;  // Light distance
@@ -116,37 +119,41 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
     glDisable(GL_LIGHTING);
 
     sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(emission, shiny);
+    sky[0] -> Draw(projectionMatrix, viewMatrix, shiny);
     
     sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(emission, shiny);
+    sky[1] -> Draw(projectionMatrix, viewMatrix, shiny);
 
     sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(emission, shiny);
+    sky[2] -> Draw(projectionMatrix, viewMatrix, shiny);
 
     sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(emission, shiny);
+    sky[3] -> Draw(projectionMatrix, viewMatrix, shiny);
 
     sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(emission, shiny);
+    sky[4] -> Draw(projectionMatrix, viewMatrix, shiny);
 
     sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(emission, shiny);
+    sky[5] -> Draw(projectionMatrix, viewMatrix, shiny);
 
     glEnable(GL_LIGHTING);
 }
 
 void Project()
 {
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     if (mode == 0)
+    {
         glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
+        projectionMatrix = glm::ortho((double) -asp*4, (double) asp*3, (double) -3.0f, (double) 3.0f, (double) -10.0f, (double) 10.0f);
+    }
     else
-        gluPerspective(fov,asp,0.5, zFar / Cos(fov));
-
+    {
+        gluPerspective(fov, asp, 0.5, zFar / Cos(fov));
+        projectionMatrix = glm::perspective((double) fov, (double) asp, (double) 0.5f, (double) (zFar / Cos(fov)));
+    }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -163,15 +170,11 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, 
     // Reset transformation matrix
     glLoadIdentity();
 
-    if (mode == 0)
-    {
-        glRotatef(ph,1,0,0);
-        glRotatef(th,0,1,0);
-    }
-    else if (mode == 1)
+    if (mode == 0 || mode == 1)
     {
         xPos = 1; yPos = 1; zPos = -4;
         gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
+        viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     }
     else
     {
@@ -180,8 +183,9 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, 
         xOffset = (Sin(th)*Cos(ph));
         yOffset = Sin(ph);
         zOffset = (Cos(th)*Cos(ph));
-
+        
         gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
+        viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
     }
 
     //  Flat or smooth shading
@@ -240,21 +244,21 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, 
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(emission, shiny);
+            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, shiny);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(emission, shiny);
+            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, shiny);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(emission, shiny);
+            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, shiny);
     }
 
     if (mode != 0)
@@ -550,7 +554,23 @@ int main(int argc, char* argv[])
 
     Shader lightShader(DEFAULT_SHADER);
 
+    SkyboxRight.setShader(&lightShader);
+    SkyboxLeft.setShader(&lightShader);
+    SkyboxTop.setShader(&lightShader);
+    SkyboxBottom.setShader(&lightShader);
+    SkyboxFront.setShader(&lightShader);
+    SkyboxBack.setShader(&lightShader);
     bigStar.setShader(&lightShader);
+    bigStarSingle.setShader(&lightShader);
+    spinningStar.setShader(&lightShader);
+    rotatingStar.setShader(&lightShader);
+    otherStar.setShader(&lightShader);
+    rhombus.setShader(&lightShader);
+    rhombusSingle.setShader(&lightShader);
+    spinningStarCube.setShader(&lightShader);
+    rotatingStarCube.setShader(&lightShader);
+    rhombusCube.setShader(&lightShader);
+    rhombusCubeSingle.setShader(&lightShader);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);

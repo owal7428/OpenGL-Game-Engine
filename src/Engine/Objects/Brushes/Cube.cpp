@@ -46,7 +46,7 @@ Cube::Cube(const char* textureFile,
         -1, -1, 1,      0, -1, 0,       0, 1,
     };
 
-    this -> buffer = new VertexBuffer(&temp);
+    this -> VAO = new VertexArray(&temp);
     this -> primitiveType = GL_QUADS;
     this -> numVertices = 24;
 }
@@ -95,7 +95,7 @@ Cube::Cube(float x, float y, float z,
         -1, -1, 1,      0, -1, 0,       0, 1,
     };
 
-    this -> buffer = new VertexBuffer(&temp);
+    this -> VAO = new VertexArray(&temp);
     this -> primitiveType = GL_QUADS;
     this -> numVertices = 24;
 }

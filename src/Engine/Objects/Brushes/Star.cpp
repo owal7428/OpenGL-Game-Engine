@@ -92,7 +92,7 @@ Star::Star(const char* textureFile,
         -0.544907, 0.75, 0,             -0.0277125, 0.7976465, -1.226671220475,         1, 1,
     };
 
-    this -> buffer = new VertexBuffer(&temp);
+    this -> VAO = new VertexArray(&temp);
     this -> primitiveType = GL_TRIANGLES;
     this -> numVertices = 64;
 }
@@ -186,7 +186,7 @@ Star::Star(float x, float y, float z,
         -0.544907, 0.75, 0,             -0.0277125, 0.7976465, -1.226671220475,         1, 1,
     };
 
-    this -> buffer = new VertexBuffer(&temp);
+    this -> VAO = new VertexArray(&temp);
     this -> primitiveType = GL_TRIANGLES;
     this -> numVertices = 64;
 }
