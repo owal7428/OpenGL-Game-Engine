@@ -10,7 +10,8 @@ Texture::Texture(const char* path)
     filePath = path;
     
     glGenTextures(1, &ID);
-    glBindTexture(GL_TEXTURE_2D, ID);
+    
+    Bind();
 
     #ifdef USE_STB
 
@@ -38,7 +39,7 @@ Texture::Texture(const char* path)
 
     ID = LoadTexBMP(path);
     
-    glBindTexture(GL_TEXTURE_2D, 0);
+    Unbind();
 
     #endif
 }
@@ -50,6 +51,7 @@ Texture::~Texture()
     
 void Texture::Bind()
 {
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ID);
 }
 
