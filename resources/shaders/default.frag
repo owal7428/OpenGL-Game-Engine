@@ -1,7 +1,12 @@
-//  Set the fragment color
-#version 120
+//  Default fragment shader
+#version 330
+
+// Color for the vertex
+uniform vec4 vertexColor;
+
+out vec4 FragColor;
 
 void main()
 {
-   gl_FragColor = gl_Color;
+   FragColor = vertexColor;
 }
