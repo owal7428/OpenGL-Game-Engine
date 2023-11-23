@@ -1,5 +1,6 @@
 #include "Engine/Window.hpp"
 #include "Engine/Texture.hpp"
+#include "Engine/Shader.hpp"
 #include "Engine/Utility/util.h"
 #include "Engine/Objects/Brushes/Star.hpp"
 #include "Engine/Objects/Brushes/Rhombus.hpp"
@@ -7,6 +8,8 @@
 #include "Engine/Objects/Brushes/Plane.hpp"
 #include "Engine/Objects/Entities/Motor.hpp"
 #include "Engine/Objects/Entities/Rotator.hpp"
+
+#define DEFAULT_SHADER "resources/shaders/default"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -544,6 +547,10 @@ int main(int argc, char* argv[])
     Cube rotatingStarCube   =   Cube(1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
     Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
     Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
+
+    Shader lightShader(DEFAULT_SHADER);
+
+    bigStar.setShader(&lightShader);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);

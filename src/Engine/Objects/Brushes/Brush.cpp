@@ -25,6 +25,8 @@ Brush::Brush(const char* textureFile,
     this -> drawWireFrame = false;
 
     this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    this -> hasShader = false;
 }
 
 Brush::Brush(float x, float y, float z,
@@ -49,6 +51,8 @@ Brush::Brush(float x, float y, float z,
     this -> drawWireFrame = false;
 
     this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    this -> hasShader = false;
 }
 
 Brush::~Brush()
@@ -100,6 +104,11 @@ void Brush::Draw(int emission, float shiny)
         glDisable(GL_LIGHTING);
     }
 
+    if (hasShader)
+    {
+        shader -> Activate();
+    }
+
     glPushMatrix();
 
     glm::mat4 view = glm::mat4(1.0f);
@@ -114,6 +123,11 @@ void Brush::Draw(int emission, float shiny)
     glDrawArrays(primitiveType, 0, numVertices);
     
     glPopMatrix();
+
+    if (hasShader)
+    {
+        shader -> Deactivate();
+    }
 
     if (drawWireFrame)
     {

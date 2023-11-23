@@ -5,6 +5,7 @@
 
 #include "../../VertexBuffer.hpp"
 #include "../../Texture.hpp"
+#include "../../Shader.hpp"
 
 class Brush
 {
@@ -26,6 +27,11 @@ protected:
     Texture* texture;
     bool hasTexture;
     bool drawWireFrame;
+
+    Shader* shader;
+    bool hasShader;
+
+    std::vector<int> temp;
     
 public:
     Brush() {}
@@ -61,6 +67,8 @@ public:
     void SetRotation(glm::quat newRotation) {rotation = newRotation;}
 
     void setColor(float r, float g, float b) {color = glm::vec3(r, g, b);}
+
+    inline void setShader(Shader* newShader) {shader = newShader; hasShader = true;}
 
     /* Enables wireframe rendering mode. */
     inline void EnableRenderWireframe() {drawWireFrame = true;}
