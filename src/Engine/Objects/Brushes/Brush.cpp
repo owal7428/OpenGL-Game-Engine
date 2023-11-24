@@ -64,33 +64,19 @@ Brush::~Brush()
         delete VAO;
 }
 
-void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, float shiny)
+void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightColor, float ambient)
 {
-    float color_array[] = {color.x, color.y, color.z, 1};
-    float black[] = {0, 0, 0, 1};
-    
-    glColor4fv(color_array);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION, black);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, color_array);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, color_array);
-    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, shiny);
-
     VAO -> Bind();
     shader -> Activate();
 
     if (hasTexture)
     {
-        //  Enable textures
-        glEnable(GL_TEXTURE_2D);
-        glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
         texture -> Bind();
     }
     
     if (drawWireFrame)
     {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glDisable(GL_LIGHTING);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     glm::mat4 view = glm::translate(viewMatrix, position);
@@ -106,18 +92,22 @@ void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, float shiny)
     int colorLocation = glGetUniformLocation(shader -> getID(), "vertexColor");
     glUniform4f(colorLocation, color.x, color.y, color.z, 1.0f);
 
+    int lightColorLocation = glGetUniformLocation(shader -> getID(), "lightColor");
+    glUniform3f(lightColorLocation, lightColor.x, lightColor.y, lightColor.z);
+
+    int ambientLocation = glGetUniformLocation(shader -> getID(), "ambientStrength");
+    glUniform1f(ambientLocation, ambient);
+
     glDrawArrays(primitiveType, 0, numVertices);
 
     if (drawWireFrame)
     {
-        glEnable(GL_LIGHTING);
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     if (hasTexture)
     {
         texture -> Unbind();
-        glDisable(GL_TEXTURE_2D);
     }
 
     shader -> Deactivate();

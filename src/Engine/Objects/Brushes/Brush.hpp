@@ -49,7 +49,7 @@ public:
     
     ~Brush();
 
-    void Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, float shiny);
+    void Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightColor, float ambient);
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */
