@@ -29,19 +29,21 @@ protected:
     bool drawWireFrame;
 
     Shader* shader;
-    bool hasShader;
+
+    std::vector<int> temp;
     
 public:
     Brush() {}
 
     // Textured constructor
-    Brush(const char* textureFile,
+    Brush(Shader* shaderFile, const char* textureFile,
           float x, float y, float z,
           float rot_x, float rot_y, float rot_z,
           float scale_x, float scale_y, float scale_z);
 
     // Non-textured constructor
-    Brush(float x, float y, float z,
+    Brush(Shader* shaderFile,
+          float x, float y, float z,
           float rot_x, float rot_y, float rot_z,
           float scale_x, float scale_y, float scale_z);
     
@@ -66,7 +68,7 @@ public:
 
     void setColor(float r, float g, float b) {color = glm::vec3(r, g, b);}
 
-    inline void setShader(Shader* newShader) {shader = newShader; hasShader = true;}
+    inline void setShader(Shader* newShader) {shader = newShader;}
 
     /* Enables wireframe rendering mode. */
     inline void EnableRenderWireframe() {drawWireFrame = true;}

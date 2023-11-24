@@ -2,11 +2,13 @@
 
 #include "../../Utility/util.h"
 
-Brush::Brush(const char* textureFile,
+Brush::Brush(Shader* shaderFile, const char* textureFile,
              float x, float y, float z,
              float rot_x, float rot_y, float rot_z,
              float scale_x, float scale_y, float scale_z)
 {
+    shader = shaderFile;
+
     texture = new Texture(textureFile);
 
     hasTexture = true;
@@ -25,14 +27,15 @@ Brush::Brush(const char* textureFile,
     this -> drawWireFrame = false;
 
     this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    this -> hasShader = false;
 }
 
-Brush::Brush(float x, float y, float z,
+Brush::Brush(Shader* shaderFile,
+             float x, float y, float z,
              float rot_x, float rot_y, float rot_z,
              float scale_x, float scale_y, float scale_z)
 {
+    shader = shaderFile;
+    
     texture = nullptr;
     
     hasTexture = false;
@@ -51,8 +54,6 @@ Brush::Brush(float x, float y, float z,
     this -> drawWireFrame = false;
 
     this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    this -> hasShader = false;
 }
 
 Brush::~Brush()

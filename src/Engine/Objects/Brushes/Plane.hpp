@@ -9,13 +9,14 @@ class Plane : public Brush
 {
 public:
     // Textured constructor
-    Plane(const char* textureFile,
+    Plane(Shader* shaderFile, const char* textureFile,
           float x, float y, float z,
           float rot_x, float rot_y, float rot_z,
           float scale_x, float scale_y, float scale_z);
     
     // Non-textured constructor
-    Plane(float x, float y, float z,
+    Plane(Shader* shaderFile,
+          float x, float y, float z,
           float rot_x, float rot_y, float rot_z,
           float scale_x, float scale_y, float scale_z);
 };

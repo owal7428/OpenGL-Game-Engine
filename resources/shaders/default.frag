@@ -30,7 +30,7 @@ void main()
    vec3 direction    = normalize(lightPos - VertexPos);
    vec3 diffuse      = max(dot(nNormal, direction), 0.0) * lightColor;
 
-   vec3 lighting = min(ambient + diffuse, 1.0);
+   vec3 lighting = ambient + diffuse;
 
    FragColor = texture(TexFile, TexCoordinate) * vertexColor * vec4(lighting, 1.0);
 }

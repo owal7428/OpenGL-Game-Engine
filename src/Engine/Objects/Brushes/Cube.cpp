@@ -2,10 +2,10 @@
 
 #include "../../Utility/util.h"
 
-Cube::Cube(const char* textureFile,
+Cube::Cube(Shader* shaderFile, const char* textureFile,
            float x, float y, float z,
            float rot_x, float rot_y, float rot_z,
-           float scale_x, float scale_y, float scale_z) : Brush(textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
+           float scale_x, float scale_y, float scale_z) : Brush(shaderFile, textureFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
     std::vector<float> temp =
     {
@@ -52,9 +52,10 @@ Cube::Cube(const char* textureFile,
 }
 
 
-Cube::Cube(float x, float y, float z,
+Cube::Cube(Shader* shaderFile,
+           float x, float y, float z,
            float rot_x, float rot_y, float rot_z,
-           float scale_x, float scale_y, float scale_z) : Brush(x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
+           float scale_x, float scale_y, float scale_z) : Brush(shaderFile, x, y, z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z)
 {
     std::vector<float> temp =
     {

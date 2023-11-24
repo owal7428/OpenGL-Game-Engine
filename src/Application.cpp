@@ -10,7 +10,8 @@
 #include "Engine/Objects/Entities/Rotator.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
-#define DEFAULT_UNTEXTURED "resources/shaders/default_untextured"
+#define UNLIT_SHADER "resources/shaders/unlit"
+#define UNLIT_UNTEXTURED_SHADER "resources/shaders/unlit_untextured"
 
 #define WOOD "resources/textures/wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
@@ -57,11 +58,11 @@ glm::mat4 projectionMatrix;
 glm::mat4 viewMatrix;
 
 // Light values taken from ex13.c
-float ambient   =   0.05;  // Ambient intensity (%)
-float diffuse   =   0.5;  // Diffuse intensity (%)
-float specular  =   0.2;  // Specular intensity (%)
-float emission  =   0.0;  // Emission intensity (%)
-float shiny     =   1.0;  // Shininess (value)
+int ambient   =   30;  // Ambient intensity (%)
+int diffuse   =   50;  // Diffuse intensity (%)
+int specular  =   20;  // Specular intensity (%)
+int emission  =   0;  // Emission intensity (%)
+int shiny     =   1;  // Shininess (value)
 
 int objectMode = 0;
 
@@ -160,21 +161,21 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
+            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
+            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
+            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
     }
 
     if (mode != 0)
@@ -184,7 +185,7 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
     glWindowPos2i(5,55);
     Print("Angle theta = %d, Angle phi = %d", th, ph);
     glWindowPos2i(5,30);
-      Print("Ambient=%.2f  Diffuse=%.2f Specular=%.2f Emission=%.2f Shininess=%.2f",ambient,diffuse,specular,emission,shiny);
+      Print("Ambient=%d  Diffuse=%d Specular=%d Emission=%d Shininess=%.2f",ambient,diffuse,specular,emission,shiny);
     glWindowPos2i(5,5);
     if (mode == 0)
         Print("Mode: Orthogonal Overview");
@@ -253,35 +254,35 @@ void keyDown(SDL_Scancode code)
             break;
         
         case SDL_SCANCODE_F1:
-            if (ambient < 1) ambient += 0.05;
+            if (ambient < 100) ambient += 5;
             break;
         
         case SDL_SCANCODE_F2:
-            if (ambient > 0) ambient -= 0.05;
+            if (ambient > 0) ambient -= 5;
             break;
         
         case SDL_SCANCODE_F3:
-            if (diffuse < 1) diffuse += 0.05;
+            if (diffuse < 100) diffuse += 5;
             break;
         
         case SDL_SCANCODE_F4:
-            if (diffuse > 0) diffuse -= 0.05;
+            if (diffuse > 0) diffuse -= 5;
             break;
         
         case SDL_SCANCODE_F5:
-            if (specular < 1) specular += 0.05;
+            if (specular < 100) specular += 5;
             break;
         
         case SDL_SCANCODE_F6:
-            if (specular > 0) specular -= 0.05;
+            if (specular > 0) specular -= 5;
             break;
         
         case SDL_SCANCODE_F7:
-            if (emission < 1) emission += 0.05;
+            if (emission < 100) emission += 5;
             break;
         
         case SDL_SCANCODE_F8:
-            if (emission > 0) emission -= 0.05;
+            if (emission > 0) emission -= 5;
             break;
         
         case SDL_SCANCODE_F9:
@@ -426,57 +427,40 @@ int main(int argc, char* argv[])
     if (glewInit()!=GLEW_OK) fprintf(stderr, "Error initializing GLEW\n");
     #endif
 
+    // Compile shaders
+    Shader defaultShader(DEFAULT_SHADER);
+    Shader unlitShader(UNLIT_SHADER);
+    Shader unlitShader_untextured(UNLIT_UNTEXTURED_SHADER);
+
     asp = (float) 1300 / 900;
     
     reshape(window);
-                                                // Position     // Rotation     // Scale
-    Plane SkyboxRight = Plane(SKYBOX_RIGHT,     zFar, 0, 0,     0, 90, 0,       zFar, zFar, zFar);
-    Plane SkyboxLeft = Plane(SKYBOX_LEFT,       -zFar, 0, 0,    0, -90., 0,     zFar, zFar, zFar);
-    Plane SkyboxTop = Plane(SKYBOX_TOP,         0, zFar, 0,     -90., 0, 0,     zFar, zFar, zFar);
-    Plane SkyboxBottom = Plane(SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,       zFar, zFar, zFar);
-    Plane SkyboxFront = Plane(SKYBOX_FRONT,     0, 0, zFar,     0, 0, 0,        zFar, zFar, zFar);
-    Plane SkyboxBack = Plane(SKYBOX_BACK,       0, 0, -zFar,    0, 180, 0,      zFar, zFar, zFar);
+                                                            // Position     // Rotation     // Scale
+    Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,    zFar, 0, 0,     0, 90, 0,       zFar, zFar, zFar);
+    Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,     -zFar, 0, 0,    0, -90., 0,     zFar, zFar, zFar);
+    Plane SkyboxTop = Plane(&unlitShader,   SKYBOX_TOP,      0, zFar, 0,     -90., 0, 0,     zFar, zFar, zFar);
+    Plane SkyboxBottom = Plane(&unlitShader,SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,       zFar, zFar, zFar);
+    Plane SkyboxFront = Plane(&unlitShader, SKYBOX_FRONT,    0, 0, zFar,     0, 0, 0,        zFar, zFar, zFar);
+    Plane SkyboxBack = Plane(&unlitShader,  SKYBOX_BACK,     0, 0, -zFar,    0, 180, 0,      zFar, zFar, zFar);
 
     Plane* sky[6] = {&SkyboxRight, &SkyboxLeft, &SkyboxTop, &SkyboxBottom, &SkyboxFront, &SkyboxBack};
 
     // Define objects in the scene
-    Star bigStar        =   Star(WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
-    Star bigStarSingle  =   Star(WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
-    Star spinningStar   =   Star(WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
-    Star rotatingStar   =   Star(STEEL, 1, 0, -2, 0, 0, 0, 0.15, 0.15, 0.15);
-    Star otherStar      =   Star(STEEL, 3, 1, -3, 0, 0, 0, 0.3, 0.3, 0.3);
+    Star bigStar        =   Star(&defaultShader, WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
+    Star bigStarSingle  =   Star(&defaultShader, WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
+    Star spinningStar   =   Star(&defaultShader, WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
+    Star rotatingStar   =   Star(&defaultShader, STEEL, 1, 0, -2, 0, 0, 0, 0.15, 0.15, 0.15);
+    Star otherStar      =   Star(&defaultShader,STEEL, 3, 1, -3, 0, 0, 0, 0.3, 0.3, 0.3);
 
-    Rhombus rhombus         =   Rhombus(WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
-    Rhombus rhombusSingle   =   Rhombus(WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
+    Rhombus rhombus         =   Rhombus(&defaultShader, WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
+    Rhombus rhombusSingle   =   Rhombus(&defaultShader, WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
 
-    Cube spinningStarCube   =   Cube(2, 1, -2, 0, 0, 0, 0.5, 0.5, 0.5);
-    Cube rotatingStarCube   =   Cube(1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
-    Cube rhombusCube        =   Cube(-0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
-    Cube rhombusCubeSingle  =   Cube(0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
+    Cube spinningStarCube   =   Cube(&unlitShader_untextured, 2, 1, -2, 0, 0, 0, 0.5, 0.5, 0.5);
+    Cube rotatingStarCube   =   Cube(&unlitShader_untextured, 1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
+    Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
+    Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
-    Cube light = Cube(0, 0, 5, 0, 0, 0, 0.25, 0.25, 0.25);
-
-    Shader defaultShader(DEFAULT_SHADER);
-    Shader defaultShader_untextured(DEFAULT_UNTEXTURED);
-
-    SkyboxRight.setShader(&defaultShader);
-    SkyboxLeft.setShader(&defaultShader);
-    SkyboxTop.setShader(&defaultShader);
-    SkyboxBottom.setShader(&defaultShader);
-    SkyboxFront.setShader(&defaultShader);
-    SkyboxBack.setShader(&defaultShader);
-    bigStar.setShader(&defaultShader);
-    bigStarSingle.setShader(&defaultShader);
-    spinningStar.setShader(&defaultShader);
-    rotatingStar.setShader(&defaultShader);
-    otherStar.setShader(&defaultShader);
-    rhombus.setShader(&defaultShader);
-    rhombusSingle.setShader(&defaultShader);
-    spinningStarCube.setShader(&defaultShader_untextured);
-    rotatingStarCube.setShader(&defaultShader_untextured);
-    rhombusCube.setShader(&defaultShader_untextured);
-    rhombusCubeSingle.setShader(&defaultShader_untextured);
-    light.setShader(&defaultShader_untextured);
+    Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.25, 0.25, 0.25);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);

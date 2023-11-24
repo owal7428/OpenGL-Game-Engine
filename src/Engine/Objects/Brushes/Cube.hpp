@@ -9,13 +9,14 @@ class Cube : public Brush
 {
 public:
     // Textured constructor
-    Cube(const char* textureFile,
+    Cube(Shader* shaderFile, const char* textureFile,
          float x, float y, float z,
          float rot_x, float rot_y, float rot_z,
          float scale_x, float scale_y, float scale_z);
     
     // Non-textured constructor
-    Cube(float x, float y, float z,
+    Cube(Shader* shaderFile,
+         float x, float y, float z,
          float rot_x, float rot_y, float rot_z,
          float scale_x, float scale_y, float scale_z);
 };
