@@ -64,7 +64,7 @@ Brush::~Brush()
         delete VAO;
 }
 
-void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightColor, float ambient)
+void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor, float ambient)
 {
     VAO -> Bind();
     shader -> Activate();
@@ -79,24 +79,31 @@ void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lig
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    glm::mat4 view = glm::translate(viewMatrix, position);
-
-    glm::mat4 model = glm::toMat4(externalRotations * rotation);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = model * glm::toMat4(externalRotations * rotation);
     model = glm::scale(model, scale);
 
-    glm::mat4 MVP = projectionMatrix * view * model;
+    int temp = glGetUniformLocation(shader -> getID(), "model");
+    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(model));
 
-    int matrixLocation = glGetUniformLocation(shader -> getID(), "MVP");
-    glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, glm::value_ptr(MVP));
+    temp = glGetUniformLocation(shader -> getID(), "view");
+    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-    int colorLocation = glGetUniformLocation(shader -> getID(), "vertexColor");
-    glUniform4f(colorLocation, color.x, color.y, color.z, 1.0f);
+    temp = glGetUniformLocation(shader -> getID(), "projection");
+    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-    int lightColorLocation = glGetUniformLocation(shader -> getID(), "lightColor");
-    glUniform3f(lightColorLocation, lightColor.x, lightColor.y, lightColor.z);
+    temp = glGetUniformLocation(shader -> getID(), "vertexColor");
+    glUniform4f(temp, color.x, color.y, color.z, 1.0f);
 
-    int ambientLocation = glGetUniformLocation(shader -> getID(), "ambientStrength");
-    glUniform1f(ambientLocation, ambient);
+    temp = glGetUniformLocation(shader -> getID(), "lightPos");
+    glUniform3f(temp, lightPosition.x, lightPosition.y, lightPosition.z);
+
+    temp = glGetUniformLocation(shader -> getID(), "lightColor");
+    glUniform3f(temp, lightColor.x, lightColor.y, lightColor.z);
+
+    temp = glGetUniformLocation(shader -> getID(), "ambientIntensity");
+    glUniform1f(temp, ambient);
 
     glDrawArrays(primitiveType, 0, numVertices);
 

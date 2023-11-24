@@ -70,22 +70,22 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
     glm::vec3 lightColor = glm::vec3(1,1,1);
 
     sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[0] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
     
     sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[1] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[2] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[3] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[4] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(projectionMatrix, viewMatrix, lightColor, 1);
+    sky[5] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 }
 
 void Project()
@@ -108,7 +108,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
+void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,21 +160,21 @@ void draw(SDL_Window* window, Plane* sky[], std::vector<Brush*>* brushObjects1, 
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, lightColor, ambient);
+            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, lightColor, ambient);
+            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, lightColor, ambient);
+            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, ambient);
     }
 
     if (mode != 0)
@@ -652,7 +652,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky, &brushObjects1, &brushObjects2, &brushObjects3);
+        draw(window, sky, &light, &brushObjects1, &brushObjects2, &brushObjects3);
     }
 
     SDL_Quit();
