@@ -30,8 +30,6 @@ protected:
 
     Shader* shader;
     bool hasShader;
-
-    std::vector<int> temp;
     
 public:
     Brush() {}

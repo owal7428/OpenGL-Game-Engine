@@ -17,6 +17,26 @@ public:
     void Activate();
     void Deactivate();
 
+    /* Links uniform of type float to shader.
+    *  @param uniformName name of the uniform in the shader.
+    *  @param value float value to link to shader. */
+    void setUniform1f(const char* uniformName, float value);
+    
+    /* Links uniform of type vec3 to shader.
+    *  @param uniformName name of the uniform in the shader.
+    *  @param value* values in the vec3 to link to shader. */
+    void setUniform3f(const char* uniformName, float value1, float value2, float value3);
+
+    /* Links uniform of type vec4 to shader.
+    *  @param uniformName name of the uniform in the shader.
+    *  @param value* values in the vec4 to link to shader. */
+    void setUniform4f(const char* uniformName, float value1, float value2, float value3, float value4);
+
+    /* Links uniform of type mat4 to shader.
+    *  @param uniformName name of the uniform in the shader.
+    *  @param matrix pointer to matrix to link to shader. */
+    void setUniformMat4(const char* uniformName, glm::mat4* matrix);
+
     inline unsigned int getID() {return ID;}
 };
 

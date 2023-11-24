@@ -84,26 +84,16 @@ void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lig
     model = model * glm::toMat4(externalRotations * rotation);
     model = glm::scale(model, scale);
 
-    int temp = glGetUniformLocation(shader -> getID(), "model");
-    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(model));
+    shader -> setUniformMat4("model", &model);
+    shader -> setUniformMat4("view", &viewMatrix);
+    shader -> setUniformMat4("projection", &projectionMatrix);
 
-    temp = glGetUniformLocation(shader -> getID(), "view");
-    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+    shader -> setUniform4f("vertexColor", color.x, color.y, color.z, 1.0f);
 
-    temp = glGetUniformLocation(shader -> getID(), "projection");
-    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    shader -> setUniform3f("lightPos", lightPosition.x, lightPosition.y, lightPosition.z);
+    shader -> setUniform3f("lightColor", lightColor.x, lightColor.y, lightColor.z);
 
-    temp = glGetUniformLocation(shader -> getID(), "vertexColor");
-    glUniform4f(temp, color.x, color.y, color.z, 1.0f);
-
-    temp = glGetUniformLocation(shader -> getID(), "lightPos");
-    glUniform3f(temp, lightPosition.x, lightPosition.y, lightPosition.z);
-
-    temp = glGetUniformLocation(shader -> getID(), "lightColor");
-    glUniform3f(temp, lightColor.x, lightColor.y, lightColor.z);
-
-    temp = glGetUniformLocation(shader -> getID(), "ambientIntensity");
-    glUniform1f(temp, ambient);
+    shader -> setUniform1f("ambientIntensity", ambient);
 
     glDrawArrays(primitiveType, 0, numVertices);
 

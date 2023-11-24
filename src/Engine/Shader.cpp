@@ -118,3 +118,27 @@ void Shader::Deactivate()
     // Switches to fixed pipeline
     glUseProgram(0);
 }
+
+void Shader::setUniform1f(const char* uniformName, float value)
+{
+    int temp = glGetUniformLocation(getID(), uniformName);
+    glUniform1f(temp, value);
+}
+
+void Shader::setUniform3f(const char* uniformName, float value1, float value2, float value3)
+{
+    int temp = glGetUniformLocation(getID(), uniformName);
+    glUniform3f(temp, value1, value2, value3);
+}
+
+void Shader::setUniform4f(const char* uniformName, float value1, float value2, float value3, float value4)
+{
+    int temp = glGetUniformLocation(getID(), uniformName);
+    glUniform4f(temp, value1, value2, value3, value4);
+}
+
+void Shader::setUniformMat4(const char* uniformName, glm::mat4* matrix)
+{
+    int temp = glGetUniformLocation(getID(), uniformName);
+    glUniformMatrix4fv(temp, 1, GL_FALSE, glm::value_ptr(*matrix));
+}
