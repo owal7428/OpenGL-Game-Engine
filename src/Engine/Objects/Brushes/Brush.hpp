@@ -13,8 +13,6 @@ typedef struct
     glm::vec3 specular;
     float shininess;
 
-    float ambientIntensity;
-
 } Material;
 
 class Brush
@@ -57,7 +55,7 @@ public:
     
     ~Brush();
 
-    void Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor, float ambient);
+    void Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor);
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */

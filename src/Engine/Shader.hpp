@@ -21,6 +21,11 @@ public:
     *  @param uniformName name of the uniform in the shader.
     *  @param value float value to link to shader. */
     void setUniform1f(const char* uniformName, float value);
+
+    /* Links uniform of type int to shader.
+    *  @param uniformName name of the uniform in the shader.
+    *  @param value integer value to link to shader. */
+    void setUniform1i(const char* uniformName, int value);
     
     /* Links uniform of type vec3 to shader.
     *  @param uniformName name of the uniform in the shader.

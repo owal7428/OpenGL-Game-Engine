@@ -13,44 +13,59 @@ struct Material
 {
    vec3 color;
    vec3 specular;
-   float shininess;
-
-   float ambientIntensity;
+   int shininess;
 };
 
 uniform Material material;
 
 // Light properties
-struct Light
+struct PointLight
 {
    vec3 position;
    
    vec3 color;
    vec3 specular;
+
+   float constant;
+   float linear;
+   float quadratic;
 };
 
-uniform Light light;
+uniform PointLight pointLights[4];
 
 uniform sampler2D TexFile;
 
 out vec4 FragColor;
 
+vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection);
+
 void main()
 {
-   // Calculate ambient
-   vec3 ambient = material.ambientIntensity * light.color * material.color;
+   vec3 n_Normal        = normalize(Normal);
+   vec3 viewDirection   = normalize(cameraPosition - VertexPos);
+
+   vec3 lighting = renderPointLight(pointLights[0], n_Normal, viewDirection);
+
+   FragColor = texture(TexFile, TexCoordinate) * vec4(lighting, 1.0);
+}
+
+vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection)
+{
+   vec3 l_direction  = normalize(light.position - VertexPos);
+   float faceAligned = max(dot(n_Normal, l_direction), 0.0);
 
    // Calculate diffuse
-   vec3 n_Normal      = normalize(Normal);
-   vec3 l_direction   = normalize(light.position - VertexPos);
-   vec3 diffuse       = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color;
+   vec3 diffuse = faceAligned * light.color * material.color;
 
    // Calculate specular
-   vec3 viewDirection   = normalize(cameraPosition - VertexPos);
    vec3 reflection      = reflect(-l_direction, n_Normal);
    vec3 specular       = pow(max(dot(viewDirection, reflection), 0.0), material.shininess) * material.specular * light.color;
 
-   vec3 lighting = ambient + diffuse + specular;
+   float dist = length(light.position - VertexPos);
+   float attenuation = 1.0 / (light.constant, + light.linear * dist + light.quadratic * (dist * dist));
 
-   FragColor = texture(TexFile, TexCoordinate) * vec4(lighting, 1.0);
+   diffuse *= attenuation;
+   specular *= attenuation;
+
+   return diffuse + specular;
 }

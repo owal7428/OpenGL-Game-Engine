@@ -26,10 +26,9 @@ Brush::Brush(Shader* shaderFile, const char* textureFile,
 
     this -> drawWireFrame = false;
 
-    this -> material.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.color = glm::vec3(0.5f, 0.5f, 0.5f);
     this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
-    this -> material.shininess = 32;
-    this -> material.ambientIntensity = 0.25;
+    this -> material.shininess = 8;
 }
 
 Brush::Brush(Shader* shaderFile,
@@ -56,10 +55,9 @@ Brush::Brush(Shader* shaderFile,
 
     this -> drawWireFrame = false;
 
-    this -> material.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.color = glm::vec3(0.5f, 0.5f, 0.5f);
     this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
-    this -> material.shininess = 32;
-    this -> material.ambientIntensity = 0.25;
+    this -> material.shininess = 8;
 }
 
 Brush::~Brush()
@@ -71,7 +69,7 @@ Brush::~Brush()
         delete VAO;
 }
 
-void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor, float ambient)
+void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor)
 {
     VAO -> Bind();
     shader -> Activate();
@@ -99,12 +97,14 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
 
     shader -> setUniform3f("material.color", material.color.x, material.color.y, material.color.z);
     shader -> setUniform3f("material.specular", material.specular.x, material.specular.y, material.specular.z);
-    shader -> setUniform1f("material.shininess", material.shininess);
-    shader -> setUniform1f("material.ambientIntensity", ambient);
+    shader -> setUniform1i("material.shininess", material.shininess);
 
-    shader -> setUniform3f("light.position", lightPosition.x, lightPosition.y, lightPosition.z);
-    shader -> setUniform3f("light.color", lightColor.x, lightColor.y, lightColor.z);
-    shader -> setUniform3f("light.specular", 1, 1, 1);
+    shader -> setUniform3f("pointLights[0].position", lightPosition.x, lightPosition.y, lightPosition.z);
+    shader -> setUniform3f("pointLights[0].color", lightColor.x, lightColor.y, lightColor.z);
+    shader -> setUniform3f("pointLights[0].specular", 1.0, 1.0, 1.0);
+    shader -> setUniform1f("pointLights[0].constant", 1);
+    shader -> setUniform1f("pointLights[0].linear", 0.07);
+    shader -> setUniform1f("pointLights[0].quadratic", 0.017);
 
 
     glDrawArrays(primitiveType, 0, numVertices);

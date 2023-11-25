@@ -57,13 +57,6 @@ double zOffset = 1;
 glm::mat4 projectionMatrix;
 glm::mat4 viewMatrix;
 
-// Light values taken from ex13.c
-int ambient   =   30;  // Ambient intensity (%)
-int diffuse   =   50;  // Diffuse intensity (%)
-int specular  =   20;  // Specular intensity (%)
-int emission  =   0;  // Emission intensity (%)
-int shiny     =   1;  // Shininess (value)
-
 int objectMode = 0;
 
 void GenerateSkybox(Plane* sky[], float x, float y, float z)
@@ -71,22 +64,22 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
     glm::vec3 lightColor = glm::vec3(1,1,1);
 
     sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
     
     sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
 
     sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
 
     sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
 
     sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
 
     sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
 }
 
 void Project()
@@ -138,7 +131,7 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
     }
 
-    glm::vec3 lightColor = glm::vec3(1, 1, 1);
+    glm::vec3 lightColor = glm::vec3(0.5, 0.5, 0.5);
 
     // Draw axis lines
     glBegin(GL_LINES);  
@@ -161,31 +154,29 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
     }
 
     if (mode != 0)
         GenerateSkybox(sky, xPos, yPos, -zPos);
 
     glColor3f(1,1,1);
-    glWindowPos2i(5,55);
-    Print("Angle theta = %d, Angle phi = %d", th, ph);
     glWindowPos2i(5,30);
-      Print("Ambient=%d  Diffuse=%d Specular=%d Emission=%d Shininess=%.2f",ambient,diffuse,specular,emission,shiny);
+    Print("Angle theta = %d, Angle phi = %d", th, ph);
     glWindowPos2i(5,5);
     if (mode == 0)
         Print("Mode: Orthogonal Overview");
@@ -251,46 +242,6 @@ void keyDown(SDL_Scancode code)
         
         case SDL_SCANCODE_DOWN:
             downKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_F1:
-            if (ambient < 100) ambient += 5;
-            break;
-        
-        case SDL_SCANCODE_F2:
-            if (ambient > 0) ambient -= 5;
-            break;
-        
-        case SDL_SCANCODE_F3:
-            if (diffuse < 100) diffuse += 5;
-            break;
-        
-        case SDL_SCANCODE_F4:
-            if (diffuse > 0) diffuse -= 5;
-            break;
-        
-        case SDL_SCANCODE_F5:
-            if (specular < 100) specular += 5;
-            break;
-        
-        case SDL_SCANCODE_F6:
-            if (specular > 0) specular -= 5;
-            break;
-        
-        case SDL_SCANCODE_F7:
-            if (emission < 100) emission += 5;
-            break;
-        
-        case SDL_SCANCODE_F8:
-            if (emission > 0) emission -= 5;
-            break;
-        
-        case SDL_SCANCODE_F9:
-            if (shiny < 10) shiny += 1;
-            break;
-        
-        case SDL_SCANCODE_F11:
-            if (shiny > 0) shiny -= 1;
             break;
         
         default:
@@ -461,6 +412,10 @@ int main(int argc, char* argv[])
     Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
     Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.25, 0.25, 0.25);
+    light.setColor(1,1,1);
+
+    // Test plane
+    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
@@ -519,13 +474,13 @@ int main(int argc, char* argv[])
     
     brushObjects2.push_back(&rhombusSingle);
     brushObjects2.push_back(&rhombusCubeSingle);
-
+    brushObjects2.push_back(&testFloor);
     brushObjects2.push_back(&light);
 
     std::vector<Brush*> brushObjects3;
     
     brushObjects3.push_back(&bigStarSingle);
-
+    
     brushObjects3.push_back(&light);
 
     std::vector<Motor*> motorObjects;
