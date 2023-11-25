@@ -18,6 +18,17 @@ struct Material
 
 uniform Material material;
 
+struct DirectionalLight
+{
+   vec3 direction;
+   
+   vec3 color;
+   vec3 ambient;
+   vec3 specular;
+};
+
+uniform DirectionalLight sun;
+
 // Light properties
 struct PointLight
 {
@@ -37,6 +48,7 @@ uniform sampler2D TexFile;
 
 out vec4 FragColor;
 
+vec3 renderDirectionalLight(DirectionalLight light, vec3 n_Normal, vec3 viewDirection);
 vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection);
 
 void main()
@@ -44,18 +56,33 @@ void main()
    vec3 n_Normal        = normalize(Normal);
    vec3 viewDirection   = normalize(cameraPosition - VertexPos);
 
-   vec3 lighting = renderPointLight(pointLights[0], n_Normal, viewDirection);
+   vec3 lighting = renderDirectionalLight(sun, n_Normal, viewDirection);
+
+   lighting += renderPointLight(pointLights[0], n_Normal, viewDirection);
 
    FragColor = texture(TexFile, TexCoordinate) * vec4(lighting, 1.0);
+}
+
+vec3 renderDirectionalLight(DirectionalLight light, vec3 n_Normal, vec3 viewDirection)
+{
+   vec3 l_direction = normalize(-light.direction);
+
+   // Calculate diffuse
+   vec3 diffuse = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color;
+
+   // Calculate specular
+   vec3 reflection      = reflect(-l_direction, n_Normal);
+   vec3 specular       = pow(max(dot(viewDirection, reflection), 0.0), material.shininess) * material.specular * light.color;
+
+   return (0.25 * light.ambient) + diffuse + specular;
 }
 
 vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection)
 {
    vec3 l_direction  = normalize(light.position - VertexPos);
-   float faceAligned = max(dot(n_Normal, l_direction), 0.0);
 
    // Calculate diffuse
-   vec3 diffuse = faceAligned * light.color * material.color;
+   vec3 diffuse = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color;
 
    // Calculate specular
    vec3 reflection      = reflect(-l_direction, n_Normal);

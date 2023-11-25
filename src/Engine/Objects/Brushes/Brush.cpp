@@ -99,6 +99,11 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniform3f("material.specular", material.specular.x, material.specular.y, material.specular.z);
     shader -> setUniform1i("material.shininess", material.shininess);
 
+    shader -> setUniform3f("sun.direction", 0, -0.5, -1);
+    shader -> setUniform3f("sun.color", 0.86, 0.63, 0.34);
+    shader -> setUniform3f("sun.ambient", 0.33, 0.70, 0.86);
+    shader -> setUniform3f("sun.specular", 1.0, 1.0, 1.0);
+
     shader -> setUniform3f("pointLights[0].position", lightPosition.x, lightPosition.y, lightPosition.z);
     shader -> setUniform3f("pointLights[0].color", lightColor.x, lightColor.y, lightColor.z);
     shader -> setUniform3f("pointLights[0].specular", 1.0, 1.0, 1.0);
