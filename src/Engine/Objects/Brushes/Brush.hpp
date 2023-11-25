@@ -7,18 +7,25 @@
 #include "../../Texture.hpp"
 #include "../../Shader.hpp"
 
+typedef struct
+{
+    glm::vec3 color;
+    glm::vec3 specular;
+    float shininess;
+
+    float ambientIntensity;
+
+} Material;
+
 class Brush
 {
 protected:
     glm::vec3 position;
-    
+    glm::vec3 scale;
+
     // Rotation given as a quaternion for easy use with arbitrary rotation axies
     glm::quat rotation;
     glm::quat externalRotations;
-
-    glm::vec3 scale;
-
-    glm::vec3 color;
 
     VertexArray* VAO;
     int primitiveType;
@@ -29,6 +36,7 @@ protected:
     bool drawWireFrame;
 
     Shader* shader;
+    Material material;
 
     std::vector<int> temp;
     
@@ -66,7 +74,9 @@ public:
     *  @param newRotation quaternion representing rotation to set current rotation to. */
     void SetRotation(glm::quat newRotation) {rotation = newRotation;}
 
-    void setColor(float r, float g, float b) {color = glm::vec3(r, g, b);}
+    void setColor(float r, float g, float b) {material.color = glm::vec3(r, g, b);}
+    
+    void setMaterial(Material newMaterial) {material = newMaterial;}
 
     inline void setShader(Shader* newShader) {shader = newShader;}
 

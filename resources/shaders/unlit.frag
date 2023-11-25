@@ -3,8 +3,17 @@
 
 in vec2 TexCoordinate;
 
-// Color for the vertex
-uniform vec4 vertexColor;
+// Material properties
+struct Material
+{
+   vec3 color;
+   vec3 specular;
+   float shininess;
+
+   float ambientIntensity;
+};
+
+uniform Material material;
 
 uniform sampler2D TexFile;
 
@@ -12,5 +21,5 @@ out vec4 FragColor;
 
 void main()
 {
-   FragColor = texture(TexFile, TexCoordinate) * vertexColor;
+   FragColor = texture(TexFile, TexCoordinate) * vec4(material.color, 1.0);
 }

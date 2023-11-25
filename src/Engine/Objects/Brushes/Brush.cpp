@@ -26,7 +26,10 @@ Brush::Brush(Shader* shaderFile, const char* textureFile,
 
     this -> drawWireFrame = false;
 
-    this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.shininess = 32;
+    this -> material.ambientIntensity = 0.25;
 }
 
 Brush::Brush(Shader* shaderFile,
@@ -53,7 +56,10 @@ Brush::Brush(Shader* shaderFile,
 
     this -> drawWireFrame = false;
 
-    this -> color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    this -> material.shininess = 32;
+    this -> material.ambientIntensity = 0.25;
 }
 
 Brush::~Brush()
@@ -91,12 +97,15 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniformMat4("view", &viewMatrix);
     shader -> setUniformMat4("projection", &projectionMatrix);
 
-    shader -> setUniform4f("vertexColor", color.x, color.y, color.z, 1.0f);
+    shader -> setUniform3f("material.color", material.color.x, material.color.y, material.color.z);
+    shader -> setUniform3f("material.specular", material.specular.x, material.specular.y, material.specular.z);
+    shader -> setUniform1f("material.shininess", material.shininess);
+    shader -> setUniform1f("material.ambientIntensity", ambient);
 
-    shader -> setUniform3f("lightPos", lightPosition.x, lightPosition.y, lightPosition.z);
-    shader -> setUniform3f("lightColor", lightColor.x, lightColor.y, lightColor.z);
+    shader -> setUniform3f("light.position", lightPosition.x, lightPosition.y, lightPosition.z);
+    shader -> setUniform3f("light.color", lightColor.x, lightColor.y, lightColor.z);
+    shader -> setUniform3f("light.specular", 1, 1, 1);
 
-    shader -> setUniform1f("ambientIntensity", ambient);
 
     glDrawArrays(primitiveType, 0, numVertices);
 

@@ -1,12 +1,20 @@
 //  Default fragment shader
 #version 330
 
-// Color for the vertex
-uniform vec4 vertexColor;
+struct Material
+{
+   vec3 color;
+   vec3 specular;
+   float shininess;
+
+   float ambientIntensity;
+};
+
+uniform Material material;
 
 out vec4 FragColor;
 
 void main()
 {
-   FragColor = vertexColor;
+   FragColor = vec4(material.color, 1.0);
 }

@@ -8,17 +8,28 @@ in vec2 TexCoordinate;
 
 uniform vec3 cameraPosition;
 
-// Color for the vertex
-uniform vec4 vertexColor;
+// Material properties
+struct Material
+{
+   vec3 color;
+   vec3 specular;
+   float shininess;
 
-// Properties of the light
-uniform vec3 lightPos;
-uniform vec3 lightColor;
+   float ambientIntensity;
+};
 
-// Lighting variables
-uniform float ambientIntensity;
-float specularStrength = 0.2;
-int shinyness = 32;
+uniform Material material;
+
+// Light properties
+struct Light
+{
+   vec3 position;
+   
+   vec3 color;
+   vec3 specular;
+};
+
+uniform Light light;
 
 uniform sampler2D TexFile;
 
@@ -27,20 +38,19 @@ out vec4 FragColor;
 void main()
 {
    // Calculate ambient
-   vec3 ambient = lightColor * ambientIntensity;
+   vec3 ambient = material.ambientIntensity * light.color * material.color;
 
    // Calculate diffuse
-   vec3 nNormal      = normalize(Normal);
-   vec3 direction    = normalize(lightPos - VertexPos);
-   vec3 diffuse      = max(dot(nNormal, direction), 0.0) * lightColor;
+   vec3 n_Normal      = normalize(Normal);
+   vec3 l_direction   = normalize(light.position - VertexPos);
+   vec3 diffuse       = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color;
 
    // Calculate specular
    vec3 viewDirection   = normalize(cameraPosition - VertexPos);
-   vec3 reflection      = reflect(-direction, nNormal);
-   float spec           = pow(max(dot(viewDirection, reflection), 0.0), shinyness);
-   vec3 specular        = specularStrength * spec * lightColor;
+   vec3 reflection      = reflect(-l_direction, n_Normal);
+   vec3 specular       = pow(max(dot(viewDirection, reflection), 0.0), material.shininess) * material.specular * light.color;
 
    vec3 lighting = ambient + diffuse + specular;
 
-   FragColor = texture(TexFile, TexCoordinate) * vertexColor * vec4(lighting, 1.0);
+   FragColor = texture(TexFile, TexCoordinate) * vec4(lighting, 1.0);
 }
