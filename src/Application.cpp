@@ -42,8 +42,8 @@ int dKeyDown = 0;
 int spaceKeyToggle = 0;
 
 double asp = 1;
-int zFar = 30;
-int fov = 90;
+double zFar = 30;
+double fov = 90;
 int mode = 0;
 
 double xPos = 0;
@@ -90,12 +90,12 @@ void Project()
     if (mode == 0)
     {
         glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
-        projectionMatrix = glm::ortho((double) -asp*4, (double) asp*3, (double) -3.0f, (double) 3.0f, (double) -10.0f, (double) 10.0f);
+        projectionMatrix = glm::ortho(-asp*4, asp*3, -3.0, 3.0, -10.0, 10.0);
     }
     else
     {
         gluPerspective(fov, asp, 0.5, zFar / Cos(fov));
-        projectionMatrix = glm::perspective((double) fov, (double) asp, (double) 0.5f, (double) (zFar / Cos(fov)));
+        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.5, zFar / Cos(fov));
     }
 
     glMatrixMode(GL_MODELVIEW);
