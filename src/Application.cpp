@@ -71,22 +71,22 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
     glm::vec3 lightColor = glm::vec3(1,1,1);
 
     sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
     
     sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 
     sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
+    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor, 1);
 }
 
 void Project()
@@ -161,21 +161,21 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
+            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
 
     if (mode != 0)

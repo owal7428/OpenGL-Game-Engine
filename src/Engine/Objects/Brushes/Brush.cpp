@@ -35,7 +35,7 @@ Brush::Brush(Shader* shaderFile,
              float scale_x, float scale_y, float scale_z)
 {
     shader = shaderFile;
-    
+
     texture = nullptr;
     
     hasTexture = false;
@@ -65,7 +65,7 @@ Brush::~Brush()
         delete VAO;
 }
 
-void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor, float ambient)
+void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor, float ambient)
 {
     VAO -> Bind();
     shader -> Activate();
@@ -84,6 +84,8 @@ void Brush::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lig
     model = glm::translate(model, position);
     model = model * glm::toMat4(externalRotations * rotation);
     model = glm::scale(model, scale);
+
+    shader -> setUniform3f("cameraPosition", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
     shader -> setUniformMat4("model", &model);
     shader -> setUniformMat4("view", &viewMatrix);
