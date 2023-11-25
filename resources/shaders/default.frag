@@ -14,6 +14,8 @@ struct Material
    vec3 color;
    vec3 specular;
    int shininess;
+
+   float textureScale;
 };
 
 uniform Material material;
@@ -60,7 +62,7 @@ void main()
 
    lighting += renderPointLight(pointLights[0], n_Normal, viewDirection);
 
-   FragColor = texture(TexFile, TexCoordinate) * vec4(lighting, 1.0);
+   FragColor = texture(TexFile, TexCoordinate * material.textureScale) * vec4(lighting, 1.0);
 }
 
 vec3 renderDirectionalLight(DirectionalLight light, vec3 n_Normal, vec3 viewDirection)

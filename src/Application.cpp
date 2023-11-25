@@ -417,6 +417,8 @@ int main(int argc, char* argv[])
     // Test plane
     Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
 
+    testFloor.setTextureScale(5);
+
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
     rhombusCube.setColor(0 ,0, 1);
