@@ -161,21 +161,21 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
+            brushObjects1->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
+            brushObjects2->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) (ambient / 100));
+            brushObjects3->at(i)->Draw(projectionMatrix, viewMatrix, light->getPosition(), lightColor, (float) ambient / 100);
     }
 
     if (mode != 0)
