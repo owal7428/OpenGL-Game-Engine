@@ -16,7 +16,7 @@ OBJ = $(OUT)obj/
 VPATH = src : src/Engine : src/Engine/Utility : src/Engine/Objects : src/Engine/Objects/Brushes : src/Engine/Objects/Entities : src/Engine/Objects/Entities/Lights : src/Vendor/stb_image : src/Vendor/glm/glm : src/Vendor/glm/glm/gtc
 
 # Source files
-SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o GameObjects.o Star.o Rhombus.o Cube.o Plane.o Brush.o Motor.o Rotator.o VertexBuffer.o VertexArray.o Shader.o DirectionalLight.o PointLight.o
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o GameObject.o Star.o Rhombus.o Cube.o Plane.o Brush.o Motor.o Rotator.o VertexBuffer.o VertexArray.o Shader.o DirectionalLight.o PointLight.o
 
 # Main target
 all: $(EXE)
