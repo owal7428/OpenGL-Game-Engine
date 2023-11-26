@@ -13,17 +13,17 @@ UTIL = $(ENGINE)Utility/
 OBJ = $(OUT)obj/
 
 # Include directories
-VPATH = src : src/Engine : src/Engine/Utility : src/Engine/Objects/Brushes : src/Engine/Objects/Entities : src/Vendor/stb_image : src/Vendor/glm/glm : src/Vendor/glm/glm/gtc
+VPATH = src : src/Engine : src/Engine/Utility : src/Engine/Objects : src/Engine/Objects/Brushes : src/Engine/Objects/Entities : src/Engine/Objects/Entities/Lights : src/Vendor/stb_image : src/Vendor/glm/glm : src/Vendor/glm/glm/gtc
 
 # Source files
-SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o Star.o Rhombus.o Cube.o Plane.o Brush.o Motor.o Rotator.o VertexBuffer.o VertexArray.o Shader.o
+SRC = Texture.o fatal.o errcheck.o print.o loadtexbmp.o loadobj.o stb_image.o GameObjects.o Star.o Rhombus.o Cube.o Plane.o Brush.o Motor.o Rotator.o VertexBuffer.o VertexArray.o Shader.o DirectionalLight.o PointLight.o
 
 # Main target
 all: $(EXE)
 
 #  Msys/MinGW
 ifeq "$(OS)" "Windows_NT"
-CFLG=-O3 -Wall -DUSEGLEW
+CFLG=-O3 -Wall -DUSEGLEW -g
 LIBS=-lfreeglut -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -lglew32 -lglu32 -lopengl32 -lm
 CLEAN=rm -f *.exe *.o *.a
 else

@@ -8,6 +8,8 @@
 #include "Engine/Objects/Brushes/Plane.hpp"
 #include "Engine/Objects/Entities/Motor.hpp"
 #include "Engine/Objects/Entities/Rotator.hpp"
+#include "Engine/Objects/Entities/Lights/PointLight.hpp"
+#include "Engine/Objects/Entities/Lights/DirectionalLight.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
 #define UNLIT_SHADER "resources/shaders/unlit"
@@ -61,25 +63,23 @@ int objectMode = 0;
 
 void GenerateSkybox(Plane* sky[], float x, float y, float z)
 {
-    glm::vec3 lightColor = glm::vec3(1,1,1);
-
     sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
     
     sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
 
     sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
 
     sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
 
     sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
 
     sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, glm::vec3(0,0,0), lightColor);
+    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
 }
 
 void Project()
@@ -102,7 +102,7 @@ void Project()
     glLoadIdentity();
 }
 
-void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
+void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<PointLight*> pointLights, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,8 +131,6 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
     }
 
-    glm::vec3 lightColor = glm::vec3(0.5, 0.5, 0.5);
-
     // Draw axis lines
     glBegin(GL_LINES);  
     // X-axis
@@ -154,21 +152,21 @@ void draw(SDL_Window* window, Plane* sky[], Brush* light, std::vector<Brush*>* b
         int size = brushObjects1->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
+            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
     }
     else if (objectMode == 1)
     {
         int size = brushObjects2->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
+            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
     }
     else
     {
         int size = brushObjects3->size();
 
         for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, light->getPosition(), lightColor);
+            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
     }
 
     if (mode != 0)
@@ -411,13 +409,20 @@ int main(int argc, char* argv[])
     Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
     Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
 
+    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
+    testFloor.setTextureScale(5);
+
     Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.25, 0.25, 0.25);
     light.setColor(1,1,1);
 
-    // Test plane
-    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
+    DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 1.0, 1.0, 1.0);
 
-    testFloor.setTextureScale(5);
+    PointLight light1 = PointLight(0, 0, 5, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 1, 0.07, 0.017);
+
+    std::vector<PointLight*> lights;
+    lights.push_back(&light1);
+
+    light.AddChild(&light1);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
@@ -593,7 +598,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, sky, &light, &brushObjects1, &brushObjects2, &brushObjects3);
+        draw(window, sky, &sun, lights, &brushObjects1, &brushObjects2, &brushObjects3);
     }
 
     SDL_Quit();

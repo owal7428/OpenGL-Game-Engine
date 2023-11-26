@@ -2,6 +2,9 @@
 
 #include "../../Utility/util.h"
 
+#include "../Entities/Lights/PointLight.hpp"
+#include "../Entities/Lights/DirectionalLight.hpp"
+
 Brush::Brush(Shader* shaderFile, const char* textureFile,
              float x, float y, float z,
              float rot_x, float rot_y, float rot_z,
@@ -73,7 +76,7 @@ Brush::~Brush()
         delete VAO;
 }
 
-void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor)
+void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, DirectionalLight* sun, std::vector<PointLight*> pointLights)
 {
     VAO -> Bind();
     shader -> Activate();
@@ -104,18 +107,68 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniform1i("material.shininess", material.shininess);
     shader -> setUniform1f("material.textureScale", material.textureScale);
 
-    shader -> setUniform3f("sun.direction", 0, -0.5, -1);
-    shader -> setUniform3f("sun.color", 0.86, 0.63, 0.34);
-    shader -> setUniform3f("sun.ambient", 0.33, 0.70, 0.86);
-    shader -> setUniform3f("sun.specular", 1.0, 1.0, 1.0);
+    shader -> setUniform3f("sun.direction", sun -> getDirection().x, sun -> getDirection().y, sun -> getDirection().z);
+    shader -> setUniform3f("sun.color", sun -> getColor().x, sun -> getColor().y, sun -> getColor().z);
+    shader -> setUniform3f("sun.ambient", sun -> getAmbient().x, sun -> getAmbient().y, sun -> getAmbient().z);
+    shader -> setUniform3f("sun.specular", sun -> getSpecular().x, sun -> getSpecular().y, sun -> getSpecular().z);
 
-    shader -> setUniform3f("pointLights[0].position", lightPosition.x, lightPosition.y, lightPosition.z);
-    shader -> setUniform3f("pointLights[0].color", lightColor.x, lightColor.y, lightColor.z);
-    shader -> setUniform3f("pointLights[0].specular", 1.0, 1.0, 1.0);
-    shader -> setUniform1f("pointLights[0].constant", 1);
-    shader -> setUniform1f("pointLights[0].linear", 0.07);
-    shader -> setUniform1f("pointLights[0].quadratic", 0.017);
+    int size = pointLights.size();
+    for (int i = 0; i < size; i++)
+    {
+        PointLight* light = pointLights.at(i);
 
+        std::string temp = "pointLights[" + std::to_string(i) + "]";
+
+        shader -> setUniform3f(temp + ".position", light -> getPosition().x, light -> getPosition().y, light -> getPosition().z);
+        shader -> setUniform3f(temp + ".color", light -> getColor().x, light -> getColor().y, light -> getColor().z);
+        shader -> setUniform3f(temp + ".specular", light -> getSpecular().x, light -> getSpecular().y, light -> getSpecular().z);
+        shader -> setUniform1f(temp + ".constant", light -> getConstant());
+        shader -> setUniform1f(temp + ".linear", light -> getLinear());
+        shader -> setUniform1f(temp + ".quadratic", light -> getQuadratic());
+    }
+
+
+    glDrawArrays(primitiveType, 0, numVertices);
+
+    if (drawWireFrame)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    if (hasTexture)
+    {
+        texture -> Unbind();
+    }
+
+    shader -> Deactivate();
+    VAO -> Unbind();
+}
+
+void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
+{
+    VAO -> Bind();
+    shader -> Activate();
+
+    if (hasTexture)
+    {
+        texture -> Bind();
+    }
+    
+    if (drawWireFrame)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = model * glm::toMat4(externalRotations * rotation);
+    model = glm::scale(model, scale);
+
+    shader -> setUniform3f("cameraPosition", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+    shader -> setUniformMat4("model", &model);
+    shader -> setUniformMat4("view", &viewMatrix);
+    shader -> setUniformMat4("projection", &projectionMatrix);
 
     glDrawArrays(primitiveType, 0, numVertices);
 

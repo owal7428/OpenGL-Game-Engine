@@ -3,9 +3,14 @@
 
 #include "../../../Common.h"
 
+#include "../GameObject.hpp"
+
 #include "../../VertexArray.hpp"
 #include "../../Texture.hpp"
 #include "../../Shader.hpp"
+
+#include "../Entities/Lights/DirectionalLight.hpp"
+#include "../Entities/Lights/PointLight.hpp"
 
 typedef struct
 {
@@ -17,10 +22,9 @@ typedef struct
 
 } Material;
 
-class Brush
+class Brush : public GameObject
 {
 protected:
-    glm::vec3 position;
     glm::vec3 scale;
 
     // Rotation given as a quaternion for easy use with arbitrary rotation axies
@@ -38,7 +42,7 @@ protected:
     Shader* shader;
     Material material;
 
-    std::vector<int> temp;
+    //std::vector<int> temp;
     
 public:
     Brush() {}
@@ -57,11 +61,8 @@ public:
     
     ~Brush();
 
-    void Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, glm::vec3 lightPosition, glm::vec3 lightColor);
-
-    /* Sets the position vector to new vector
-    *  @param newPosition new vec3 to set position to. */
-    void Move(glm::vec3 newPosition) {position = newPosition;}
+    void Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix, DirectionalLight* sun, std::vector<PointLight*> pointLights);
+    void Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix);
 
     /* Adds rotation on top of the base orientation. Useful for external actors.
     *  @param newRotation quaternion representing rotation to add on top of external rotations. */
@@ -87,7 +88,6 @@ public:
     /* Disables wireframe rendering mode. */
     inline void DisableRenderWireframe() {drawWireFrame = false;}
 
-    inline glm::vec3 getPosition() {return position;}
     inline glm::quat getRotation() {return rotation;}
 };
 
