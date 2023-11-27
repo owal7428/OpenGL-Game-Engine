@@ -6,7 +6,7 @@ Motor::Motor(Brush* brush, int axis_x, int axis_y, int axis_z, int rotation_spee
 
     axis = glm::vec3((float) axis_x, (float) axis_y, (float) axis_z);
 
-    glm::normalize(axis);
+    axis = glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
 
@@ -27,7 +27,7 @@ Motor::Motor(Brush* brush, int theta, int phi, int rotation_speed)
 
     axis = glm::vec3(axis_x, axis_y, axis_z);
 
-    glm::normalize(axis);
+    axis = glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
 

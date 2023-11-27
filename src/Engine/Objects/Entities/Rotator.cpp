@@ -9,7 +9,7 @@ Rotator::Rotator(Brush* brush, int pivot_x, int pivot_y, int pivot_z,
 
     axis = glm::vec3((float) axis_x, (float) axis_y, (float) axis_z);
 
-    glm::normalize(axis);
+    axis = glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
 }
@@ -31,7 +31,7 @@ Rotator::Rotator(Brush* brush, int pivot_x, int pivot_y, int pivot_z,
 
     axis = glm::vec3(axis_x, axis_y, axis_z);
 
-    glm::normalize(axis);
+    axis = glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
 }
