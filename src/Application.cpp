@@ -425,9 +425,13 @@ int main(int argc, char* argv[])
 
     light.AddChild(&light1);
 
-    Plane testPlane = Plane(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 1, 1);
+    Plane testPlane = Plane(&unlitShader_untextured, 3, 0, 0, 0, 45, 0, 1, 1, 1);
 
-    Collider testCollider = Collider(&testPlane);
+    Cube playerCollider = Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 2, 1);
+    playerCollider.setColor(0,1,0);
+    playerCollider.EnableRenderWireframe();
+
+    Collider testCollider = Collider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
@@ -482,6 +486,8 @@ int main(int argc, char* argv[])
 
     brushObjects1.push_back(&light);
 
+    brushObjects1.push_back(&playerCollider);
+
     std::vector<Brush*> brushObjects2;
     
     brushObjects2.push_back(&rhombusSingle);
@@ -491,11 +497,15 @@ int main(int argc, char* argv[])
 
     brushObjects2.push_back(&testPlane);
 
+    brushObjects2.push_back(&playerCollider);
+
     std::vector<Brush*> brushObjects3;
     
     brushObjects3.push_back(&bigStarSingle);
     
     brushObjects3.push_back(&light);
+
+    brushObjects3.push_back(&playerCollider);
 
     std::vector<Motor*> motorObjects;
 
@@ -544,6 +554,9 @@ int main(int argc, char* argv[])
         {
             time = newTime;
             timer();
+
+            if (spaceKeyToggle == 1)
+                playerCollider.Move(glm::vec3(xPos, yPos - 1, -zPos));
             
             // Reset rotations to avoid accelerating to infinity
             int brushListSize1 = brushObjects1.size();

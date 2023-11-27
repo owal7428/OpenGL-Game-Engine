@@ -88,7 +88,8 @@ public:
     /* Disables wireframe rendering mode. */
     inline void DisableRenderWireframe() {drawWireFrame = false;}
 
-    inline glm::quat getRotation() {return rotation;}
+    inline glm::quat getRotation() {return externalRotations * rotation;}
+    inline glm::vec3 getScale() {return scale;}
 };
 
 #endif // BRUSH_H

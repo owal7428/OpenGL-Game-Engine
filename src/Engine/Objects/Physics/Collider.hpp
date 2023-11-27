@@ -15,7 +15,7 @@ private:
     Brush* test;
 
 public:
-    Collider(Brush* test);
+    Collider(Brush* test, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 
     void CollisionTest(glm::vec3 playerPosition);
 };

@@ -1,20 +1,27 @@
 #include "Collider.hpp"
 
-Collider::Collider(Brush* test)
+Collider::Collider(Brush* test, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
 {
     this -> test = test;
 
-    glm::vec3 vertex1 = glm::vec3(-0.5, -0.5, 0);
-    glm::vec3 vertex2 = glm::vec3(0.5, -0.5, 0);
-    glm::vec3 vertex3 = glm::vec3(0.5, 0.5, 0);
-    glm::vec3 vertex4 = glm::vec3(-0.5, 0.5, 0);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = model * glm::toMat4(rotation);
+    model = glm::scale(model, scale);
 
-    vertices.push_back(vertex1);
-    vertices.push_back(vertex2);
-    vertices.push_back(vertex3);
-    vertices.push_back(vertex4);
+    glm::vec4 vertex1 = model * glm::vec4(-0.5, -0.5, 0, 1);
+    glm::vec4 vertex2 = model * glm::vec4(0.5, -0.5, 0, 1);
+    glm::vec4 vertex3 = model * glm::vec4(0.5, 0.5, 0, 1);
+    glm::vec4 vertex4 = model * glm::vec4(-0.5, 0.5, 0, 1);
 
-    normals.push_back(glm::vec3(0,0,1));
+    vertices.push_back(glm::vec3(vertex1));
+    vertices.push_back(glm::vec3(vertex2));
+    vertices.push_back(glm::vec3(vertex3));
+    vertices.push_back(glm::vec3(vertex4));
+
+    glm::vec3 normal = glm::transpose(glm::inverse(glm::mat3(model))) * glm::vec3(0,0,1);
+
+    normals.push_back(normal);
 }
 
 glm::vec2 getProjectionForAxis(glm::vec3 axis, std::vector<glm::vec3> vertices)
@@ -56,11 +63,14 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
 {
     std::vector<glm::vec3> axes(normals);
 
+    // Normal vectors for player collider
     axes.push_back(glm::vec3(1, 0, 0));
-    axes.push_back(glm::vec3(0,1,0));
+    axes.push_back(glm::vec3(0, 1, 0));
+    axes.push_back(glm::vec3(0, 0, 1));
 
     std::vector<glm::vec3> playerVertices;
 
+    // Vertices of player collider
     playerVertices.push_back(glm::vec3(-0.5, -2, -0.5) + playerPosition);
     playerVertices.push_back(glm::vec3(0.5, -2, -0.5) + playerPosition);
     playerVertices.push_back(glm::vec3(0.5, 0.25, -0.5) + playerPosition);
