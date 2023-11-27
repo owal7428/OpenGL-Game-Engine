@@ -39,13 +39,13 @@ bool doProjectionsCollide(glm::vec2 p1, glm::vec2 p2)
     if (p2.x > p1.x && p2.x < p1.y)
         return true;
 
-    else if (p2.y > p1.x && p2.y < p1.y)
+    else if (p2.y >= p1.x && p2.y <= p1.y)
         return true;
     
-    else if (p1.x > p2.x && p1.x < p2.y)
+    else if (p1.x >= p2.x && p1.x <= p2.y)
         return true;
     
-    else if (p1.y > p2.x && p1.y < p2.y)
+    else if (p1.y >= p2.x && p1.y <= p2.y)
         return true;
 
     else 
