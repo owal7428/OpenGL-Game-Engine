@@ -85,22 +85,27 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
 
 void Project()
 {
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
+    if (mode == 0)
+        projectionMatrix = glm::ortho(-asp*4, asp*3, -3.0, 3.0, -10.0, 10.0);
+    else
+        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.25, zFar / Cos(fov));
+
+    #ifndef __APPLE__
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
     if (mode == 0)
-    {
-        //glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
-        projectionMatrix = glm::ortho(-asp*4, asp*3, -3.0, 3.0, -10.0, 10.0);
-    }
+        glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
     else
-    {
-        //gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
-        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.25, zFar / Cos(fov));
-    }
+        gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
 
-   // glMatrixMode(GL_MODELVIEW);
-    //glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    #endif
+
+
 }
 
 void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<PointLight*> pointLights, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
@@ -112,12 +117,10 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     glEnable(GL_DEPTH_TEST);
 
     // Reset transformation matrix
-    //glLoadIdentity();
 
     if (mode == 0 || mode == 1)
     {
         xPos = 1; yPos = 1; zPos = -4;
-        //gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     }
     else
@@ -128,11 +131,17 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
         yOffset = Sin(ph);
         zOffset = (Cos(th)*Cos(ph));
         
-        //gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
     }
 
     #ifndef __APPLE__
+
+    glLoadIdentity();
+
+    if (mode == 0 || mode == 1)
+        gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
+    else
+        gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
 
     // Draw axis lines
     glBegin(GL_LINES);  

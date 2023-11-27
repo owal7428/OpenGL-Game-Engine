@@ -91,8 +91,6 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    ErrCheck("temp1");
-
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = model * glm::toMat4(externalRotations * rotation);
@@ -100,20 +98,14 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
 
     shader -> setUniform3f("cameraPosition", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-    ErrCheck("temp2");
-
     shader -> setUniformMat4("model", &model);
     shader -> setUniformMat4("view", &viewMatrix);
     shader -> setUniformMat4("projection", &projectionMatrix);
-
-    ErrCheck("temp3");
 
     shader -> setUniform3f("material.color", material.color.x, material.color.y, material.color.z);
     shader -> setUniform3f("material.specular", material.specular.x, material.specular.y, material.specular.z);
     shader -> setUniform1i("material.shininess", material.shininess);
     shader -> setUniform1f("material.textureScale", material.textureScale);
-
-    ErrCheck("temp4");
 
     shader -> setUniform3f("sun.direction", sun -> getDirection().x, sun -> getDirection().y, sun -> getDirection().z);
     shader -> setUniform3f("sun.color", sun -> getColor().x, sun -> getColor().y, sun -> getColor().z);
