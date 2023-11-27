@@ -9,6 +9,8 @@ Motor::Motor(Brush* brush, int axis_x, int axis_y, int axis_z, int rotation_spee
     glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
+
+    this -> angle = 0;
 }
 
 Motor::Motor(Brush* brush, int theta, int phi, int rotation_speed)
@@ -28,6 +30,8 @@ Motor::Motor(Brush* brush, int theta, int phi, int rotation_speed)
     glm::normalize(axis);
 
     this -> rotation_speed = rotation_speed;
+
+    this -> angle = 0;
 }
 
 void Motor::Spin(double deltaTime)
