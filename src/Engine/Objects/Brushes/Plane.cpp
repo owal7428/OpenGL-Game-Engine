@@ -9,7 +9,7 @@ Plane::Plane(Shader* shaderFile, const char* textureFile,
 {
     std::vector<float> temp =
     {
-        // Front        // Normals      // Texture coordinates
+        // Front            // Normals      // Texture coordinates
         -0.5, -0.5, 0,      0, 0, 1,        0, 0,
         0.5, -0.5, 0,       0, 0, 1,        1, 0,
         0.5, 0.5, 0,        0, 0, 1,        1, 1,
@@ -28,7 +28,7 @@ Plane::Plane(Shader* shaderFile,
 {
     std::vector<float> temp =
     {
-        // Front        // Normals      // Texture coordinates
+        // Front            // Normals      // Texture coordinates
         -0.5, -0.5, 0,      0, 0, 1,        0, 0,
         0.5, -0.5, 0,       0, 0, 1,        1, 0,
         0.5, 0.5, 0,        0, 0, 1,        1, 1,
