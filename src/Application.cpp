@@ -10,6 +10,7 @@
 #include "Engine/Objects/Entities/Rotator.hpp"
 #include "Engine/Objects/Entities/Lights/PointLight.hpp"
 #include "Engine/Objects/Entities/Lights/DirectionalLight.hpp"
+#include "Engine/Objects/Physics/Collider.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
 #define UNLIT_SHADER "resources/shaders/unlit"
@@ -136,15 +137,15 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     // X-axis
     glColor3f(1,0,0);
     glVertex3f(0,0,0);
-    glVertex3f(1,0,0);
+    glVertex3f(5,0,0);
     // Y- axis
     glColor3f(0,1,0);
     glVertex3f(0,0,0);
-    glVertex3f(0,1,0);
+    glVertex3f(0,5,0);
     // Z- axis
     glColor3f(0,0,1);
     glVertex3f(0,0,0);
-    glVertex3f(0,0,1);
+    glVertex3f(0,0,5);
     glEnd();
 
     if (objectMode == 0)
@@ -424,6 +425,10 @@ int main(int argc, char* argv[])
 
     light.AddChild(&light1);
 
+    Plane testPlane = Plane(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 1, 1);
+
+    Collider testCollider = Collider(&testPlane);
+
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
     rhombusCube.setColor(0 ,0, 1);
@@ -483,6 +488,8 @@ int main(int argc, char* argv[])
     brushObjects2.push_back(&rhombusCubeSingle);
     brushObjects2.push_back(&testFloor);
     brushObjects2.push_back(&light);
+
+    brushObjects2.push_back(&testPlane);
 
     std::vector<Brush*> brushObjects3;
     
@@ -564,6 +571,8 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < rotatorListSize; i++)
                 rotatorObjects.at(i)->Rotate(deltaTime);
+            
+            testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
         }
 
         SDL_Event event;
