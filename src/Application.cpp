@@ -405,15 +405,15 @@ int main(int argc, char* argv[])
     Rhombus rhombus         =   Rhombus(&defaultShader, WATER, -0.25, -1, 0.4, 0, 0, 0, 0.15, 0.3, 0.3);
     Rhombus rhombusSingle   =   Rhombus(&defaultShader, WATER, 0, 0, 0, 0.15, 0.3, 0.3, 0.5, 0.5, 0.5);
 
-    Cube spinningStarCube   =   Cube(&unlitShader_untextured, 2, 1, -2, 0, 0, 0, 0.5, 0.5, 0.5);
-    Cube rotatingStarCube   =   Cube(&unlitShader_untextured, 1, 0, -2, 0, 0, 0, 0.35, 0.35, 0.35);
-    Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.4, 0.4, 0.5);
-    Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4);
+    Cube spinningStarCube   =   Cube(&unlitShader_untextured, 2, 1, -2, 0, 0, 0, 1, 1, 1);
+    Cube rotatingStarCube   =   Cube(&unlitShader_untextured, 1, 0, -2, 0, 0, 0, 0.7, 0.7, 0.7);
+    Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.8, 0.8, 1);
+    Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.8, 0.8, 0.8);
 
     Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
     testFloor.setTextureScale(5);
 
-    Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.25, 0.25, 0.25);
+    Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.5, 0.5, 0.5);
     light.setColor(1,1,1);
 
     DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 1.0, 1.0, 1.0);
