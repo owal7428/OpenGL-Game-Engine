@@ -85,22 +85,22 @@ void GenerateSkybox(Plane* sky[], float x, float y, float z)
 
 void Project()
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
 
     if (mode == 0)
     {
-        glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
+        //glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
         projectionMatrix = glm::ortho(-asp*4, asp*3, -3.0, 3.0, -10.0, 10.0);
     }
     else
     {
-        gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
+        //gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
         projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.25, zFar / Cos(fov));
     }
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+   // glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
 }
 
 void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<PointLight*> pointLights, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
@@ -112,12 +112,12 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     glEnable(GL_DEPTH_TEST);
 
     // Reset transformation matrix
-    glLoadIdentity();
+    //glLoadIdentity();
 
     if (mode == 0 || mode == 1)
     {
         xPos = 1; yPos = 1; zPos = -4;
-        gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
+        //gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     }
     else
@@ -128,25 +128,29 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
         yOffset = Sin(ph);
         zOffset = (Cos(th)*Cos(ph));
         
-        gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
+        //gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
         viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
     }
 
+    #ifndef __APPLE__
+
     // Draw axis lines
     glBegin(GL_LINES);  
-    // X-axis
+     X-axis
     glColor3f(1,0,0);
     glVertex3f(0,0,0);
     glVertex3f(1,0,0);
-    // Y- axis
+     Y- axis
     glColor3f(0,1,0);
     glVertex3f(0,0,0);
     glVertex3f(0,1,0);
-    // Z- axis
+     Z- axis
     glColor3f(0,0,1);
     glVertex3f(0,0,0);
     glVertex3f(0,0,1);
     glEnd();
+
+    #endif
 
     if (objectMode == 0)
     {
@@ -173,6 +177,8 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     if (mode != 0)
         GenerateSkybox(sky, xPos, yPos, -zPos);
 
+    #ifndef __APPLE__
+
     glColor3f(1,1,1);
     glWindowPos2i(5,30);
     Print("Angle theta = %d, Angle phi = %d", th, ph);
@@ -183,11 +189,13 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
         Print("Mode: Perspective Overview");
     else
         Print("Mode: First-Person Perspective");
-    
-    ErrCheck("display");
 
-    glFlush();
-    SDL_GL_SwapWindow(window);
+   #endif
+   
+   ErrCheck("display");
+   
+   glFlush();
+   SDL_GL_SwapWindow(window);
 }
 
 void keyDown(SDL_Scancode code)
@@ -370,7 +378,14 @@ int main(int argc, char* argv[])
     SDL_Window* window = SDL_CreateWindow("OwenAllison_FinalProject", 
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1300, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
-    SDL_GL_CreateContext(window);                          
+    #if defined(__APPLE__)
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        printf("Set gl version to 330 core.\n");
+    #endif
+
+    SDL_GL_CreateContext(window);                      
     
     #ifdef USEGLEW
     //  Initialize GLEW
@@ -385,6 +400,8 @@ int main(int argc, char* argv[])
     asp = (float) 1300 / 900;
     
     reshape(window);
+
+    ErrCheck("init");
                                                             // Position     // Rotation     // Scale
     Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,    zFar, 0, 0,     0, 90, 0,       zFar*2, zFar*2, zFar*2);
     Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,     -zFar, 0, 0,    0, -90., 0,     zFar*2, zFar*2, zFar*2);
@@ -538,8 +555,6 @@ int main(int argc, char* argv[])
     rotatorObjects.push_back(&otherStarRotator);
 
     rotatorObjects.push_back(&lightRotator);
-
-    ErrCheck("init");
 
     int run = 1;
     double time = 0;

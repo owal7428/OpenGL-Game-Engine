@@ -13,12 +13,15 @@ Plane::Plane(Shader* shaderFile, const char* textureFile,
         -0.5, -0.5, 0,      0, 0, 1,        0, 0,
         0.5, -0.5, 0,       0, 0, 1,        1, 0,
         0.5, 0.5, 0,        0, 0, 1,        1, 1,
+
+        -0.5, -0.5, 0,      0, 0, 1,        0, 0,
+        0.5, 0.5, 0,        0, 0, 1,        1, 1,
         -0.5, 0.5, 0,       0, 0, 1,        0, 1,
     };
 
     this -> VAO = new VertexArray(&temp);
-    this -> primitiveType = GL_QUADS;
-    this -> numVertices = 4;
+    this -> primitiveType = GL_TRIANGLES;
+    this -> numVertices = 6;
 }
 
 Plane::Plane(Shader* shaderFile,
@@ -32,10 +35,13 @@ Plane::Plane(Shader* shaderFile,
         -0.5, -0.5, 0,      0, 0, 1,        0, 0,
         0.5, -0.5, 0,       0, 0, 1,        1, 0,
         0.5, 0.5, 0,        0, 0, 1,        1, 1,
+
+        -0.5, -0.5, 0,      0, 0, 1,        0, 0,
+        0.5, 0.5, 0,        0, 0, 1,        1, 1,
         -0.5, 0.5, 0,       0, 0, 1,        0, 1,
     };
 
     this -> VAO = new VertexArray(&temp);
-    this -> primitiveType = GL_QUADS;
-    this -> numVertices = 4;
+    this -> primitiveType = GL_TRIANGLES;
+    this -> numVertices = 6;
 }
