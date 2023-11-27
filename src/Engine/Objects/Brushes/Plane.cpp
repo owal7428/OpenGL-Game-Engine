@@ -10,10 +10,10 @@ Plane::Plane(Shader* shaderFile, const char* textureFile,
     std::vector<float> temp =
     {
         // Front        // Normals      // Texture coordinates
-        -1, -1, 0,      0, 0, 1,        0, 0,
-        1, -1, 0,       0, 0, 1,        1, 0,
-        1, 1, 0,        0, 0, 1,        1, 1,
-        -1, 1, 0,       0, 0, 1,        0, 1,
+        -0.5, -0.5, 0,      0, 0, 1,        0, 0,
+        0.5, -0.5, 0,       0, 0, 1,        1, 0,
+        0.5, 0.5, 0,        0, 0, 1,        1, 1,
+        -0.5, 0.5, 0,       0, 0, 1,        0, 1,
     };
 
     this -> VAO = new VertexArray(&temp);
@@ -29,10 +29,10 @@ Plane::Plane(Shader* shaderFile,
     std::vector<float> temp =
     {
         // Front        // Normals      // Texture coordinates
-        -1, -1, 0,      0, 0, 1,        0, 0,
-        1, -1, 0,       0, 0, 1,        1, 0,
-        1, 1, 0,        0, 0, 1,        1, 1,
-        -1, 1, 0,       0, 0, 1,        0, 1,
+        -0.5, -0.5, 0,      0, 0, 1,        0, 0,
+        0.5, -0.5, 0,       0, 0, 1,        1, 0,
+        0.5, 0.5, 0,        0, 0, 1,        1, 1,
+        -0.5, 0.5, 0,       0, 0, 1,        0, 1,
     };
 
     this -> VAO = new VertexArray(&temp);

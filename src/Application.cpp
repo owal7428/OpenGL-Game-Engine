@@ -95,8 +95,8 @@ void Project()
     }
     else
     {
-        gluPerspective(fov, asp, 0.5, zFar / Cos(fov));
-        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.5, zFar / Cos(fov));
+        gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
+        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.25, zFar / Cos(fov));
     }
 
     glMatrixMode(GL_MODELVIEW);
@@ -137,15 +137,15 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     // X-axis
     glColor3f(1,0,0);
     glVertex3f(0,0,0);
-    glVertex3f(5,0,0);
+    glVertex3f(1,0,0);
     // Y- axis
     glColor3f(0,1,0);
     glVertex3f(0,0,0);
-    glVertex3f(0,5,0);
+    glVertex3f(0,1,0);
     // Z- axis
     glColor3f(0,0,1);
     glVertex3f(0,0,0);
-    glVertex3f(0,0,5);
+    glVertex3f(0,0,1);
     glEnd();
 
     if (objectMode == 0)
@@ -386,12 +386,12 @@ int main(int argc, char* argv[])
     
     reshape(window);
                                                             // Position     // Rotation     // Scale
-    Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,    zFar, 0, 0,     0, 90, 0,       zFar, zFar, zFar);
-    Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,     -zFar, 0, 0,    0, -90., 0,     zFar, zFar, zFar);
-    Plane SkyboxTop = Plane(&unlitShader,   SKYBOX_TOP,      0, zFar, 0,     -90., 0, 0,     zFar, zFar, zFar);
-    Plane SkyboxBottom = Plane(&unlitShader,SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,       zFar, zFar, zFar);
-    Plane SkyboxFront = Plane(&unlitShader, SKYBOX_FRONT,    0, 0, zFar,     0, 0, 0,        zFar, zFar, zFar);
-    Plane SkyboxBack = Plane(&unlitShader,  SKYBOX_BACK,     0, 0, -zFar,    0, 180, 0,      zFar, zFar, zFar);
+    Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,    zFar, 0, 0,     0, 90, 0,       zFar*2, zFar*2, zFar*2);
+    Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,     -zFar, 0, 0,    0, -90., 0,     zFar*2, zFar*2, zFar*2);
+    Plane SkyboxTop = Plane(&unlitShader,   SKYBOX_TOP,      0, zFar, 0,     -90., 0, 0,     zFar*2, zFar*2, zFar*2);
+    Plane SkyboxBottom = Plane(&unlitShader,SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,       zFar*2, zFar*2, zFar*2);
+    Plane SkyboxFront = Plane(&unlitShader, SKYBOX_FRONT,    0, 0, zFar,     0, 0, 0,        zFar*2, zFar*2, zFar*2);
+    Plane SkyboxBack = Plane(&unlitShader,  SKYBOX_BACK,     0, 0, -zFar,    0, 180, 0,      zFar*2, zFar*2, zFar*2);
 
     Plane* sky[6] = {&SkyboxRight, &SkyboxLeft, &SkyboxTop, &SkyboxBottom, &SkyboxFront, &SkyboxBack};
 
@@ -410,7 +410,7 @@ int main(int argc, char* argv[])
     Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.8, 0.8, 1);
     Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.8, 0.8, 0.8);
 
-    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 10, 10, 10);
+    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 20, 20, 20);
     testFloor.setTextureScale(5);
 
     Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.5, 0.5, 0.5);

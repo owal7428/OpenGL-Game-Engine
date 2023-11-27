@@ -4,10 +4,10 @@ Collider::Collider(Brush* test)
 {
     this -> test = test;
 
-    glm::vec3 vertex1 = glm::vec3(-1, -1, 0);
-    glm::vec3 vertex2 = glm::vec3(1, -1, 0);
-    glm::vec3 vertex3 = glm::vec3(1, 1, 0);
-    glm::vec3 vertex4 = glm::vec3(-1, 1, 0);
+    glm::vec3 vertex1 = glm::vec3(-0.5, -0.5, 0);
+    glm::vec3 vertex2 = glm::vec3(0.5, -0.5, 0);
+    glm::vec3 vertex3 = glm::vec3(0.5, 0.5, 0);
+    glm::vec3 vertex4 = glm::vec3(-0.5, 0.5, 0);
 
     vertices.push_back(vertex1);
     vertices.push_back(vertex2);
@@ -61,14 +61,14 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
 
     std::vector<glm::vec3> playerVertices;
 
-    playerVertices.push_back(glm::vec3(-0.5, -2, -0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(0.5, -2, -0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(0.5, 0, -0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(-0.5, 0, -0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(-0.5, -2, 0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(0.5, -2, 0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(0.5, 0, 0.5) + playerPosition);
-    playerVertices.push_back(glm::vec3(-0.5, 0, 0.5) + playerPosition);
+    playerVertices.push_back(glm::vec3(-0.3, -2, -0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(0.3, -2, -0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(0.3, 0.1, -0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(-0.3, 0.1, -0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(-0.3, -2, 0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(0.3, -2, 0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(0.3, 0.1, 0.3) + playerPosition);
+    playerVertices.push_back(glm::vec3(-0.3, 0.1, 0.3) + playerPosition);
 
     int size = axes.size();
     for (int i = 0; i < size; i++)
