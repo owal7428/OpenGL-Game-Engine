@@ -145,15 +145,15 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
 
     // Draw axis lines
     glBegin(GL_LINES);  
-     X-axis
+    // X-axis
     glColor3f(1,0,0);
     glVertex3f(0,0,0);
     glVertex3f(1,0,0);
-     Y- axis
+    // Y- axis
     glColor3f(0,1,0);
     glVertex3f(0,0,0);
     glVertex3f(0,1,0);
-     Z- axis
+    // Z- axis
     glColor3f(0,0,1);
     glVertex3f(0,0,0);
     glVertex3f(0,0,1);
