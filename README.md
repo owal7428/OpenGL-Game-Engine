@@ -5,28 +5,27 @@ Owen Allison
 CSCI-4229 Fall 2023
 
 How to use:
-
-    -When in third person view: Use arrow keys to change viewing angle. right and left increase and decrease horizontal angle
-     and top and bottom increase and decrease vertical angle.
      
     -When in first person view: Use W,A,S,D to move and arrow keys to look up/down and left/right.
     
     -Press m to change viewing mode.
     
-    -Press space to toggle on/off the light moving.
+    -Press space to toggle whether or not player collision box visualization should follow player.
+     Note: this is not the actual collision box, just a visual representation.
     
-    -Press F1/F2 to increase/decrease ambient light.
+    -When in the second scene, move towards the plane to trigger collision. Use the collision box
+     visualization to verify collision is working.
     
-    -Press F3/F4 to increase/decrease diffuse light.
-    
-    -Press F5/F6 to increase/decrease specular light.
-    
-    -Press F7/F8 to increase/decrease emission light.
-    
-    -Press F9/F11 to increase/decrease shininess.
-    
-    -Press [/] to increase/decrease sphere's angle around the scene.
-    
-    -Press o to change object currently looking at.
+    -Press o to change scene currently looking at.
     
     -Press ESC to exit the program.
+
+Remaining work to do:
+
+    -Edge to edge collision needs to be tested.
+
+    -Collision response needs to be implemented.
+
+    -Player movement including jump as well as mouse based looking.
+
+    -Basic level to move around in.
