@@ -60,7 +60,8 @@ void main()
 
    vec3 lighting = renderDirectionalLight(sun, n_Normal, viewDirection);
 
-   lighting += renderPointLight(pointLights[0], n_Normal, viewDirection);
+   for (int i = 0; i < 7; i++)
+      lighting += max(renderPointLight(pointLights[i], n_Normal, viewDirection), 0.0);
 
    FragColor = texture(TexFile, TexCoordinate * material.textureScale) * vec4(lighting, 1.0);
 }
