@@ -22,6 +22,7 @@ std::string fileRead(const std::string& filePath)
     return str;
 }
 
+// Adapted from ex26
 static void PrintShaderLog(int obj, const std::string& filePath)
 {
 	const char* file = filePath.c_str();
@@ -45,9 +46,7 @@ static void PrintShaderLog(int obj, const std::string& filePath)
 	if (!length) Fatal("Error compiling %s\n", file);
 }
 
-/*
- *  Print Program Log
- */
+// Adapted from ex26
 static void PrintProgramLog(int obj)
 {
 	int length = 0;

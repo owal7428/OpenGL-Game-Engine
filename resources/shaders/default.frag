@@ -44,7 +44,7 @@ struct PointLight
    float quadratic;
 };
 
-uniform PointLight pointLights[4];
+uniform PointLight pointLights[7];
 
 uniform sampler2D TexFile;
 
@@ -91,7 +91,7 @@ vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection)
    vec3 specular       = pow(max(dot(viewDirection, reflection), 0.0), material.shininess) * material.specular * light.color;
 
    float dist = length(light.position - VertexPos);
-   float attenuation = 1.0 / (light.constant, + light.linear * dist + light.quadratic * (dist * dist));
+   float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
    diffuse *= attenuation;
    specular *= attenuation;

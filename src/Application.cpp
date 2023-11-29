@@ -444,7 +444,7 @@ int main(int argc, char* argv[])
 
     DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 1.0, 1.0, 1.0);
 
-    PointLight light1 = PointLight(0, 0, 5, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 1, 0.07, 0.017);
+    PointLight light1 = PointLight(0, 0, 5, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
 
     std::vector<PointLight*> lights;
     lights.push_back(&light1);
