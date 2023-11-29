@@ -63,6 +63,10 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
 {
     std::vector<glm::vec3> axes(normals);
 
+    // Axes for plane edges
+    axes.push_back(glm::normalize(vertices[1] - vertices[0]));
+    axes.push_back(glm::normalize(vertices[3] - vertices[2]));
+
     // Normal vectors for player collider
     axes.push_back(glm::vec3(1, 0, 0));
     axes.push_back(glm::vec3(0, 1, 0));
@@ -92,6 +96,30 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
             return;
         }
     }
+
+    // Test edge-to-edge collision for non-planes
+
+    /*axes.clear();
+    size = normals.size();
+    for (int i = 0; i < size; i++)
+    {
+        axes.push_back(glm::cross(glm::vec3(1, 0, 0), normals[i]));
+        axes.push_back(glm::cross(glm::vec3(0, 1, 0), normals[i]));
+        axes.push_back(glm::cross(glm::vec3(0, 0, 1), normals[i]));
+    }
+
+    size = axes.size();
+    for (int i = 0; i < size; i++)
+    {
+        glm::vec2 objectProjection = getProjectionForAxis(axes[i], vertices);
+        glm::vec2 playerProjection = getProjectionForAxis(axes[i], playerVertices); 
+
+        if (!doProjectionsCollide(objectProjection, playerProjection))
+        {
+            test -> setColor(0.5,0.5,0.5);
+            return;
+        }
+    }*/
 
     test -> setColor(1,0,0);
 }

@@ -452,6 +452,7 @@ int main(int argc, char* argv[])
     light.AddChild(&light1);
 
     Plane testPlane = Plane(&unlitShader_untextured, 3, 0, 0, 0, 45, 0, 1, 1, 1);
+    testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
 
     Cube playerCollider = Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 2, 1);
     playerCollider.setColor(0,1,0);
@@ -608,6 +609,8 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < rotatorListSize; i++)
                 rotatorObjects.at(i)->Rotate(deltaTime);
+            
+            testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
             
             testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
         }
