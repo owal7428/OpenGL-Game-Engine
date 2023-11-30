@@ -65,7 +65,7 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
 
     // Axes for plane edges
     axes.push_back(glm::normalize(vertices[1] - vertices[0]));
-    axes.push_back(glm::normalize(vertices[3] - vertices[2]));
+    axes.push_back(glm::normalize(vertices[3] - vertices[0]));
 
     // Normal vectors for player collider
     axes.push_back(glm::vec3(1, 0, 0));
@@ -99,7 +99,7 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
 
     // Test edge-to-edge collision for non-planes
 
-    /*axes.clear();
+    axes.clear();
     size = normals.size();
     for (int i = 0; i < size; i++)
     {
@@ -119,7 +119,7 @@ void Collider::CollisionTest(glm::vec3 playerPosition)
             test -> setColor(0.5,0.5,0.5);
             return;
         }
-    }*/
+    }
 
     test -> setColor(1,0,0);
 }
