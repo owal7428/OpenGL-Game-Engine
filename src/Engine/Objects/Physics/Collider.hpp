@@ -8,16 +8,19 @@
 
 class Collider : public GameObject
 {
-private:
+protected:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
 
     Brush* test;
 
-public:
-    Collider(Brush* test, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
+    bool doProjectionsCollide(glm::vec2 p1, glm::vec2 p2);
+    glm::vec2 getProjectionForAxis(glm::vec3 axis, std::vector<glm::vec3> vertices);
 
-    void CollisionTest(glm::vec3 playerPosition);
+public:
+    Collider() {}
+
+    virtual void CollisionTest(glm::vec3 playerPosition) = 0;
 };
 
 #endif // COLLIDER_H

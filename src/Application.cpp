@@ -10,7 +10,7 @@
 #include "Engine/Objects/Entities/Rotator.hpp"
 #include "Engine/Objects/Entities/Lights/PointLight.hpp"
 #include "Engine/Objects/Entities/Lights/DirectionalLight.hpp"
-#include "Engine/Objects/Physics/Collider.hpp"
+#include "Engine/Objects/Physics/PlaneCollider.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
 #define UNLIT_SHADER "resources/shaders/unlit"
@@ -458,7 +458,7 @@ int main(int argc, char* argv[])
     playerCollider.setColor(0,1,0);
     playerCollider.EnableRenderWireframe();
 
-    Collider testCollider = Collider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
+    PlaneCollider testCollider = PlaneCollider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
