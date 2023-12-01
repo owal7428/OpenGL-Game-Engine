@@ -11,6 +11,7 @@
 #include "Engine/Objects/Entities/Lights/PointLight.hpp"
 #include "Engine/Objects/Entities/Lights/DirectionalLight.hpp"
 #include "Engine/Objects/Physics/PlaneCollider.hpp"
+#include "Engine/Objects/Physics/BoxCollider.hpp"
 
 #define DEFAULT_SHADER "resources/shaders/default"
 #define UNLIT_SHADER "resources/shaders/unlit"
@@ -454,11 +455,14 @@ int main(int argc, char* argv[])
     Plane testPlane = Plane(&unlitShader_untextured, 3, 0, 0, 0, 45, 0, 1, 1, 1);
     testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
 
+    Cube testCube = Cube(&unlitShader_untextured, 4, 0, 2, 45, 45, 0, 2, 1, 1);
+
     Cube playerCollider = Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 2, 1);
     playerCollider.setColor(0,1,0);
     playerCollider.EnableRenderWireframe();
 
     PlaneCollider testCollider = PlaneCollider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
+    BoxCollider testBoxCollider = BoxCollider(&testCube, testCube.getPosition(), testCube.getRotation(), testCube.getScale());
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
@@ -523,6 +527,7 @@ int main(int argc, char* argv[])
     brushObjects2.push_back(&light);
 
     brushObjects2.push_back(&testPlane);
+    brushObjects2.push_back(&testCube);
 
     brushObjects2.push_back(&playerCollider);
 
@@ -613,6 +618,7 @@ int main(int argc, char* argv[])
             testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
             
             testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
+            testBoxCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
         }
 
         SDL_Event event;
