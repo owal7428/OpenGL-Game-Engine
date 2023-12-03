@@ -616,9 +616,6 @@ int main(int argc, char* argv[])
                 rotatorObjects.at(i)->Rotate(deltaTime);
             
             testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
-            
-            testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
-            testBoxCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
         }
 
         SDL_Event event;
@@ -652,6 +649,9 @@ int main(int argc, char* argv[])
                     break;
             }
         }
+
+        testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
+        testBoxCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
 
         draw(window, sky, &sun, lights, &brushObjects1, &brushObjects2, &brushObjects3);
     }

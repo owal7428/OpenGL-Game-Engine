@@ -29,6 +29,10 @@ BoxCollider::BoxCollider(Brush* actor, glm::vec3 position, glm::quat rotation, g
     glm::vec3 normal2 = glm::transpose(glm::inverse(glm::mat3(model))) * glm::vec3(0,1,0);
     glm::vec3 normal3 = glm::transpose(glm::inverse(glm::mat3(model))) * glm::vec3(0,0,1);
 
+    normal1 = glm::normalize(normal1);
+    normal2 = glm::normalize(normal2);
+    normal3 = glm::normalize(normal3);
+
     normals.push_back(normal1);
     normals.push_back(normal2);
     normals.push_back(normal3);
@@ -88,9 +92,9 @@ void BoxCollider::CollisionTest(glm::vec3 playerPosition)
     size = normals.size();
     for (int i = 0; i < size; i++)
     {
-        axes.push_back(glm::cross(glm::vec3(1, 0, 0), normals[i]));
-        axes.push_back(glm::cross(glm::vec3(0, 1, 0), normals[i]));
-        axes.push_back(glm::cross(glm::vec3(0, 0, 1), normals[i]));
+        axes.push_back(glm::normalize(glm::cross(glm::vec3(1, 0, 0), normals[i])));
+        axes.push_back(glm::normalize(glm::cross(glm::vec3(0, 1, 0), normals[i])));
+        axes.push_back(glm::normalize(glm::cross(glm::vec3(0, 0, 1), normals[i])));
     }
 
     size = axes.size();

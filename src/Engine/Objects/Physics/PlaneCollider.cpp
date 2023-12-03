@@ -19,6 +19,8 @@ PlaneCollider::PlaneCollider(Brush* actor, glm::vec3 position, glm::quat rotatio
 
     glm::vec3 normal = glm::transpose(glm::inverse(glm::mat3(model))) * glm::vec3(0,0,1);
 
+    normal = glm::normalize(normal);
+
     normals.push_back(normal);
 }
 
