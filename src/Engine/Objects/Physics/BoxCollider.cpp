@@ -1,9 +1,7 @@
 #include "BoxCollider.hpp"
 
-BoxCollider::BoxCollider(Brush* test, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
+BoxCollider::BoxCollider(Brush* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale, double* xPos, double* yPos, double* zPos) : Collider(actor, xPos, yPos, zPos)
 {
-    this -> test = test;
-
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = model * glm::toMat4(rotation);
@@ -38,6 +36,9 @@ BoxCollider::BoxCollider(Brush* test, glm::vec3 position, glm::quat rotation, gl
 
 void BoxCollider::CollisionTest(glm::vec3 playerPosition)
 {
+    glm::vec3 shortestAxis;
+    float overlapMagnitude = INT_MAX;
+
     std::vector<glm::vec3> axes(normals);
 
     // Normal vectors for player collider
@@ -63,10 +64,21 @@ void BoxCollider::CollisionTest(glm::vec3 playerPosition)
         glm::vec2 objectProjection = getProjectionForAxis(axes[i], vertices);
         glm::vec2 playerProjection = getProjectionForAxis(axes[i], playerVertices); 
 
-        if (!doProjectionsCollide(objectProjection, playerProjection))
+        // Get the length of overlap
+        float intersectionLength = doProjectionsCollide(objectProjection, playerProjection);
+
+        if (intersectionLength == 0)
         {
-            test -> setColor(0.5,0.5,0.5);
+            actor -> setColor(0.5,0.5,0.5);
             return;
+        }
+
+        float intersectMagnitude = intersectionLength < 0 ? (intersectionLength * -1) : intersectionLength;
+
+        if (intersectMagnitude < overlapMagnitude)
+        {
+            shortestAxis = axes[i] * (intersectionLength * 1.01f);
+            overlapMagnitude = intersectMagnitude;
         }
     }
 
@@ -87,12 +99,24 @@ void BoxCollider::CollisionTest(glm::vec3 playerPosition)
         glm::vec2 objectProjection = getProjectionForAxis(axes[i], vertices);
         glm::vec2 playerProjection = getProjectionForAxis(axes[i], playerVertices); 
 
-        if (!doProjectionsCollide(objectProjection, playerProjection))
+        // Get the length of overlap
+        float intersectionLength = doProjectionsCollide(objectProjection, playerProjection);
+
+        if (intersectionLength == 0)
         {
-            test -> setColor(0.5,0.5,0.5);
+            actor -> setColor(0.5,0.5,0.5);
             return;
+        }
+
+        float intersectMagnitude = intersectionLength < 0 ? (intersectionLength * -1) : intersectionLength;
+
+        if (intersectMagnitude < overlapMagnitude)
+        {
+            shortestAxis = axes[i] * (intersectionLength * 1.01f);
+            overlapMagnitude = intersectMagnitude;
         }
     }
 
-    test -> setColor(1,0,0);
+    Response(-shortestAxis);
+    actor -> setColor(1,0,0);
 }

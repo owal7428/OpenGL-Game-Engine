@@ -1,5 +1,10 @@
 #include "Collider.hpp"
 
+Collider::Collider(Brush* actor, double* xPos, double* yPos, double* zPos) : xPos(xPos), yPos(yPos), zPos(zPos)
+{
+    this -> actor = actor;
+}
+
 glm::vec2 Collider::getProjectionForAxis(glm::vec3 axis, std::vector<glm::vec3> vertices)
 {
     double min = glm::dot(axis, vertices[0]);
@@ -17,20 +22,32 @@ glm::vec2 Collider::getProjectionForAxis(glm::vec3 axis, std::vector<glm::vec3> 
     return glm::vec2(min, max);
 }
 
-bool Collider::doProjectionsCollide(glm::vec2 p1, glm::vec2 p2)
+/* Returns the length of the intersection of two lines. */
+float Collider::doProjectionsCollide(glm::vec2 p1, glm::vec2 p2)
 {
-    if (p2.x > p1.x && p2.x < p1.y)
-        return true;
-
-    else if (p2.y >= p1.x && p2.y <= p1.y)
-        return true;
+    // Right point of object 1 is overlapping left point of object 2
+    if (p1.x <= p2.x && p1.y >= p2.x)
+        return -(p1.y - p2.x);
     
-    else if (p1.x >= p2.x && p1.x <= p2.y)
-        return true;
+    // Left point of object 1 is overlapping right point of object 2
+    else if (p1.y >= p2.y && p1.x <= p2.y)
+        return (p2.y - p1.x);
     
-    else if (p1.y >= p2.x && p1.y <= p2.y)
-        return true;
+    // Object 1 is contained in object 2
+    else if (p1.x >= p2.x && p1.y <= p2.y)
+        return (p1.y - p2.x) <= (p2.y - p1.x) ? -(p1.y - p2.x) : (p2.y - p1.x);
+    
+    // Object 2 is contained in object 1
+    else if (p1.x <= p2.x && p1.y >= p2.y)
+        return (p2.y - p1.x) <= (p1.y - p2.x) ? -(p2.y - p1.x) : (p1.y - p2.x);
+    
+    else return 0;
 
-    else 
-        return false;
+}
+
+void Collider::Response(glm::vec3 exitVector)
+{
+    (*xPos) += exitVector.x;
+    (*yPos) += exitVector.y;
+    (*zPos) += (-exitVector.z);
 }

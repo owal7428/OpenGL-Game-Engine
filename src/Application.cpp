@@ -461,8 +461,8 @@ int main(int argc, char* argv[])
     playerCollider.setColor(0,1,0);
     playerCollider.EnableRenderWireframe();
 
-    PlaneCollider testCollider = PlaneCollider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
-    BoxCollider testBoxCollider = BoxCollider(&testCube, testCube.getPosition(), testCube.getRotation(), testCube.getScale());
+    PlaneCollider testCollider = PlaneCollider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale(), &xPos, &yPos, &zPos);
+    BoxCollider testBoxCollider = BoxCollider(&testCube, testCube.getPosition(), testCube.getRotation(), testCube.getScale(), &xPos, &yPos, &zPos);
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);

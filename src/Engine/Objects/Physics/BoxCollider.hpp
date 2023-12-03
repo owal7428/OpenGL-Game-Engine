@@ -8,7 +8,7 @@ class BoxCollider : public Collider
 private:
 
 public:
-    BoxCollider(Brush* test, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
+    BoxCollider(Brush* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale, double* xPos, double* yPos, double* zPos);
 
     void CollisionTest(glm::vec3 playerPosition);
 };
