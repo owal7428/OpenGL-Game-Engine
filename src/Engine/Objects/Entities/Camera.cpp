@@ -27,10 +27,7 @@ Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed,
     leftKeyDown = false;
     rightKeyDown = false;
 
-    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
-    glm::vec3 tempLook = glm::vec3(lookingAt.x, lookingAt.y, -lookingAt.z);
-
-    view = glm::lookAt(tempPos, tempPos + tempLook, glm::vec3(0, 1, 0));
+    view = glm::lookAt(position, position + lookingAt, glm::vec3(0, 1, 0));
     UpdateProjection(fov, asp, zNear, zFar);
 }
 
@@ -42,11 +39,8 @@ void Camera::UpdateProjection(float fov, float asp, float zNear, float zFar)
 void Camera::LookAt(glm::vec3 lookAt)
 {
     lookingAt = glm::vec3(lookAt.x, lookAt.y, lookAt.z);
-
-    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
-    glm::vec3 tempLook = glm::vec3(lookingAt.x, lookingAt.y, -lookingAt.z);
-
-    view = glm::lookAt(tempPos, tempPos + tempLook, glm::vec3(0, 1, 0));
+    
+    view = glm::lookAt(position, position + lookAt, glm::vec3(0, 1, 0));
 }
 
 void Camera::Move(glm::vec3 newPosition)
@@ -64,9 +58,9 @@ void Camera::Update(double deltaTime)
     if (!rightKeyDown || !leftKeyDown)
     {
         if (rightKeyDown)
-            newTh += cameraSpeed * 25 * deltaTime;
-        else if (leftKeyDown)
             newTh -= cameraSpeed * 25 * deltaTime;
+        else if (leftKeyDown)
+            newTh += cameraSpeed * 25 * deltaTime;
     }
     if (!upKeyDown || !downKeyDown)
     {
@@ -123,7 +117,7 @@ void Camera::Update(double deltaTime)
         float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
         float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
 
-        glm::vec3 offset = glm::vec3(-xOffset, 0, zOffset);
+        glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
         
         if (aKeyDown)
         {

@@ -70,7 +70,7 @@ void PlaneCollider::CollisionTest(glm::vec3 playerPosition)
 
         if (intersectMagnitude < overlapMagnitude)
         {
-            shortestAxis = axes[i] * (intersectionLength * 1.01f);
+            shortestAxis = axes[i] * (intersectionLength * 1.005f);
             overlapMagnitude = intersectMagnitude;
         }
     }

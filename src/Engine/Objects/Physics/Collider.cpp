@@ -47,5 +47,5 @@ float Collider::doProjectionsCollide(glm::vec2 p1, glm::vec2 p2)
 
 void Collider::Response(glm::vec3 exitVector)
 {
-    actor -> Move(actor -> getPosition() + glm::vec3(exitVector.x, exitVector.y, -exitVector.z));
+    actor -> Move(actor -> getPosition() + glm::vec3(exitVector.x, exitVector.y, exitVector.z));
 }

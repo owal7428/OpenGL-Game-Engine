@@ -90,7 +90,7 @@ void draw(SDL_Window* window, Camera* camera, Plane* sky[], DirectionalLight* su
     
     glLoadIdentity();
 
-    gluLookAt(position.x, position.y, -position.z, position.x + lookingAt.x, position.y + lookingAt.y, -(position.z + lookingAt.z), 0, 1, 0);
+    gluLookAt(position.x, position.y, position.z, position.x + lookingAt.x, position.y + lookingAt.y, position.z + lookingAt.z, 0, 1, 0);
 
     // Draw axis lines
     glBegin(GL_LINES);  
@@ -110,14 +110,12 @@ void draw(SDL_Window* window, Camera* camera, Plane* sky[], DirectionalLight* su
 
     #endif
 
-    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
-
     int size = brushObjects -> size();
 
     for (int i = 0; i < size; i++)
-        brushObjects->at(i)->Draw(tempPos, camera -> getProjectionMatrix(), camera -> getViewMatrix(), sun, pointLights);
+        brushObjects->at(i)->Draw(position, camera -> getProjectionMatrix(), camera -> getViewMatrix(), sun, pointLights);
 
-    GenerateSkybox(sky, tempPos, camera -> getProjectionMatrix(), camera -> getViewMatrix());
+    GenerateSkybox(sky, position, camera -> getProjectionMatrix(), camera -> getViewMatrix());
    
    ErrCheck("display");
    
@@ -223,11 +221,11 @@ int main(int argc, char* argv[])
 
     Cube testCube = Cube(&unlitShader_untextured, 4, 0, 2, 45, 45, 0, 2, 1, 1);
 
-    Cube playerCollider = Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 1, 2, 1);
+    Cube playerCollider = Cube(&unlitShader_untextured, 0, -1, 0, 0, 0, 0, 1, 2, 1);
     playerCollider.setColor(0,1,0);
     playerCollider.EnableRenderWireframe();
 
-    //camera.AddChild(&playerCollider);
+    camera.AddChild(&playerCollider);
 
     PlaneCollider testCollider = PlaneCollider(&camera, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
     BoxCollider testBoxCollider = BoxCollider(&camera, testCube.getPosition(), testCube.getRotation(), testCube.getScale());
@@ -354,9 +352,6 @@ int main(int argc, char* argv[])
             Update();
 
             camera.Update(deltaTime);
-
-            /*if (spaceKeyToggle == 1)
-                playerCollider.Move(glm::vec3(xPos, yPos - 1, -zPos));*/
             
             // Reset rotations to avoid accelerating to infinity
             int brushListSize1 = brushObjects1.size();
@@ -422,8 +417,8 @@ int main(int argc, char* argv[])
 
         glm::vec3 pos = camera.getPosition();
 
-        testCollider.CollisionTest(glm::vec3(pos.x, pos.y, -pos.z));
-        testBoxCollider.CollisionTest(glm::vec3(pos.x, pos.y, -pos.z));
+        testCollider.CollisionTest(glm::vec3(pos.x, pos.y, pos.z));
+        testBoxCollider.CollisionTest(glm::vec3(pos.x, pos.y, pos.z));
 
         draw(window, &camera, sky, &sun, lights, &brushObjects2);
     }
