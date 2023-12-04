@@ -82,12 +82,13 @@ void draw(SDL_Window* window, Camera* camera, Plane* sky[], DirectionalLight* su
     // Enable Depth-Buffer
     glEnable(GL_DEPTH_TEST);
 
+    glm::vec3 position = camera -> getPosition();
+
     #ifndef __APPLE__
 
-    glLoadIdentity();
-
-    glm::vec3 position = camera -> getPosition();
     glm::vec3 lookingAt = camera -> getLookingAt();
+    
+    glLoadIdentity();
 
     gluLookAt(position.x, position.y, -position.z, position.x + lookingAt.x, position.y + lookingAt.y, -(position.z + lookingAt.z), 0, 1, 0);
 
