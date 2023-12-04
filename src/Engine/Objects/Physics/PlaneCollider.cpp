@@ -1,6 +1,6 @@
 #include "PlaneCollider.hpp"
 
-PlaneCollider::PlaneCollider(Brush* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale, double* xPos, double* yPos, double* zPos) : Collider(actor, xPos, yPos, zPos)
+PlaneCollider::PlaneCollider(GameObject* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale) : Collider(actor)
 {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
@@ -63,7 +63,6 @@ void PlaneCollider::CollisionTest(glm::vec3 playerPosition)
 
         if (intersectionLength == 0)
         {
-            actor -> setColor(0.5,0.5,0.5);
             return;
         }
 
@@ -77,5 +76,4 @@ void PlaneCollider::CollisionTest(glm::vec3 playerPosition)
     }
 
     Response(-shortestAxis);
-    actor -> setColor(1,0,0);
 }

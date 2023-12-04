@@ -1,6 +1,6 @@
 #include "Collider.hpp"
 
-Collider::Collider(Brush* actor, double* xPos, double* yPos, double* zPos) : xPos(xPos), yPos(yPos), zPos(zPos)
+Collider::Collider(GameObject* actor)
 {
     this -> actor = actor;
 }
@@ -47,7 +47,5 @@ float Collider::doProjectionsCollide(glm::vec2 p1, glm::vec2 p2)
 
 void Collider::Response(glm::vec3 exitVector)
 {
-    (*xPos) += exitVector.x;
-    (*yPos) += exitVector.y;
-    (*zPos) += (-exitVector.z);
+    actor -> Move(actor -> getPosition() + glm::vec3(exitVector.x, exitVector.y, -exitVector.z));
 }

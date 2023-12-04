@@ -8,7 +8,7 @@ class PlaneCollider : public Collider
 private:
 
 public:
-    PlaneCollider(Brush* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale, double* xPos, double* yPos, double* zPos);
+    PlaneCollider(GameObject* actor, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 
     void CollisionTest(glm::vec3 playerPosition);
 };

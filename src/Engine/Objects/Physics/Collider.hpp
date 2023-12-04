@@ -4,7 +4,6 @@
 #include "../../../Common.h"
 
 #include "../GameObject.hpp"
-#include "../Brushes/Brush.hpp"
 
 class Collider : public GameObject
 {
@@ -12,16 +11,13 @@ protected:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
 
-    Brush* actor;
-    double* xPos;
-    double* yPos;
-    double* zPos;
+    GameObject* actor;
 
     float doProjectionsCollide(glm::vec2 p1, glm::vec2 p2);
     glm::vec2 getProjectionForAxis(glm::vec3 axis, std::vector<glm::vec3> vertices);
 
 public:
-    Collider(Brush* actor, double* xPos, double* yPos, double* zPos);
+    Collider(GameObject* actor);
 
     virtual void CollisionTest(glm::vec3 playerPosition) = 0;
     

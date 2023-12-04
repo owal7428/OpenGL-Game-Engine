@@ -8,6 +8,7 @@
 #include "Engine/Objects/Brushes/Plane.hpp"
 #include "Engine/Objects/Entities/Motor.hpp"
 #include "Engine/Objects/Entities/Rotator.hpp"
+#include "Engine/Objects/Entities/Camera.hpp"
 #include "Engine/Objects/Entities/Lights/PointLight.hpp"
 #include "Engine/Objects/Entities/Lights/DirectionalLight.hpp"
 #include "Engine/Objects/Physics/PlaneCollider.hpp"
@@ -28,78 +29,42 @@
 #define SKYBOX_TOP "resources/textures/skybox/top.bmp"
 #define SKYBOX_BOTTOM "resources/textures/skybox/bottom.bmp"
 
-int th=0;         //  Angle in x-y plane
-int ph=0;         //  Angle in y-z plane
-
-// Current states of the arrow keys
-int leftKeyDown = 0;
-int rightKeyDown = 0;
-int upKeyDown = 0;
-int downKeyDown = 0;
-
-// Current states of the wasd keys
-int wKeyDown = 0;
-int aKeyDown = 0;
-int sKeyDown = 0;
-int dKeyDown = 0;
-
-int spaceKeyToggle = 0;
-
 double asp = 1;
 double zFar = 30;
 double fov = 90;
-int mode = 0;
 
-double xPos = 0;
-double yPos = 0;
-double zPos = 0;
-
-double xOffset = 0;
-double yOffset = 0;
-double zOffset = 1;
-
-glm::mat4 projectionMatrix;
-glm::mat4 viewMatrix;
-
-int objectMode = 0;
-
-void GenerateSkybox(Plane* sky[], float x, float y, float z)
+void GenerateSkybox(Plane* sky[], glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 {
-    sky[0] -> Move(glm::vec3(x + zFar,y,z));
-    sky[0] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[0] -> Move(cameraPosition + glm::vec3(zFar, 0, 0));
+    sky[0] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
     
-    sky[1] -> Move(glm::vec3(x - zFar,y,z));
-    sky[1] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[1] -> Move(cameraPosition - glm::vec3(zFar, 0, 0));
+    sky[1] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 
-    sky[2] -> Move(glm::vec3(x,y + zFar,z));
-    sky[2] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[2] -> Move(cameraPosition + glm::vec3(0, zFar, 0));
+    sky[2] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 
-    sky[3] -> Move(glm::vec3(x,y - zFar,z));
-    sky[3] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[3] -> Move(cameraPosition - glm::vec3(0, zFar, 0));
+    sky[3] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 
-    sky[4] -> Move(glm::vec3(x,y,z + zFar));
-    sky[4] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[4] -> Move(cameraPosition + glm::vec3(0, 0, zFar));
+    sky[4] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 
-    sky[5] -> Move(glm::vec3(x,y,z - zFar));
-    sky[5] -> Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix);
+    sky[5] -> Move(cameraPosition - glm::vec3(0, 0, zFar));
+    sky[5] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 }
 
-void Project()
+void Project(Camera* camera)
 {
-    if (mode == 0)
-        projectionMatrix = glm::ortho(-asp*4, asp*3, -3.0, 3.0, -10.0, 10.0);
-    else
-        projectionMatrix = glm::perspective(glm::radians(fov), asp, 0.25, zFar / Cos(fov));
+
+    camera -> UpdateProjection(fov, asp, 0.25, zFar / Cos(fov));
 
     #ifndef __APPLE__
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    if (mode == 0)
-        glOrtho(-asp*4, asp*3, -3, 3, -10, 10);
-    else
-        gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
+    gluPerspective(fov, asp, 0.25, zFar / Cos(fov));
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -109,7 +74,7 @@ void Project()
 
 }
 
-void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<PointLight*> pointLights, std::vector<Brush*>* brushObjects1, std::vector<Brush*>* brushObjects2, std::vector<Brush*>* brushObjects3)
+void draw(SDL_Window* window, Camera* camera, Plane* sky[], DirectionalLight* sun, std::vector<PointLight*> pointLights, std::vector<Brush*>* brushObjects)
 {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -117,32 +82,14 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
     // Enable Depth-Buffer
     glEnable(GL_DEPTH_TEST);
 
-    // Reset transformation matrix
-
-    if (mode == 0 || mode == 1)
-    {
-        xPos = 1; yPos = 1; zPos = -4;
-        viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    }
-    else
-    {
-        /* Defining the point away from the current location of the player to look at;
-        Equations given based off of cylindrical coordinates. */
-        xOffset = (Sin(th)*Cos(ph));
-        yOffset = Sin(ph);
-        zOffset = (Cos(th)*Cos(ph));
-        
-        viewMatrix = glm::lookAt(glm::vec3(xPos, yPos, -zPos), glm::vec3(xPos + xOffset, yPos + yOffset, -(zPos + zOffset)), glm::vec3(0, 1, 0));
-    }
-
     #ifndef __APPLE__
 
     glLoadIdentity();
 
-    if (mode == 0 || mode == 1)
-        gluLookAt(xPos,yPos,-zPos,0,0,0,0,1,0);
-    else
-        gluLookAt(xPos, yPos, -zPos, xPos + xOffset, yPos + yOffset, -(zPos + zOffset), 0, 1, 0);
+    glm::vec3 position = camera -> getPosition();
+    glm::vec3 lookingAt = camera -> getLookingAt();
+
+    gluLookAt(position.x, position.y, -position.z, position.x + lookingAt.x, position.y + lookingAt.y, -(position.z + lookingAt.z), 0, 1, 0);
 
     // Draw axis lines
     glBegin(GL_LINES);  
@@ -162,45 +109,14 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
 
     #endif
 
-    if (objectMode == 0)
-    {
-        int size = brushObjects1->size();
+    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
 
-        for (int i = 0; i < size; i++)
-            brushObjects1->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
-    }
-    else if (objectMode == 1)
-    {
-        int size = brushObjects2->size();
+    int size = brushObjects -> size();
 
-        for (int i = 0; i < size; i++)
-            brushObjects2->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
-    }
-    else
-    {
-        int size = brushObjects3->size();
+    for (int i = 0; i < size; i++)
+        brushObjects->at(i)->Draw(tempPos, camera -> getProjectionMatrix(), camera -> getViewMatrix(), sun, pointLights);
 
-        for (int i = 0; i < size; i++)
-            brushObjects3->at(i)->Draw(glm::vec3(xPos, yPos, -zPos), projectionMatrix, viewMatrix, sun, pointLights);
-    }
-
-    if (mode != 0)
-        GenerateSkybox(sky, xPos, yPos, -zPos);
-
-    #ifndef __APPLE__
-
-    glColor3f(1,1,1);
-    glWindowPos2i(5,30);
-    Print("Angle theta = %d, Angle phi = %d", th, ph);
-    glWindowPos2i(5,5);
-    if (mode == 0)
-        Print("Mode: Orthogonal Overview");
-    else if (mode == 1)
-        Print("Mode: Perspective Overview");
-    else
-        Print("Mode: First-Person Perspective");
-
-   #endif
+    GenerateSkybox(sky, tempPos, camera -> getProjectionMatrix(), camera -> getViewMatrix());
    
    ErrCheck("display");
    
@@ -208,167 +124,7 @@ void draw(SDL_Window* window, Plane* sky[], DirectionalLight* sun, std::vector<P
    SDL_GL_SwapWindow(window);
 }
 
-void keyDown(SDL_Scancode code)
-{
-    switch (code)
-    { 
-        case SDL_SCANCODE_M:
-            mode = (mode + 1) % 3;
-            if (mode == 2)
-            {
-                xPos = 0; yPos = 0; zPos = -1;
-            }
-            Project();
-            break;
-        
-        case SDL_SCANCODE_W:
-            wKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_A:
-            aKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_S:
-            sKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_D:
-            dKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_SPACE:
-            spaceKeyToggle = (spaceKeyToggle + 1) % 2;
-            break;
-        
-        case SDL_SCANCODE_O:
-            objectMode = (objectMode + 1) % 3;
-            break;
-        
-        case SDL_SCANCODE_RIGHT:
-            rightKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_LEFT:
-            leftKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_UP:
-            upKeyDown = 1;
-            break;
-        
-        case SDL_SCANCODE_DOWN:
-            downKeyDown = 1;
-            break;
-        
-        default:
-            break;
-    }
-}
-
-void keyUp(SDL_Scancode code)
-{
-    switch (code)
-    {
-        case SDL_SCANCODE_W:
-            wKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_A:
-            aKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_S:
-            sKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_D:
-            dKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_RIGHT:
-            rightKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_LEFT:
-            leftKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_UP:
-            upKeyDown = 0;
-            break;
-        
-        case SDL_SCANCODE_DOWN:
-            downKeyDown = 0;
-            break;
-        
-        default:
-            break;
-    }
-}
-
-/* This function is used for smooth rotation;
-*  Checks for key presses every 10 milliseconds and updates rotation accordingly. */
-void timer()
-{
-    /* Check if keys are pressed down 
-    *  If yes, continue rotating. */
-    if (!rightKeyDown || !leftKeyDown)
-    {
-        if (rightKeyDown)
-            th += 1;
-        else if (leftKeyDown)
-            th -= 1;
-    }
-    if (!upKeyDown || !downKeyDown)
-    {
-        if (upKeyDown)
-            ph += 1;
-        else if (downKeyDown)
-            ph -= 1;
-    }
-    
-    th %= 360;
-    
-    if (ph > 90)
-        ph = 90;
-    if (ph < -90)
-        ph = -90;
-
-    // Check if wasd keys are pressed down
-    if (!wKeyDown || !sKeyDown)
-    {
-        if (wKeyDown)
-        {
-            xPos += xOffset / 35;
-            yPos += yOffset / 35;
-            zPos += zOffset / 35;
-        }
-        else if (sKeyDown)
-        {
-            xPos -= xOffset / 35;
-            yPos -= yOffset / 35;
-            zPos -= zOffset / 35;
-        }
-    }
-    if (!aKeyDown || !dKeyDown)
-    {
-        double xOffset_ortho = (Sin(90-th));
-        double zOffset_ortho = (Cos(90-th));
-        if (aKeyDown)
-        {
-            xPos -= xOffset_ortho / 35;
-            zPos += zOffset_ortho / 35;
-        }
-        else if (dKeyDown)
-        {
-            xPos += xOffset_ortho / 35;
-            zPos -= zOffset_ortho / 35;
-        }
-    }
-}
-
-void reshape(SDL_Window* window)
+void reshape(SDL_Window* window, Camera* camera)
 {
     int width, height;
 
@@ -378,7 +134,14 @@ void reshape(SDL_Window* window)
 
     glViewport(0,0, RES*width,RES*height);
 
-    Project();
+    Project(camera);
+}
+
+/* This function is used for smooth rotation;
+*  Checks for key presses every 10 milliseconds and updates rotation accordingly. */
+void Update()
+{
+    // Do nothing for now
 }
 
 int main(int argc, char* argv[]) 
@@ -408,8 +171,10 @@ int main(int argc, char* argv[])
     Shader unlitShader_untextured(UNLIT_UNTEXTURED_SHADER);
 
     asp = (float) 1300 / 900;
+
+    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 5, 5);
     
-    reshape(window);
+    reshape(window, &camera);
 
     ErrCheck("init");
                                                             // Position     // Rotation     // Scale
@@ -461,8 +226,10 @@ int main(int argc, char* argv[])
     playerCollider.setColor(0,1,0);
     playerCollider.EnableRenderWireframe();
 
-    PlaneCollider testCollider = PlaneCollider(&testPlane, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale(), &xPos, &yPos, &zPos);
-    BoxCollider testBoxCollider = BoxCollider(&testCube, testCube.getPosition(), testCube.getRotation(), testCube.getScale(), &xPos, &yPos, &zPos);
+    //camera.AddChild(&playerCollider);
+
+    PlaneCollider testCollider = PlaneCollider(&camera, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
+    BoxCollider testBoxCollider = BoxCollider(&camera, testCube.getPosition(), testCube.getRotation(), testCube.getScale());
 
     spinningStarCube.setColor(1, 0, 0);
     rotatingStarCube.setColor(0, 1, 0);
@@ -583,10 +350,12 @@ int main(int argc, char* argv[])
         if (deltaTime >= 0.01)
         {
             time = newTime;
-            timer();
+            Update();
 
-            if (spaceKeyToggle == 1)
-                playerCollider.Move(glm::vec3(xPos, yPos - 1, -zPos));
+            camera.Update(deltaTime);
+
+            /*if (spaceKeyToggle == 1)
+                playerCollider.Move(glm::vec3(xPos, yPos - 1, -zPos));*/
             
             // Reset rotations to avoid accelerating to infinity
             int brushListSize1 = brushObjects1.size();
@@ -629,7 +398,7 @@ int main(int argc, char* argv[])
                         int width = event.window.data1;
                         int height = event.window.data2;
                         SDL_SetWindowSize(window, width, height);
-                        reshape(window);
+                        reshape(window, &camera);
                     }
                     break;
                 case SDL_QUIT:
@@ -640,20 +409,22 @@ int main(int argc, char* argv[])
                     if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
                         run = 0;
                     else
-                        keyDown(event.key.keysym.scancode);
+                        camera.CheckInput(SDL_KEYDOWN, event.key.keysym.scancode);
                     break;
                 case SDL_KEYUP:
-                    keyUp(event.key.keysym.scancode);
+                    camera.CheckInput(SDL_KEYUP, event.key.keysym.scancode);
                     break;
                 default:
                     break;
             }
         }
 
-        testCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
-        testBoxCollider.CollisionTest(glm::vec3(xPos, yPos, -zPos));
+        glm::vec3 pos = camera.getPosition();
 
-        draw(window, sky, &sun, lights, &brushObjects1, &brushObjects2, &brushObjects3);
+        testCollider.CollisionTest(glm::vec3(pos.x, pos.y, -pos.z));
+        testBoxCollider.CollisionTest(glm::vec3(pos.x, pos.y, -pos.z));
+
+        draw(window, &camera, sky, &sun, lights, &brushObjects2);
     }
 
     SDL_Quit();

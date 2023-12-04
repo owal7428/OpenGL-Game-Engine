@@ -2,9 +2,11 @@
 #define CAMERA_H
 
 #include "../../../Common.h"
+
+#include "../GameObject.hpp"
 #include "../../Utility/util.h"
 
-class Camera
+class Camera : public GameObject
 {
 private:
     glm::mat4 view_projection;
@@ -12,10 +14,9 @@ private:
     glm::mat4 view;
     glm::mat4 projection;
 
-    glm::vec3 location;
     glm::vec3 lookingAt;
 
-    int fov, asp, zNear, zFar;
+    float fov, asp, zNear, zFar;
     int movementSpeed;
     int cameraSpeed;
 
@@ -23,32 +24,36 @@ private:
     float th, ph;
 
     // Variables used to check if movement keys are pressed
-    bool wKeyDown, sKeyDown, aKeyDown, dKeyDown;
+    bool wKeyDown, sKeyDown, aKeyDown, dKeyDown, spaceKeyToggle;
 
     // Variables used to check if arrow keys are pressed
     bool upKeyDown, downKeyDown, leftKeyDown, rightKeyDown;
-
-    void updateViewProjection();
 
     void checkInputUp(SDL_Scancode code);
     void checkInputDown(SDL_Scancode code);
 
 public:
-    Camera(int fov, int asp, int zNear, int zFar, int movementSpeed, int cameraSpeed);
-
-    /* Sets the position of the camera and the point at which the camera should look.
-    *  @param Pos world coordinates of the camera.
-    *  @param LookAt world coordinates of the point the camera should be looking at. */
-    void LookAt(double xPos, double yPos, double zPos, double xLookAt, double yLookAt, double zLookAt);
+    Camera(float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed);
 
     /* Updates the projection matrix.
     *  @param fov field of view that the camera should have.
     *  @param asp aspect ratio of the view fustrum. */
-    void UpdateProjection(int fov, int asp, int zNear, int zFar);
+    void UpdateProjection(float fov, float asp, float zNear, float zFar);
 
-    /* Returns the multiplied view-projection matrix for the camera. */
-    inline glm::mat4 getMatrix() {return view_projection;}
+    /* Sets the position of the camera and the point at which the camera should look.
+    *  @param Pos world coordinates of the camera.
+    *  @param LookAt world coordinates of the point the camera should be looking at. */
+    void LookAt(glm::vec3 lookAt);
 
+    /* Returns the viewn matrix for the camera. */
+    inline glm::mat4 getViewMatrix() {return view;}
+    
+    /* Returns the projection matrix for the camera. */
+    inline glm::mat4 getProjectionMatrix() {return projection;}
+
+    inline glm::vec3 getLookingAt() {return lookingAt;}
+
+    void Move(glm::vec3 newPosition);
     void Update(double deltaTime);
 
     /* Checks for input from keyboard.

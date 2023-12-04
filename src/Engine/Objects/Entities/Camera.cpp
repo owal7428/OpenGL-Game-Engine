@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera(int fov, int asp, int zNear, int zFar, int movementSpeed, int cameraSpeed)
+Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed)
 {
     this -> fov     = fov;
     this -> asp     = asp;
@@ -13,43 +13,46 @@ Camera::Camera(int fov, int asp, int zNear, int zFar, int movementSpeed, int cam
     this -> movementSpeed = movementSpeed;
     this -> cameraSpeed = cameraSpeed;
 
-    location = glm::vec3(0.0f, 0.0f, 0.0f);
-    lookingAt = glm::vec3(0.0f, 0.0f, 1.0f);
+    this -> position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this -> lookingAt = glm::vec3(0.0f, 0.0f, 1.0f);
 
     wKeyDown = false;
     sKeyDown = false;
     aKeyDown = false;
     dKeyDown = false;
+    spaceKeyToggle = false;
 
     upKeyDown = false;
     downKeyDown = false;
     leftKeyDown = false;
     rightKeyDown = false;
 
-    LookAt(0, 0, 0, 0, 0, 1);
+    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
+    glm::vec3 tempLook = glm::vec3(lookingAt.x, lookingAt.y, -lookingAt.z);
+
+    view = glm::lookAt(tempPos, tempPos + tempLook, glm::vec3(0, 1, 0));
     UpdateProjection(fov, asp, zNear, zFar);
 }
 
-void Camera::updateViewProjection()
+void Camera::UpdateProjection(float fov, float asp, float zNear, float zFar)
 {
-    view_projection = projection * view;
+    projection = glm::perspective(glm::radians(fov), asp, zNear, zFar);
 }
 
-void Camera::UpdateProjection(int fov, int asp, int zNear, int zFar)
+void Camera::LookAt(glm::vec3 lookAt)
 {
-    projection = glm::perspective(fov, asp, zNear, zFar);
+    lookingAt = glm::vec3(lookAt.x, lookAt.y, lookAt.z);
 
-    updateViewProjection();
+    glm::vec3 tempPos = glm::vec3(position.x, position.y, -position.z);
+    glm::vec3 tempLook = glm::vec3(lookingAt.x, lookingAt.y, -lookingAt.z);
+
+    view = glm::lookAt(tempPos, tempPos + tempLook, glm::vec3(0, 1, 0));
 }
 
-void Camera::LookAt(double xPos, double yPos, double zPos, double xLookAt, double yLookAt, double zLookAt)
+void Camera::Move(glm::vec3 newPosition)
 {
-    glm::vec3 eye = glm::vec3(xPos, yPos, -zPos);
-    glm::vec3 center = glm::vec3(xLookAt, yLookAt, -zLookAt);
-
-    view = glm::lookAt(eye, center, glm::vec3(0, 1, 0));
-
-    updateViewProjection();
+    GameObject::Move(newPosition);
+    LookAt(lookingAt);
 }
 
 void Camera::Update(double deltaTime)
@@ -61,27 +64,30 @@ void Camera::Update(double deltaTime)
     if (!rightKeyDown || !leftKeyDown)
     {
         if (rightKeyDown)
-            newTh += cameraSpeed * deltaTime;
+            newTh += cameraSpeed * 25 * deltaTime;
         else if (leftKeyDown)
-            newTh -= cameraSpeed * deltaTime;
+            newTh -= cameraSpeed * 25 * deltaTime;
     }
     if (!upKeyDown || !downKeyDown)
     {
         if (upKeyDown)
-            newPh += cameraSpeed * deltaTime;
+            newPh += cameraSpeed * 25 * deltaTime;
         else if (downKeyDown)
-            newPh -= cameraSpeed * deltaTime;
+            newPh -= cameraSpeed * 25 * deltaTime;
     }
     
-    while (th >= 360)
+    while (newTh >= 360)
         newTh -= 360;
     
+    while (newTh < 0)
+        newTh += 360;
+    
     // Make sure can't go upside down
-    if (ph > 90)
-        newPh = 90;
+    if (newPh > 89)
+        newPh = 89;
 
-    else if (ph < -90)
-        newPh = -90;
+    else if (newPh < -89)
+        newPh = -89;
     
     // Only update looking at vector when angles change
     if (newTh != th || newPh != ph)
@@ -93,7 +99,7 @@ void Camera::Update(double deltaTime)
         float newLookingAtY = glm::sin(glm::radians(ph));
         float newLookingAtZ = glm::cos(glm::radians(th)) * glm::cos(glm::radians(ph));
 
-        lookingAt = glm::vec3(newLookingAtX, newLookingAtY, newLookingAtZ);
+        LookAt(glm::vec3(newLookingAtX, newLookingAtY, newLookingAtZ));
     }
 
     // Check if wasd keys are pressed down
@@ -105,11 +111,11 @@ void Camera::Update(double deltaTime)
 
         if (wKeyDown)
         {
-            location += glm::vec3(newX, newY, newZ);
+            Move(position + glm::vec3(newX, newY, newZ));
         }
         else if (sKeyDown)
         {
-            location -= glm::vec3(newX, newY, newZ);
+            Move(position - glm::vec3(newX, newY, newZ));
         }
     }
     if (!aKeyDown || !dKeyDown)
@@ -117,19 +123,17 @@ void Camera::Update(double deltaTime)
         float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
         float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
 
-        glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
-
+        glm::vec3 offset = glm::vec3(-xOffset, 0, zOffset);
+        
         if (aKeyDown)
         {
-            location += offset;
+            Move(position + offset);
         }
         else if (dKeyDown)
         {
-            location -= offset;
+            Move(position - offset);
         }
     }
-
-    LookAt(location.x, location.y, location.z, lookingAt.x, lookingAt.y, lookingAt.z);
 }
 
 void Camera::CheckInput(uint32_t type, SDL_Scancode code)
@@ -175,6 +179,10 @@ void Camera::checkInputDown(SDL_Scancode code)
         
         case SDL_SCANCODE_DOWN:
             downKeyDown = 1;
+            break;
+        
+        case SDL_SCANCODE_SPACE:
+            spaceKeyToggle = (spaceKeyToggle + 1) % 2;
             break;
         
         default:

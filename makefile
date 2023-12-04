@@ -31,6 +31,7 @@ SRC = 	Texture.o 			\
 		Cube.o				\
 		Plane.o				\
 		Brush.o				\
+		Camera.o			\
 		Motor.o				\
 		Rotator.o			\
 		VertexBuffer.o		\
