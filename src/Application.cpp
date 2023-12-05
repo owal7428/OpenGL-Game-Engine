@@ -157,6 +157,9 @@ int main(int argc, char* argv[])
         printf("Set gl version to 330 core.\n");
     #endif
 
+    SDL_ShowCursor(SDL_DISABLE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
     SDL_GL_CreateContext(window);                      
     
     #ifdef USEGLEW
@@ -171,7 +174,7 @@ int main(int argc, char* argv[])
 
     asp = (float) 1300 / 900;
 
-    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 5, 5);
+    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 5, 10);
     
     reshape(window, &camera);
 
@@ -410,6 +413,8 @@ int main(int argc, char* argv[])
                 case SDL_KEYUP:
                     camera.CheckInput(SDL_KEYUP, event.key.keysym.scancode);
                     break;
+                case SDL_MOUSEMOTION:
+                    camera.checkInputMouse(event.motion.xrel, event.motion.yrel);
                 default:
                     break;
             }

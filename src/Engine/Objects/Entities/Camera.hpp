@@ -20,6 +20,7 @@ private:
 
     // Internal rotation angles
     float th, ph;
+    float mouseMoveX, mouseMoveY;
 
     // Variables used to check if movement keys are pressed
     bool wKeyDown, sKeyDown, aKeyDown, dKeyDown, spaceKeyToggle;
@@ -58,6 +59,8 @@ public:
     *  @param type type of input (button down or up).
     *  @param code button that was pressed. */
     void CheckInput(uint32_t type, SDL_Scancode code);
+    
+    void checkInputMouse(int xRel, int yRel);
 };
 
 #endif // CAMERA_H

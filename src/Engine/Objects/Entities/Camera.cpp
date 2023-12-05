@@ -10,6 +10,9 @@ Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed,
     th = 0;
     ph = 0;
 
+    mouseMoveX = 0;
+    mouseMoveY = 0;
+
     this -> movementSpeed = movementSpeed;
     this -> cameraSpeed = cameraSpeed;
 
@@ -58,16 +61,24 @@ void Camera::Update(double deltaTime)
     if (!rightKeyDown || !leftKeyDown)
     {
         if (rightKeyDown)
-            newTh -= cameraSpeed * 25 * deltaTime;
+            newTh -= 10 * cameraSpeed * deltaTime;
         else if (leftKeyDown)
-            newTh += cameraSpeed * 25 * deltaTime;
+            newTh += 10 * cameraSpeed * deltaTime;
     }
     if (!upKeyDown || !downKeyDown)
     {
         if (upKeyDown)
-            newPh += cameraSpeed * 25 * deltaTime;
+            newPh += 10 * cameraSpeed * deltaTime;
         else if (downKeyDown)
-            newPh -= cameraSpeed * 25 * deltaTime;
+            newPh -= 10 * cameraSpeed * deltaTime;
+    }
+    if (mouseMoveX != 0 || mouseMoveY != 0)
+    {
+        newTh -= mouseMoveX * cameraSpeed * deltaTime;
+        newPh -= mouseMoveY * cameraSpeed * deltaTime;
+
+        mouseMoveX = 0;
+        mouseMoveY = 0;
     }
     
     while (newTh >= 360)
@@ -223,4 +234,10 @@ void Camera::checkInputUp(SDL_Scancode code)
         default:
             break;
     }
+}
+
+void Camera::checkInputMouse(int xRel, int yRel)
+{
+    mouseMoveX += xRel;
+    mouseMoveY += yRel;
 }
