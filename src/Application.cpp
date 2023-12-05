@@ -160,6 +160,8 @@ int main(int argc, char* argv[])
     SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
+    bool catchMouse = true;
+
     SDL_GL_CreateContext(window);                      
     
     #ifdef USEGLEW
@@ -407,6 +409,18 @@ int main(int argc, char* argv[])
                     // Exit event loop if escape key is pressed
                     if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
                         run = 0;
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_F11)
+                    {
+                        SDL_ShowCursor(SDL_ENABLE);
+                        SDL_SetRelativeMouseMode(SDL_FALSE);
+                        catchMouse = false;
+                    }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_F12)
+                    {
+                        SDL_ShowCursor(SDL_DISABLE);
+                        SDL_SetRelativeMouseMode(SDL_TRUE);
+                        catchMouse = true;
+                    }
                     else
                         camera.CheckInput(SDL_KEYDOWN, event.key.keysym.scancode);
                     break;
@@ -414,7 +428,8 @@ int main(int argc, char* argv[])
                     camera.CheckInput(SDL_KEYUP, event.key.keysym.scancode);
                     break;
                 case SDL_MOUSEMOTION:
-                    camera.checkInputMouse(event.motion.xrel, event.motion.yrel);
+                    if (catchMouse)
+                        camera.checkInputMouse(event.motion.xrel, event.motion.yrel);
                 default:
                     break;
             }
