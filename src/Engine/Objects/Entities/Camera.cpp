@@ -23,7 +23,6 @@ Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed,
     sKeyDown = false;
     aKeyDown = false;
     dKeyDown = false;
-    spaceKeyToggle = false;
 
     upKeyDown = false;
     downKeyDown = false;
@@ -194,21 +193,24 @@ void Camera::Update(double deltaTime)
     }
 
     // Gravity
-    MoveVelocity(velocity + glm::vec3(0, -9.8 * deltaTime, 0));
+    if (!noclip)
+        MoveVelocity(velocity + glm::vec3(0, -9.8 * deltaTime, 0));
 
     if (velocity.y < -9.8)
         MoveVelocity(glm::vec3(velocity.x, -9.8, velocity.z));
-
-    if (spaceKeyToggle)
-    {
-        MoveVelocity(velocity + glm::vec3(0, 4.5, 0));
-        spaceKeyToggle = 0;
-    }
 
     if (noclip)
         moveNoclip(deltaTime);
     else
         moveNormal(deltaTime);
+}
+
+void Camera::checkJump()
+{
+    if (velocity.y < 0.1 && velocity.y > -0.1)
+    {
+        MoveVelocity(velocity + glm::vec3(0, 4.5, 0));
+    }
 }
 
 void Camera::CheckInput(uint32_t type, SDL_Scancode code)
@@ -257,7 +259,7 @@ void Camera::checkInputDown(SDL_Scancode code)
             break;
         
         case SDL_SCANCODE_SPACE:
-            spaceKeyToggle = 1;
+            checkJump();
             break;
         
         default:

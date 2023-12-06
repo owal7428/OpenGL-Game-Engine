@@ -23,7 +23,7 @@ private:
     float mouseMoveX, mouseMoveY;
 
     // Variables used to check if movement keys are pressed
-    bool wKeyDown, sKeyDown, aKeyDown, dKeyDown, spaceKeyToggle;
+    bool wKeyDown, sKeyDown, aKeyDown, dKeyDown;
 
     // Variables used to check if arrow keys are pressed
     bool upKeyDown, downKeyDown, leftKeyDown, rightKeyDown;
@@ -35,6 +35,8 @@ private:
 
     void checkInputUp(SDL_Scancode code);
     void checkInputDown(SDL_Scancode code);
+
+    void checkJump();
 
 public:
     Camera(float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed);
