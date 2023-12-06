@@ -28,6 +28,11 @@ private:
     // Variables used to check if arrow keys are pressed
     bool upKeyDown, downKeyDown, leftKeyDown, rightKeyDown;
 
+    bool noclip;
+
+    void moveNormal(double deltaTime);
+    void moveNoclip(double deltaTime);
+
     void checkInputUp(SDL_Scancode code);
     void checkInputDown(SDL_Scancode code);
 

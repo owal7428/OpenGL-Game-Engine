@@ -30,6 +30,8 @@ Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed,
     leftKeyDown = false;
     rightKeyDown = false;
 
+    noclip = false;
+
     view = glm::lookAt(position, position + lookingAt, glm::vec3(0, 1, 0));
     UpdateProjection(fov, asp, zNear, zFar);
 }
@@ -50,6 +52,79 @@ void Camera::Move(glm::vec3 newPosition)
 {
     GameObject::Move(newPosition);
     LookAt(lookingAt);
+}
+
+void Camera::moveNormal(double deltaTime)
+{
+    // Check if wasd keys are pressed down
+    if (!wKeyDown || !sKeyDown)
+    {
+        float xOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
+        float zOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
+
+        glm::vec3 offset = glm::vec3(xOffset, 0, zOffset);
+
+        if (wKeyDown)
+        {
+            Move(position + offset);
+        }
+        else if (sKeyDown)
+        {
+            Move(position - offset);
+        }
+    }
+    if (!aKeyDown || !dKeyDown)
+    {
+        float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
+        float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
+
+        glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
+        
+        if (aKeyDown)
+        {
+            Move(position + offset);
+        }
+        else if (dKeyDown)
+        {
+            Move(position - offset);
+        }
+    }
+}
+
+void Camera::moveNoclip(double deltaTime)
+{
+    // Check if wasd keys are pressed down
+    if (!wKeyDown || !sKeyDown)
+    {
+        float newX = lookingAt.x * movementSpeed * deltaTime;
+        float newY = lookingAt.y * movementSpeed * deltaTime;
+        float newZ = lookingAt.z * movementSpeed * deltaTime;
+
+        if (wKeyDown)
+        {
+            Move(position + glm::vec3(newX, newY, newZ));
+        }
+        else if (sKeyDown)
+        {
+            Move(position - glm::vec3(newX, newY, newZ));
+        }
+    }
+    if (!aKeyDown || !dKeyDown)
+    {
+        float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
+        float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
+
+        glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
+        
+        if (aKeyDown)
+        {
+            Move(position + offset);
+        }
+        else if (dKeyDown)
+        {
+            Move(position - offset);
+        }
+    }
 }
 
 void Camera::Update(double deltaTime)
@@ -107,38 +182,10 @@ void Camera::Update(double deltaTime)
         LookAt(glm::vec3(newLookingAtX, newLookingAtY, newLookingAtZ));
     }
 
-    // Check if wasd keys are pressed down
-    if (!wKeyDown || !sKeyDown)
-    {
-        float newX = lookingAt.x * movementSpeed * deltaTime;
-        float newY = lookingAt.y * movementSpeed * deltaTime;
-        float newZ = lookingAt.z * movementSpeed * deltaTime;
-
-        if (wKeyDown)
-        {
-            Move(position + glm::vec3(newX, newY, newZ));
-        }
-        else if (sKeyDown)
-        {
-            Move(position - glm::vec3(newX, newY, newZ));
-        }
-    }
-    if (!aKeyDown || !dKeyDown)
-    {
-        float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
-        float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
-
-        glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
-        
-        if (aKeyDown)
-        {
-            Move(position + offset);
-        }
-        else if (dKeyDown)
-        {
-            Move(position - offset);
-        }
-    }
+    if (noclip)
+        moveNoclip(deltaTime);
+    else
+        moveNormal(deltaTime);
 }
 
 void Camera::CheckInput(uint32_t type, SDL_Scancode code)
