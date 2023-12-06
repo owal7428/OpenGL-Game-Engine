@@ -56,7 +56,7 @@ void Camera::Move(glm::vec3 newPosition)
 
 void Camera::moveNormal(double deltaTime)
 {
-    velocity = glm::vec3(0, velocity.y, 0);
+    velocity = glm::vec3(0, 0, 0);
 
     glm::vec3 temp = glm::vec3(0,0,0);
 
