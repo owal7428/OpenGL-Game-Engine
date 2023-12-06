@@ -53,8 +53,8 @@ void Collider::Response(glm::vec3 exitVector)
     glm::vec3 unitAxis = glm::normalize(exitVector);
     float projComp = glm::dot(currVelocity, unitAxis);
     glm::vec3 projVelocity = glm::vec3(unitAxis.x * projComp, unitAxis.y * projComp, unitAxis.z * projComp);
-
-    actor -> MoveVelocity(currVelocity + projVelocity);
+    
+    actor -> MoveVelocity(currVelocity - projVelocity);
 
     actor -> Move(actor -> getPosition() + glm::vec3(exitVector.x, exitVector.y, exitVector.z));
 }

@@ -56,7 +56,7 @@ void Camera::Move(glm::vec3 newPosition)
 
 void Camera::moveNormal(double deltaTime)
 {
-    velocity = glm::vec3(0, 0, 0);
+    velocity = glm::vec3(0, velocity.y, 0);
 
     glm::vec3 temp = glm::vec3(0,0,0);
 
@@ -193,6 +193,18 @@ void Camera::Update(double deltaTime)
         LookAt(glm::vec3(newLookingAtX, newLookingAtY, newLookingAtZ));
     }
 
+    // Gravity
+    MoveVelocity(velocity + glm::vec3(0, -9.8 * deltaTime, 0));
+
+    if (velocity.y < -9.8)
+        MoveVelocity(glm::vec3(velocity.x, -9.8, velocity.z));
+
+    if (spaceKeyToggle)
+    {
+        MoveVelocity(velocity + glm::vec3(0, 4.5, 0));
+        spaceKeyToggle = 0;
+    }
+
     if (noclip)
         moveNoclip(deltaTime);
     else
@@ -245,7 +257,7 @@ void Camera::checkInputDown(SDL_Scancode code)
             break;
         
         case SDL_SCANCODE_SPACE:
-            spaceKeyToggle = (spaceKeyToggle + 1) % 2;
+            spaceKeyToggle = 1;
             break;
         
         default:
