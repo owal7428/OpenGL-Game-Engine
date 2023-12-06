@@ -209,6 +209,8 @@ int main(int argc, char* argv[])
     Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 20, 20, 20);
     testFloor.setTextureScale(5);
 
+    PlaneCollider floorCollider = PlaneCollider(&camera, testFloor.getPosition(), testFloor.getRotation(), testFloor.getScale());
+
     Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.5, 0.5, 0.5);
     light.setColor(1,1,1);
 
@@ -437,8 +439,9 @@ int main(int argc, char* argv[])
 
         glm::vec3 pos = camera.getPosition();
 
-        testCollider.CollisionTest(glm::vec3(pos.x, pos.y, pos.z));
-        testBoxCollider.CollisionTest(glm::vec3(pos.x, pos.y, pos.z));
+        testCollider.CollisionTest(pos);
+        testBoxCollider.CollisionTest(pos);
+        floorCollider.CollisionTest(pos);
 
         draw(window, &camera, sky, &sun, lights, &brushObjects2);
     }
