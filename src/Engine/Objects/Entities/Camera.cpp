@@ -56,39 +56,50 @@ void Camera::Move(glm::vec3 newPosition)
 
 void Camera::moveNormal(double deltaTime)
 {
+    velocity = glm::vec3(0, velocity.y, 0);
+
+    glm::vec3 temp = glm::vec3(0,0,0);
+
     // Check if wasd keys are pressed down
     if (!wKeyDown || !sKeyDown)
     {
-        float xOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
-        float zOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
+        float xOffset = glm::cos(glm::radians(90 - th));
+        float zOffset = glm::sin(glm::radians(90 - th));
 
         glm::vec3 offset = glm::vec3(xOffset, 0, zOffset);
 
         if (wKeyDown)
         {
-            Move(position + offset);
+            temp += offset;
         }
         else if (sKeyDown)
         {
-            Move(position - offset);
+            temp -= offset;
         }
     }
     if (!aKeyDown || !dKeyDown)
     {
-        float xOffset = glm::sin(glm::radians(90 - th)) * movementSpeed * deltaTime;
-        float zOffset = glm::cos(glm::radians(90 - th)) * movementSpeed * deltaTime;
+        float xOffset = glm::sin(glm::radians(90 - th));
+        float zOffset = glm::cos(glm::radians(90 - th));
 
         glm::vec3 offset = glm::vec3(xOffset, 0, -zOffset);
         
         if (aKeyDown)
         {
-            Move(position + offset);
+            temp += offset;
         }
         else if (dKeyDown)
         {
-            Move(position - offset);
+            temp -= offset;
         }
     }
+
+    if (temp != glm::vec3(0,0,0))
+        temp = glm::normalize(temp);
+    
+    MoveVelocity(velocity + glm::vec3(temp.x * movementSpeed, 0, temp.z * movementSpeed));
+
+    Move(position + glm::vec3(velocity.x * deltaTime, velocity.y * deltaTime, velocity.z * deltaTime));
 }
 
 void Camera::moveNoclip(double deltaTime)

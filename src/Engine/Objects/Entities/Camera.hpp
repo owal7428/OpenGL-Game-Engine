@@ -58,6 +58,7 @@ public:
     inline glm::vec3 getLookingAt() {return lookingAt;}
 
     void Move(glm::vec3 newPosition);
+
     void Update(double deltaTime);
 
     /* Checks for input from keyboard.
