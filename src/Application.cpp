@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
 
     asp = (float) 1300 / 900;
 
-    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 5, 10);
+    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 12, 10);
     
     reshape(window, &camera);
 

@@ -209,7 +209,7 @@ void Camera::checkJump()
 {
     if (velocity.y < 0.1 && velocity.y > -0.1)
     {
-        MoveVelocity(velocity + glm::vec3(0, 4.5, 0));
+        MoveVelocity(velocity + glm::vec3(0, 4, 0));
     }
 }
 
