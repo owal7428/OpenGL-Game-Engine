@@ -390,6 +390,12 @@ int main(int argc, char* argv[])
             testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
         }
 
+        glm::vec3 pos = camera.getPosition();
+
+        testCollider.CollisionTest(pos);
+        testBoxCollider.CollisionTest(pos);
+        floorCollider.CollisionTest(pos);
+
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -436,12 +442,6 @@ int main(int argc, char* argv[])
                     break;
             }
         }
-
-        glm::vec3 pos = camera.getPosition();
-
-        testCollider.CollisionTest(pos);
-        testBoxCollider.CollisionTest(pos);
-        floorCollider.CollisionTest(pos);
 
         draw(window, &camera, sky, &sun, lights, &brushObjects2);
     }
