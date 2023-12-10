@@ -19,8 +19,13 @@
 #define UNLIT_UNTEXTURED_SHADER "resources/shaders/unlit_untextured"
 
 #define WOOD "resources/textures/wood.bmp"
+#define DARK_WOOD "resources/textures/dark_wood.bmp"
 #define STEEL "resources/textures/steel.bmp"
-#define WATER "resources/textures/water.bmp"
+#define TREAD_STEEL "resources/textures/tread_steel.bmp"
+#define BRICK "resources/textures/brick.bmp"
+#define BRICK2 "resources/textures/brick_2.bmp"
+#define ROCKS "resources/textures/rocks.bmp"
+#define DARK_SKY "resources/textures/dark_sky.bmp"
 
 #define SKYBOX_FRONT "resources/textures/skybox/front.bmp"
 #define SKYBOX_BACK "resources/textures/skybox/back.bmp"
@@ -30,15 +35,15 @@
 #define SKYBOX_BOTTOM "resources/textures/skybox/bottom.bmp"
 
 double asp = 1;
-double zFar = 30;
+double zFar = 500;
 double fov = 90;
 
 void GenerateSkybox(Plane* sky[], glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 {
-    sky[0] -> Move(cameraPosition + glm::vec3(zFar, 0, 0));
+    sky[0] -> Move(cameraPosition - glm::vec3(zFar, 0, 0));
     sky[0] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
     
-    sky[1] -> Move(cameraPosition - glm::vec3(zFar, 0, 0));
+    sky[1] -> Move(cameraPosition + glm::vec3(zFar, 0, 0));
     sky[1] -> Draw(cameraPosition, projectionMatrix, viewMatrix);
 
     sky[2] -> Move(cameraPosition + glm::vec3(0, zFar, 0));
@@ -81,6 +86,8 @@ void draw(SDL_Window* window, Camera* camera, Plane* sky[], DirectionalLight* su
 
     // Enable Depth-Buffer
     glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_CULL_FACE); 
 
     glm::vec3 position = camera -> getPosition();
 
@@ -176,176 +183,63 @@ int main(int argc, char* argv[])
 
     asp = (float) 1300 / 900;
 
-    Camera camera = Camera(fov, asp, 0.25, zFar / Cos(fov), 12, 10);
+    Camera camera = Camera(0, 5, 0, fov, asp, 0.25, zFar / Cos(fov), 12, 10);
     
     reshape(window, &camera);
 
     ErrCheck("init");
                                                             // Position     // Rotation     // Scale
-    Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,    zFar, 0, 0,     0, 90, 0,       zFar*2, zFar*2, zFar*2);
-    Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,     -zFar, 0, 0,    0, -90., 0,     zFar*2, zFar*2, zFar*2);
-    Plane SkyboxTop = Plane(&unlitShader,   SKYBOX_TOP,      0, zFar, 0,     -90., 0, 0,     zFar*2, zFar*2, zFar*2);
-    Plane SkyboxBottom = Plane(&unlitShader,SKYBOX_BOTTOM,   0, -zFar, 0,    90, 0, 0,       zFar*2, zFar*2, zFar*2);
-    Plane SkyboxFront = Plane(&unlitShader, SKYBOX_FRONT,    0, 0, zFar,     0, 0, 0,        zFar*2, zFar*2, zFar*2);
-    Plane SkyboxBack = Plane(&unlitShader,  SKYBOX_BACK,     0, 0, -zFar,    0, 180, 0,      zFar*2, zFar*2, zFar*2);
+    Plane SkyboxRight = Plane(&unlitShader, SKYBOX_RIGHT,   -zFar, 0, 0,    0, 90, 0,       zFar*2, zFar*2, zFar*2);
+    Plane SkyboxLeft = Plane(&unlitShader,  SKYBOX_LEFT,    zFar, 0, 0,     0, -90, 0,      zFar*2, zFar*2, zFar*2);
+    Plane SkyboxTop = Plane(&unlitShader,   SKYBOX_TOP,     0, zFar, 0,     -90, 180, 0,    zFar*2, zFar*2, zFar*2);
+    Plane SkyboxBottom = Plane(&unlitShader,SKYBOX_BOTTOM,  0, -zFar, 0,    90, 180, 0,     zFar*2, zFar*2, zFar*2);
+    Plane SkyboxFront = Plane(&unlitShader, SKYBOX_FRONT,   0, 0, zFar,     0, -180, 0,     zFar*2, zFar*2, zFar*2);
+    Plane SkyboxBack = Plane(&unlitShader,  SKYBOX_BACK,    0, 0, -zFar,    0, 0, 0,        zFar*2, zFar*2, zFar*2);
 
     Plane* sky[6] = {&SkyboxRight, &SkyboxLeft, &SkyboxTop, &SkyboxBottom, &SkyboxFront, &SkyboxBack};
 
     // Define objects in the scene
-    Star bigStar        =   Star(&defaultShader, WOOD, -2, 0, -2, 0, 0, 20, 1, 1, 1);
-    Star bigStarSingle  =   Star(&defaultShader, WOOD, 0, 0, 0, 0, -35, 0, 1, 1, 1);
-    Star spinningStar   =   Star(&defaultShader, WOOD, 2, 1, -2, 0, -35, 0, 0.3, 0.3, 0.3);
-    Star rotatingStar   =   Star(&defaultShader, STEEL, 1, 0, -2, 0, 0, 0, 0.15, 0.15, 0.15);
-    Star otherStar      =   Star(&defaultShader,STEEL, 3, 1, -3, 0, 0, 0, 0.3, 0.3, 0.3);
 
-    Rhombus rhombus         =   Rhombus(&defaultShader, WATER, -0.25, -1, 0.4, 0, 0, 0, 0.3, 0.6, 0.6);
-    Rhombus rhombusSingle   =   Rhombus(&defaultShader, WATER, 0, 0, 0, 0.15, 0.3, 0.3, 1, 1, 1);
-
-    Cube spinningStarCube   =   Cube(&unlitShader_untextured, 2, 1, -2, 0, 0, 0, 1, 1, 1);
-    Cube rotatingStarCube   =   Cube(&unlitShader_untextured, 1, 0, -2, 0, 0, 0, 0.7, 0.7, 0.7);
-    Cube rhombusCube        =   Cube(&unlitShader_untextured, -0.25, -1.0, 0.4, 0.0, 0, 0, 0.8, 0.8, 1);
-    Cube rhombusCubeSingle  =   Cube(&unlitShader_untextured, 0, 0, 0, 0, 0, 0, 0.8, 0.8, 0.8);
-
-    Plane testFloor = Plane(&defaultShader, WOOD, 0, -2, 0, -90, 0, 0, 20, 20, 20);
-    testFloor.setTextureScale(5);
-
-    PlaneCollider floorCollider = PlaneCollider(&camera, testFloor.getPosition(), testFloor.getRotation(), testFloor.getScale());
-
-    Cube light = Cube(&unlitShader_untextured, 0, 0, 5, 0, 0, 0, 0.5, 0.5, 0.5);
-    light.setColor(1,1,1);
 
     DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 1.0, 1.0, 1.0);
 
-    PointLight light1 = PointLight(0, 0, 5, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    //PointLight light1 = PointLight(0, 0, 5, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
 
     std::vector<PointLight*> lights;
-    lights.push_back(&light1);
-
-    light.AddChild(&light1);
-
-    Plane testPlane = Plane(&unlitShader_untextured, 3, 0, 0, 0, 45, 0, 1, 1, 1);
-    testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
-
-    Cube testCube = Cube(&unlitShader_untextured, 4, 0, 2, 45, 45, 0, 2, 1, 1);
-
-    Cube playerCollider = Cube(&unlitShader_untextured, 0, -1, 0, 0, 0, 0, 1, 2, 1);
-    playerCollider.setColor(0,1,0);
-    playerCollider.EnableRenderWireframe();
-
-    camera.AddChild(&playerCollider);
-
-    PlaneCollider testCollider = PlaneCollider(&camera, testPlane.getPosition(), testPlane.getRotation(), testPlane.getScale());
-    BoxCollider testBoxCollider = BoxCollider(&camera, testCube.getPosition(), testCube.getRotation(), testCube.getScale());
-
-    spinningStarCube.setColor(1, 0, 0);
-    rotatingStarCube.setColor(0, 1, 0);
-    rhombusCube.setColor(0 ,0, 1);
-    rhombusCubeSingle.setColor(0, 0, 1);
-
-    spinningStarCube.EnableRenderWireframe();
-    rotatingStarCube.EnableRenderWireframe();
-    rhombusCube.EnableRenderWireframe();
-    rhombusCubeSingle.EnableRenderWireframe();
 
     // Define motor entities in the scene
-    Motor bigStarSingleMotor = Motor(&bigStarSingle, -(90 - 35), 0, 80);
-    Motor spinningStarMotor = Motor(&spinningStar, -(90 - 35), 0, 180);
-    Motor rotatingStarMotor1 = Motor(&rotatingStar, -90, 0, 80);
-    Motor rotatingStarMotor2 = Motor(&rotatingStar, 0, 90, 90);
-    Motor otherStarMotor1 = Motor(&otherStar, 0, 0, 100);
-    Motor otherStarMotor2 = Motor(&otherStar, 0, -90, 75);
-
-    Motor rhombusMotor = Motor(&rhombus, 0, 90, 720);
-
-    Motor spinningStarCubeMotor = Motor(&spinningStarCube, 0, 0, 100);
-
-    Motor rotatingStarCubeMotor1 = Motor(&rotatingStarCube, -90, 0, 100);
-    Motor rotatingStarCubeMotor2 = Motor(&rotatingStarCube, 0, 0, 100);
-
-    Motor rhombusCubeMotor1 = Motor(&rhombusCube, -90, 0, 150);
-    Motor rhombusCubeMotor2 = Motor(&rhombusCube, 0, 90, 150);
-
-    Motor rhombusCubeSingleMotor = Motor(&rhombusCubeSingle, 0, 90, 180);
-
-    Motor lightMotor = Motor(&light, 0, 90, 135);
-
-    Rotator rotatingStarRotator = Rotator(&rotatingStar, -2, 0, -2, 0, 90, 90);
-    Rotator rotatingStarCubeRotator = Rotator(&rotatingStarCube, -2, 0, -2, 0, 90, 90);
-    Rotator otherStarRotator = Rotator(&otherStar, 2, 1, -2, -1, 0, -1, 100);
-
-    Rotator lightRotator = Rotator(&light, 0, 0, 0, 0, 90, 75);
-
-    std::vector<Brush*> brushObjects1;
-
-    brushObjects1.push_back(&bigStar);
-    brushObjects1.push_back(&spinningStar);
-    brushObjects1.push_back(&rotatingStar);
-    brushObjects1.push_back(&otherStar);
-
-    brushObjects1.push_back(&rhombus);
-
-    brushObjects1.push_back(&spinningStarCube);
-    brushObjects1.push_back(&rotatingStarCube);
-    brushObjects1.push_back(&rhombusCube);
-
-    brushObjects1.push_back(&light);
-
-    brushObjects1.push_back(&playerCollider);
-
-    std::vector<Brush*> brushObjects2;
     
-    brushObjects2.push_back(&rhombusSingle);
-    brushObjects2.push_back(&rhombusCubeSingle);
-    brushObjects2.push_back(&testFloor);
-    brushObjects2.push_back(&light);
 
-    brushObjects2.push_back(&testPlane);
-    brushObjects2.push_back(&testCube);
+    std::vector<Brush*> brushObjects;
 
-    brushObjects2.push_back(&playerCollider);
+    Cube floor = Cube(&defaultShader, BRICK2, 0, -2, 9.5, 0, 0, 0, 35, 2, 25);
+    floor.setColor(1, 0.8, 0.7);
+    floor.setTextureScale(5);
+    brushObjects.push_back(&floor);
 
-    std::vector<Brush*> brushObjects3;
-    
-    brushObjects3.push_back(&bigStarSingle);
-    
-    brushObjects3.push_back(&light);
+    Cube platform = Cube(&defaultShader, BRICK2, 0, 0.375, 0, 0, 0, 0, 35, 2.75, 6);
+    platform.setTextureScaleY(2);
+    platform.setTextureScaleX(5);
+    brushObjects.push_back(&platform);
 
-    brushObjects3.push_back(&playerCollider);
+    std::vector<Collider*> colliders;
+
+    BoxCollider floorCollider = BoxCollider(&camera, floor.getPosition(), floor.getRotation(), floor.getScale());
+    colliders.push_back(&floorCollider);
+
+    BoxCollider platformCollider = BoxCollider(&camera, platform.getPosition(), platform.getRotation(), platform.getScale());
+    colliders.push_back(&platformCollider);
 
     std::vector<Motor*> motorObjects;
 
-    motorObjects.push_back(&spinningStarMotor);
-    motorObjects.push_back(&rotatingStarMotor1);
-    motorObjects.push_back(&rotatingStarMotor2);
-    motorObjects.push_back(&otherStarMotor1);
-    motorObjects.push_back(&otherStarMotor2);
 
-    motorObjects.push_back(&rhombusMotor);
-
-    motorObjects.push_back(&rotatingStarCubeMotor1);
-    motorObjects.push_back(&rotatingStarCubeMotor2);
-
-    motorObjects.push_back(&spinningStarCubeMotor);
-
-    motorObjects.push_back(&rhombusCubeMotor1);
-    motorObjects.push_back(&rhombusCubeMotor2);
-
-    motorObjects.push_back(&rhombusCubeSingleMotor);
-    
-    motorObjects.push_back(&bigStarSingleMotor);
-
-    motorObjects.push_back(&lightMotor);
 
     std::vector<Rotator*> rotatorObjects;
 
-    rotatorObjects.push_back(&rotatingStarRotator);
-    rotatorObjects.push_back(&rotatingStarCubeRotator);
-    rotatorObjects.push_back(&otherStarRotator);
 
-    rotatorObjects.push_back(&lightRotator);
 
     int run = 1;
-    double time = 0;
+    double time = SDL_GetTicks64()/1000.0;
 
     while (run)
     {
@@ -361,20 +255,10 @@ int main(int argc, char* argv[])
             camera.Update(deltaTime);
             
             // Reset rotations to avoid accelerating to infinity
-            int brushListSize1 = brushObjects1.size();
+            int brushListSize = brushObjects.size();
             
-            for (int i = 0; i < brushListSize1; i++)
-                brushObjects1.at(i)->ResetRotations();
-
-            int brushListSize2 = brushObjects2.size();
-            
-            for (int i = 0; i < brushListSize2; i++)
-                brushObjects2.at(i)->ResetRotations();
-            
-            int brushListSize3 = brushObjects3.size();
-            
-            for (int i = 0; i < brushListSize3; i++)
-                brushObjects3.at(i)->ResetRotations();
+            for (int i = 0; i < brushListSize; i++)
+                brushObjects.at(i)->ResetRotations();
             
             // Call actors
             int motorListSize = motorObjects.size();
@@ -386,15 +270,13 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < rotatorListSize; i++)
                 rotatorObjects.at(i)->Rotate(deltaTime);
-            
-            testPlane.Rotate(glm::angleAxis(glm::radians(90.0f), glm::normalize(glm::vec3(1, 0, -1))));
         }
 
         glm::vec3 pos = camera.getPosition();
 
-        testCollider.CollisionTest(pos);
-        testBoxCollider.CollisionTest(pos);
-        floorCollider.CollisionTest(pos);
+        int colliderSize = colliders.size();
+        for (int i = 0; i < colliderSize; i++)
+            colliders.at(i)->CollisionTest(pos);
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -443,7 +325,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        draw(window, &camera, sky, &sun, lights, &brushObjects2);
+        draw(window, &camera, sky, &sun, lights, &brushObjects);
     }
 
     SDL_Quit();
