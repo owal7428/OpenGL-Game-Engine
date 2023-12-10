@@ -77,6 +77,10 @@ objects.a:$(SRC)
 main: Application.o objects.a
 	cd $(OBJ) && g++ $(CFLG) -o ../../$@ $^ $(LIBS)
 
+link:
+	cd $(OBJ) && ar -rcs objects.a $(SRC)
+	cd $(OBJ) && g++ $(CFLG) -o ../../main Application.o objects.a $(LIBS)
+
 #  Clean
 clean:
 	cd $(OBJ) && $(CLEAN)
