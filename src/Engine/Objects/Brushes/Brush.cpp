@@ -33,7 +33,8 @@ Brush::Brush(Shader* shaderFile, const char* textureFile,
     this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
     this -> material.shininess = 8;
 
-    this -> material.textureScale = 1;
+    this -> material.textureScaleX = 1;
+    this -> material.textureScaleY = 1;
 }
 
 Brush::Brush(Shader* shaderFile,
@@ -64,7 +65,8 @@ Brush::Brush(Shader* shaderFile,
     this -> material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
     this -> material.shininess = 8;
 
-    this -> material.textureScale = 1;
+    this -> material.textureScaleX = 1;
+    this -> material.textureScaleY = 1;
 }
 
 Brush::~Brush()
@@ -105,7 +107,8 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniform3f("material.color", material.color.x, material.color.y, material.color.z);
     shader -> setUniform3f("material.specular", material.specular.x, material.specular.y, material.specular.z);
     shader -> setUniform1i("material.shininess", material.shininess);
-    shader -> setUniform1f("material.textureScale", material.textureScale);
+    shader -> setUniform1f("material.textureScaleX", material.textureScaleX);
+    shader -> setUniform1f("material.textureScaleY", material.textureScaleY);
 
     shader -> setUniform3f("sun.direction", sun -> getDirection().x, sun -> getDirection().y, sun -> getDirection().z);
     shader -> setUniform3f("sun.color", sun -> getColor().x, sun -> getColor().y, sun -> getColor().z);

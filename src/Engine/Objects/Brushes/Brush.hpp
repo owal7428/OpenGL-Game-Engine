@@ -18,7 +18,8 @@ typedef struct
     glm::vec3 specular;
     int shininess;
 
-    float textureScale;
+    float textureScaleX;
+    float textureScaleY;
 
 } Material;
 
@@ -81,7 +82,10 @@ public:
 
     inline void setShader(Shader* newShader) {shader = newShader;}
 
-    inline void setTextureScale(float newScale) {material.textureScale = newScale;}
+    inline void setTextureScale(float newScale) {material.textureScaleX = newScale; material.textureScaleY = newScale;}
+
+    inline void setTextureScaleX(float newScale) {material.textureScaleX = newScale;}
+    inline void setTextureScaleY(float newScale) {material.textureScaleY = newScale;}
 
     /* Enables wireframe rendering mode. */
     inline void EnableRenderWireframe() {drawWireFrame = true;}
