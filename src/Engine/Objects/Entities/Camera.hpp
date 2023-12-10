@@ -39,6 +39,7 @@ private:
     void checkJump();
 
 public:
+    Camera(int x, int y, int z, float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed);
     Camera(float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed);
 
     /* Updates the projection matrix.

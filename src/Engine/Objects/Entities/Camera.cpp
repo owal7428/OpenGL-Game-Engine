@@ -1,5 +1,40 @@
 #include "Camera.hpp"
 
+Camera::Camera(int x, int y, int z, float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed)
+{
+    this -> fov     = fov;
+    this -> asp     = asp;
+    this -> zNear   = zNear;
+    this -> zFar    = zFar;
+
+    th = 0;
+    ph = 0;
+
+    mouseMoveX = 0;
+    mouseMoveY = 0;
+
+    this -> movementSpeed = movementSpeed;
+    this -> cameraSpeed = cameraSpeed;
+
+    this -> position = glm::vec3((float) x, (float) y, (float) z);
+    this -> lookingAt = glm::vec3(0.0f, 0.0f, 1.0f);
+
+    wKeyDown = false;
+    sKeyDown = false;
+    aKeyDown = false;
+    dKeyDown = false;
+
+    upKeyDown = false;
+    downKeyDown = false;
+    leftKeyDown = false;
+    rightKeyDown = false;
+
+    noclip = false;
+
+    view = glm::lookAt(position, position + lookingAt, glm::vec3(0, 1, 0));
+    UpdateProjection(fov, asp, zNear, zFar);
+}
+
 Camera::Camera(float fov, float asp, float zNear, float zFar, int movementSpeed, int cameraSpeed)
 {
     this -> fov     = fov;
