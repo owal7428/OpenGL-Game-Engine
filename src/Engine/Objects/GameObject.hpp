@@ -16,7 +16,7 @@ public:
 
     /* Sets the position vector to new vector
     *  @param newPosition new vec3 to set position to. */
-    void Move(glm::vec3 newPosition);
+    virtual void Move(glm::vec3 newPosition);
 
     /* Sets the velocity vector to new vector
     *  @param newVelocity new vec3 to set velocity to. */
