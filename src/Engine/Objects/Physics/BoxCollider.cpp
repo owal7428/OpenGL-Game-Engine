@@ -91,9 +91,13 @@ void BoxCollider::CollisionTest(glm::vec3 playerPosition)
     size = normals.size();
     for (int i = 0; i < size; i++)
     {
-        axes.push_back(glm::normalize(glm::cross(glm::vec3(1, 0, 0), normals[i])));
-        axes.push_back(glm::normalize(glm::cross(glm::vec3(0, 1, 0), normals[i])));
-        axes.push_back(glm::normalize(glm::cross(glm::vec3(0, 0, 1), normals[i])));
+        glm::vec3 normal1 = (normals[i] != glm::vec3(1, 0, 0)) ? glm::normalize(glm::cross(glm::vec3(1, 0, 0), normals[i])) : normals[i];
+        glm::vec3 normal2 = (normals[i] != glm::vec3(0, 1, 0)) ? glm::normalize(glm::cross(glm::vec3(0, 1, 0), normals[i])) : normals[i];
+        glm::vec3 normal3 = (normals[i] != glm::vec3(0, 0, 1)) ? glm::normalize(glm::cross(glm::vec3(0, 0, 1), normals[i])) : normals[i];
+
+        axes.push_back(normal1);
+        axes.push_back(normal2);
+        axes.push_back(normal3);
     }
 
     size = axes.size();
