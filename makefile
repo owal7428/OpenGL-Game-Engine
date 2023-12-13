@@ -1,5 +1,5 @@
 # Final Project
-EXE = main
+EXE = final
 
 # Root paths
 SRC = src/
@@ -74,7 +74,7 @@ objects.a:$(SRC)
 	g++ -std=c++11 -c $(CFLG) $< -o $(OBJ)$@
 
 #  Link
-main: Application.o objects.a
+final: Application.o objects.a
 	cd $(OBJ) && g++ $(CFLG) -o ../../$@ $^ $(LIBS)
 
 link:

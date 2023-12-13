@@ -363,6 +363,11 @@ int main(int argc, char* argv[])
     Cube middleLaneEnd = Cube(&defaultShader, BRICK2, 0, 3, 30, 0, 0, 0, 10.5, 8, 2);
     brushObjects.push_back(&middleLaneEnd);
 
+    Cube rotatingCube = Cube(&unlitShader_untextured, 0, 3, 10, 0, 0, 0, 1, 1, 1);
+    rotatingCube.setColor(1,1,1);
+    rotatingCube.AddChild(&rotatingLight);
+    brushObjects.push_back(&rotatingCube);
+
     std::vector<Collider*> colliders;
 
     BoxCollider floorCollider = BoxCollider(&camera, floor.getPosition(), floor.getRotation(), floor.getScale());
@@ -434,7 +439,8 @@ int main(int argc, char* argv[])
 
     std::vector<Rotator*> rotatorObjects;
 
-
+    Rotator boxRotator = Rotator(&rotatingCube, 0, 5, 10, 0, 90, 80);
+    rotatorObjects.push_back(&boxRotator);
 
     int run = 1;
     double time = SDL_GetTicks64()/1000.0;
@@ -462,12 +468,12 @@ int main(int argc, char* argv[])
             int motorListSize = motorObjects.size();
 
             for (int i = 0; i < motorListSize; i++)
-                motorObjects.at(i)->Spin(deltaTime);
+                motorObjects.at(i)->Spin(deltaTime);*/
 
             int rotatorListSize = rotatorObjects.size();
 
             for (int i = 0; i < rotatorListSize; i++)
-                rotatorObjects.at(i)->Rotate(deltaTime);*/
+                rotatorObjects.at(i)->Rotate(deltaTime);
         }
 
         glm::vec3 pos = camera.getPosition();

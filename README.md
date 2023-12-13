@@ -6,26 +6,20 @@ CSCI-4229 Fall 2023
 
 How to use:
      
-    -When in first person view: Use W,A,S,D to move and arrow keys to look up/down and left/right.
-    
-    -Press m to change viewing mode.
-    
-    -Press space to toggle whether or not player collision box visualization should follow player.
-     Note: this is not the actual collision box, just a visual representation.
-    
-    -When in the second scene, move towards the plane to trigger collision. Use the collision box
-     visualization to verify collision is working.
-    
-    -Press o to change scene currently looking at.
-    
-    -Press ESC to exit the program.
+    - Use w, a, s, and d to move.
+    - Use the mouse of the arrow keys to look around.
+    - Press space to jump.
+    - Press f11 to unlock mouse.
+    - Press f12 to lock mouse again.
 
-Remaining work to do:
+Notable features:
 
-    -Edge to edge collision needs to be tested.
+    - FPS style movement w/ mouse controls
+    - Using modern openGL features (VAOs, VBOs, shaders)
+    - Collision detection
+    - (relatively) detailed world geometry.
 
-    -Collision response needs to be implemented.
+Acknowledgements:
 
-    -Player movement including jump as well as mouse based looking.
-
-    -Basic level to move around in.
+    - Utility functions from provided class library (errcheck, loadtexbmp, etc)
+    - Default frag shader created with the help of example 26 and learnopengl.com
