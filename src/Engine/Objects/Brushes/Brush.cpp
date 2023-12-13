@@ -110,6 +110,8 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniform1f("material.textureScaleX", material.textureScaleX);
     shader -> setUniform1f("material.textureScaleY", material.textureScaleY);
 
+    shader -> setUniform1f("time", SDL_GetTicks64()/1000.0);
+
     shader -> setUniform3f("sun.direction", sun -> getDirection().x, sun -> getDirection().y, sun -> getDirection().z);
     shader -> setUniform3f("sun.color", sun -> getColor().x, sun -> getColor().y, sun -> getColor().z);
     shader -> setUniform3f("sun.ambient", sun -> getAmbient().x, sun -> getAmbient().y, sun -> getAmbient().z);

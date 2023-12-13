@@ -17,6 +17,7 @@
 #define DEFAULT_SHADER "resources/shaders/default"
 #define UNLIT_SHADER "resources/shaders/unlit"
 #define UNLIT_UNTEXTURED_SHADER "resources/shaders/unlit_untextured"
+#define FLUID_SHADER "resources/shaders/fluid"
 
 #define WOOD "resources/textures/wood.bmp"
 #define DARK_WOOD "resources/textures/dark_wood.bmp"
@@ -182,6 +183,7 @@ int main(int argc, char* argv[])
     Shader defaultShader(DEFAULT_SHADER);
     Shader unlitShader(UNLIT_SHADER);
     Shader unlitShader_untextured(UNLIT_UNTEXTURED_SHADER);
+    Shader fluidShader(FLUID_SHADER);
 
     asp = (float) 1300 / 900;
 
@@ -207,10 +209,10 @@ int main(int argc, char* argv[])
 
     std::vector<PointLight*> lights;
 
-    PointLight rotatingLight = PointLight(0, 0, 10, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight rotatingLight = PointLight(0, 3, 6, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
     lights.push_back(&rotatingLight);
 
-    PointLight lavaPointLight = PointLight(-11, 1, 29, 1, 0.5, 0.2, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight lavaPointLight = PointLight(-11, 1, 29, 1 * 2, 0.5 * 2, 0.2 * 2, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
     lights.push_back(&lavaPointLight);
 
     PointLight windowLight = PointLight(11, 3, 28, 1, 0.8, 0.65, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
@@ -335,7 +337,7 @@ int main(int argc, char* argv[])
     lavalFloor.setTextureScaleX(2);
     brushObjects.push_back(&lavalFloor);
 
-    Cube lavaPlane = Cube(&unlitShader, LAVA, -11, -3, 29, 0, 0, 0, 11, 1, 14);
+    Cube lavaPlane = Cube(&fluidShader, LAVA, -11, -3, 29, 0, 0, 0, 11, 1, 14);
     lavaPlane.setTextureScale(5);
     brushObjects.push_back(&lavaPlane);
 
@@ -439,7 +441,7 @@ int main(int argc, char* argv[])
 
     std::vector<Rotator*> rotatorObjects;
 
-    Rotator boxRotator = Rotator(&rotatingCube, 0, 3, 11, 0, 90, 150);
+    Rotator boxRotator = Rotator(&rotatingCube, 0, 3, 9, 0, 90, 150);
     rotatorObjects.push_back(&boxRotator);
 
     int run = 1;
