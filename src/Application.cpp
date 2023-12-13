@@ -208,10 +208,14 @@ int main(int argc, char* argv[])
 
     std::vector<PointLight*> lights;
 
-    //PointLight light1 = PointLight(0, 0, 5, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight rotatingLight = PointLight(0, 0, 10, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    lights.push_back(&rotatingLight);
 
     PointLight lavaPointLight = PointLight(-11, 1, 29, 1, 0.5, 0.2, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
     lights.push_back(&lavaPointLight);
+
+    PointLight windowLight = PointLight(11, 3, 28, 1, 0.8, 0.65, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    lights.push_back(&windowLight);
 
     // Define motor entities in the scene
     
@@ -284,19 +288,19 @@ int main(int argc, char* argv[])
     pillar4.setTextureScaleY(1.5);
     brushObjects.push_back(&pillar4);
 
-    Cube bigPillar = Cube(&defaultShader, TREAD_STEEL, 0, 8, 21, 0, 0, 0, 22.5, 2, 2);
+    Cube bigPillar = Cube(&defaultShader, TREAD_STEEL, 0, 8, 21, 0, 0, 0, 22, 2, 2);
     bigPillar.setTextureScaleY(1.5);
     bigPillar.setTextureScaleX(3);
     brushObjects.push_back(&bigPillar);
 
-    Rhombus leftRhombus = Rhombus(&defaultShader, TREAD_STEEL, 13.375, 6, 21, 0, -90, 0, 2, 4.25, 2);
+    Rhombus leftRhombus = Rhombus(&defaultShader, TREAD_STEEL, 13.25, 6, 21, 0, -90, 0, 2, 4.5, 2);
     leftRhombus.setTextureScaleY(1.5);
     brushObjects.push_back(&leftRhombus);
 
     leftRhombus.SetRotation(glm::angleAxis(glm::radians(90.0f), glm::vec3(0,0,1)) * leftRhombus.getRotation());
     leftRhombus.SetRotation(glm::angleAxis(glm::radians(180.0f), glm::vec3(0,1,0)) * leftRhombus.getRotation());
 
-    Rhombus rightRhombus = Rhombus(&defaultShader, TREAD_STEEL, -13.375, 6, 21, 0, 90, 0, 2, 4.25, 2);
+    Rhombus rightRhombus = Rhombus(&defaultShader, TREAD_STEEL, -13.25, 6, 21, 0, 90, 0, 2, 4.5, 2);
     rightRhombus.setTextureScaleY(1.5);
     brushObjects.push_back(&rightRhombus);
 
@@ -315,6 +319,18 @@ int main(int argc, char* argv[])
     rightLane.setTextureScaleX(2);
     brushObjects.push_back(&rightLane);
 
+    Cube middleLane = Cube(&defaultShader, BRICK2, 0, -2 , 34.5, 0, 0, 0, 11, 2, 25);
+    middleLane.setColor(1, 0.8, 0.7);
+    middleLane.setTextureScaleY(5);
+    middleLane.setTextureScaleX(2);
+    brushObjects.push_back(&middleLane);
+
+    Cube rightLane2 = Cube(&defaultShader, ROCKS, -11, -3, 24, 0, 0, 0, 6, 4, 4);
+    rightLane2.setColor(1, 0.8, 0.7);
+    rightLane2.setTextureScaleY(5);
+    rightLane2.setTextureScaleX(2);
+    brushObjects.push_back(&rightLane2);
+
     Cube lavalFloor = Cube(&defaultShader, ROCKS, -11, -5, 29, 0, 0, 0, 11, 1, 14);
     lavalFloor.setTextureScaleY(5);
     lavalFloor.setTextureScaleX(2);
@@ -323,6 +339,29 @@ int main(int argc, char* argv[])
     Cube lavaPlane = Cube(&unlitShader, LAVA, -11, -3, 29, 0, 0, 0, 11, 1, 14);
     lavaPlane.setTextureScale(5);
     brushObjects.push_back(&lavaPlane);
+
+    Cube windowPlane = Cube(&unlitShader, WINDOW, 11, 3, 30, 0, 0, 0, 2, 5, 2);
+    brushObjects.push_back(&windowPlane);
+
+    Cube leftEndWall1 = Cube(&defaultShader, BRICK2, 11.25, -0.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    leftEndWall1.setTextureScaleX(4);
+    brushObjects.push_back(&leftEndWall1);
+
+    Cube leftEndWall2 = Cube(&defaultShader, BRICK2, 14.25, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    brushObjects.push_back(&leftEndWall2);
+
+    Cube leftEndWall3 = Cube(&defaultShader, BRICK2, 11.25, 6.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    leftEndWall3.setTextureScaleX(4);
+    brushObjects.push_back(&leftEndWall3);
+
+    Cube leftEndWall4 = Cube(&defaultShader, BRICK2, 7.75, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    brushObjects.push_back(&leftEndWall4);
+    
+    Cube rightLaneEnd = Cube(&defaultShader, BRICK2, -11.25, 3, 46, 0, 0, 0, 10.5, 8, 2);
+    brushObjects.push_back(&rightLaneEnd);
+
+    Cube middleLaneEnd = Cube(&defaultShader, BRICK2, 0, 3, 30, 0, 0, 0, 10.5, 8, 2);
+    brushObjects.push_back(&middleLaneEnd);
 
     std::vector<Collider*> colliders;
 
@@ -370,9 +409,24 @@ int main(int argc, char* argv[])
 
     BoxCollider rightLaneCollider = BoxCollider(&camera, rightLane.getPosition(), rightLane.getRotation(), rightLane.getScale());
     colliders.push_back(&rightLaneCollider);
+    
+    BoxCollider middleLaneCollider = BoxCollider(&camera, middleLane.getPosition(), middleLane.getRotation(), middleLane.getScale());
+    colliders.push_back(&middleLaneCollider);
+    
+    BoxCollider rightLane2Collider = BoxCollider(&camera, rightLane2.getPosition(), rightLane2.getRotation(), rightLane2.getScale());
+    colliders.push_back(&rightLane2Collider);
 
     BoxCollider lavalFloorCollider = BoxCollider(&camera, lavalFloor.getPosition(), lavalFloor.getRotation(), lavalFloor.getScale());
     colliders.push_back(&lavalFloorCollider);
+
+    BoxCollider leftLaneEndCollider = BoxCollider(&camera, glm::vec3(11.25, 3, 30), glm::vec3(0, 0, 0), glm::vec3(10.5, 8, 2));
+    colliders.push_back(&leftLaneEndCollider);
+    
+    BoxCollider rightLaneEndCollider = BoxCollider(&camera, rightLaneEnd.getPosition(), rightLaneEnd.getRotation(), rightLaneEnd.getScale());
+    colliders.push_back(&rightLaneEndCollider);
+    
+    BoxCollider middleLaneEndCollider = BoxCollider(&camera, middleLaneEnd.getPosition(), middleLaneEnd.getRotation(), middleLaneEnd.getScale());
+    colliders.push_back(&middleLaneEndCollider);
 
     std::vector<Motor*> motorObjects;
 
