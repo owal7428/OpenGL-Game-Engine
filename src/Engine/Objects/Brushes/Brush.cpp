@@ -127,6 +127,7 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
         shader -> setUniform3f(temp + ".position", light -> getPosition().x, light -> getPosition().y, light -> getPosition().z);
         shader -> setUniform3f(temp + ".color", light -> getColor().x, light -> getColor().y, light -> getColor().z);
         shader -> setUniform3f(temp + ".specular", light -> getSpecular().x, light -> getSpecular().y, light -> getSpecular().z);
+        shader -> setUniform1f(temp + ".intensity", light -> getIntensity());
         shader -> setUniform1f(temp + ".constant", light -> getConstant());
         shader -> setUniform1f(temp + ".linear", light -> getLinear());
         shader -> setUniform1f(temp + ".quadratic", light -> getQuadratic());

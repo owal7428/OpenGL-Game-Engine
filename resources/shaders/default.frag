@@ -43,6 +43,8 @@ struct PointLight
    float constant;
    float linear;
    float quadratic;
+
+   float intensity;
 };
 
 uniform PointLight pointLights[7];
@@ -86,7 +88,7 @@ vec3 renderPointLight(PointLight light, vec3 n_Normal, vec3 viewDirection)
    vec3 l_direction  = normalize(light.position - VertexPos);
 
    // Calculate diffuse
-   vec3 diffuse = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color;
+   vec3 diffuse = max(dot(n_Normal, l_direction), 0.0) * light.color * material.color * light.intensity;
 
    // Calculate specular
    vec3 reflection      = reflect(-l_direction, n_Normal);

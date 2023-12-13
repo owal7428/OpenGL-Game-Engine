@@ -29,6 +29,7 @@
 #define DARK_SKY "resources/textures/dark_sky.bmp"
 #define WINDOW "resources/textures/window.bmp"
 #define LAVA "resources/textures/lava.bmp"
+#define DOOR "resources/textures/door.bmp"
 
 #define SKYBOX_FRONT "resources/textures/skybox/front.bmp"
 #define SKYBOX_BACK "resources/textures/skybox/back.bmp"
@@ -209,13 +210,19 @@ int main(int argc, char* argv[])
 
     std::vector<PointLight*> lights;
 
-    PointLight rotatingLight = PointLight(0, 3, 6, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight rotatingLight = PointLight(0, 3, 6, 1, 1, 1, 1.0, 1.0, 1.0, 1.5, 0.75, 0.07, 0.017);
     lights.push_back(&rotatingLight);
 
-    PointLight lavaPointLight = PointLight(-11, 1, 29, 1 * 2, 0.5 * 2, 0.2 * 2, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight lavaPointLight = PointLight(-11, 2, 29, 1, 0.3, 0.1, 0.1, 0.1, 0.1, 3.0, 0.75, 0.1, 0.05);
     lights.push_back(&lavaPointLight);
 
-    PointLight windowLight = PointLight(11, 3, 28, 1, 0.8, 0.65, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
+    PointLight lavaPointLight2 = PointLight(-11, 2, 40, 1, 0.3, 0.1, 0.1, 0.1, 0.1, 1.0, 0.75, 0.1, 0.05);
+    lights.push_back(&lavaPointLight2);
+
+    PointLight lavaPointLight3 = PointLight(-11, 2, 21, 1, 0.3, 0.1, 0.1, 0.1, 0.1, 0.75, 0.75, 0.1, 0.05);
+    lights.push_back(&lavaPointLight3);
+
+    PointLight windowLight = PointLight(11, 3, 28, 1, 0.8, 0.65, 1.0, 1.0, 1.0, 2.0, 0.75, 0.07, 0.017);
     lights.push_back(&windowLight);
 
     // Define motor entities in the scene
@@ -344,24 +351,28 @@ int main(int argc, char* argv[])
     Cube windowPlane = Cube(&unlitShader, WINDOW, 11, 3, 30, 0, 0, 0, 2, 5, 2);
     brushObjects.push_back(&windowPlane);
 
-    Cube leftEndWall1 = Cube(&defaultShader, BRICK2, 11.25, -0.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    Cube leftEndWall1 = Cube(&defaultShader, BRICK, 11.25, -0.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    leftEndWall1.setColor(1, 0.8, 0.5);
     leftEndWall1.setTextureScaleX(4);
     brushObjects.push_back(&leftEndWall1);
 
-    Cube leftEndWall2 = Cube(&defaultShader, BRICK2, 14.25, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    Cube leftEndWall2 = Cube(&defaultShader, BRICK, 14.25, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    leftEndWall2.setColor(1, 0.8, 0.5);
     brushObjects.push_back(&leftEndWall2);
 
-    Cube leftEndWall3 = Cube(&defaultShader, BRICK2, 11.25, 6.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    Cube leftEndWall3 = Cube(&defaultShader, BRICK, 11.25, 6.25, 30, 0, 0, 0, 10.5, 1.5, 2);
+    leftEndWall3.setColor(1, 0.8, 0.5);
     leftEndWall3.setTextureScaleX(4);
     brushObjects.push_back(&leftEndWall3);
 
-    Cube leftEndWall4 = Cube(&defaultShader, BRICK2, 7.75, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    Cube leftEndWall4 = Cube(&defaultShader, BRICK, 7.75, 3, 30, 0, 0, 0, 4.5, 5, 2);
+    leftEndWall4.setColor(1, 0.8, 0.5);
     brushObjects.push_back(&leftEndWall4);
     
     Cube rightLaneEnd = Cube(&defaultShader, BRICK2, -11.25, 3, 46, 0, 0, 0, 10.5, 8, 2);
     brushObjects.push_back(&rightLaneEnd);
 
-    Cube middleLaneEnd = Cube(&defaultShader, BRICK2, 0, 3, 35, 0, 0, 0, 10.5, 8, 2);
+    Cube middleLaneEnd = Cube(&defaultShader, DOOR, 0, 3, 35, 0, 0, 0, 10.5, 8, 2);
     brushObjects.push_back(&middleLaneEnd);
 
     Cube rotatingCube = Cube(&unlitShader_untextured, 0, 3, 6, 0, 0, 0, 1, 1, 1);
