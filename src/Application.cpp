@@ -26,6 +26,7 @@
 #define BRICK2 "resources/textures/brick_2.bmp"
 #define ROCKS "resources/textures/rocks.bmp"
 #define DARK_SKY "resources/textures/dark_sky.bmp"
+#define WINDOW "resources/textures/window.bmp"
 
 #define SKYBOX_FRONT "resources/textures/skybox/front.bmp"
 #define SKYBOX_BACK "resources/textures/skybox/back.bmp"
@@ -201,7 +202,8 @@ int main(int argc, char* argv[])
     // Define objects in the scene
 
 
-    DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 1.0, 1.0, 1.0);
+    //DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 0.75, 0.75, 0.75);
+    DirectionalLight sun = DirectionalLight(1, -1, -0.1, 1  * 0.2, 0.97  * 0.2, 0.81 * 0.2, 1, 0.97, 0.81, 0.75, 0.75, 0.75);
 
     //PointLight light1 = PointLight(0, 0, 5, 1, 1, 1, 1.0, 1.0, 1.0, 0.75, 0.07, 0.017);
 
@@ -212,15 +214,50 @@ int main(int argc, char* argv[])
 
     std::vector<Brush*> brushObjects;
 
-    Cube floor = Cube(&defaultShader, BRICK2, 0, -2, 9.5, 0, 0, 0, 35, 2, 25);
+    Cube floor = Cube(&defaultShader, BRICK2, 0, -2, 9.5, 0, 0, 0, 33, 2, 25);
     floor.setColor(1, 0.8, 0.7);
     floor.setTextureScale(5);
     brushObjects.push_back(&floor);
 
-    Cube platform = Cube(&defaultShader, BRICK2, 0, 0.375, 0, 0, 0, 0, 35, 2.75, 6);
-    platform.setTextureScaleY(2);
-    platform.setTextureScaleX(5);
+    Cube platform = Cube(&defaultShader, BRICK2, 0, 0.375, 0, 0, 0, 0, 33, 2.75, 6);
+    platform.setTextureScaleX(4);
     brushObjects.push_back(&platform);
+
+    Cube leftLane = Cube(&defaultShader, BRICK2, 11, -2 , 34.5, 0, 0, 0, 11, 2, 25);
+    leftLane.setColor(1, 0.8, 0.7);
+    leftLane.setTextureScaleY(5);
+    leftLane.setTextureScaleX(2);
+    brushObjects.push_back(&leftLane);
+
+    Cube leftWall = Cube(&defaultShader, BRICK, 17.5, 1, 9.5, 0, 0, 0, 2, 8, 25);
+    leftWall.setColor(1, 0.8, 0.5);
+    leftWall.setTextureScaleY(1);
+    leftWall.setTextureScaleX(5);
+    brushObjects.push_back(&leftWall);
+
+    Cube leftWall2 = Cube(&defaultShader, BRICK, 17.5, 2, 34.5, 0, 0, 0, 2, 10, 25);
+    leftWall2.setColor(1, 0.8, 0.5);
+    leftWall2.setTextureScaleY(1.25);
+    leftWall2.setTextureScaleX(5);
+    brushObjects.push_back(&leftWall2);
+
+    Cube rightWall = Cube(&defaultShader, BRICK, -17.5, 1, 9.5, 0, 0, 0, 2, 8, 25);
+    rightWall.setColor(1, 0.8, 0.5);
+    rightWall.setTextureScaleY(1);
+    rightWall.setTextureScaleX(5);
+    brushObjects.push_back(&rightWall);
+
+    Cube rightWall2 = Cube(&defaultShader, ROCKS, -17.5, 2, 34.5, 0, 0, 0, 2, 10, 25);
+    rightWall2.setColor(1, 0.8, 0.5);
+    rightWall2.setTextureScaleY(3);
+    rightWall2.setTextureScaleX(5);
+    brushObjects.push_back(&rightWall2);
+
+    Cube backWall = Cube(&defaultShader, BRICK, 0, 3.25, -4, 0, 0, 0, 37, 3.5, 2);
+    backWall.setColor(1, 0.8, 0.5);
+    backWall.setTextureScaleY(0.5);
+    backWall.setTextureScaleX(4);
+    brushObjects.push_back(&backWall);
 
     std::vector<Collider*> colliders;
 
@@ -229,6 +266,24 @@ int main(int argc, char* argv[])
 
     BoxCollider platformCollider = BoxCollider(&camera, platform.getPosition(), platform.getRotation(), platform.getScale());
     colliders.push_back(&platformCollider);
+
+    BoxCollider leftLaneCollider = BoxCollider(&camera, leftLane.getPosition(), leftLane.getRotation(), leftLane.getScale());
+    colliders.push_back(&leftLaneCollider);
+
+    BoxCollider leftWallCollider = BoxCollider(&camera, leftWall.getPosition(), leftWall.getRotation(), leftWall.getScale());
+    colliders.push_back(&leftWallCollider);
+
+    BoxCollider leftWallCollider2 = BoxCollider(&camera, leftWall2.getPosition(), leftWall2.getRotation(), leftWall2.getScale());
+    colliders.push_back(&leftWallCollider2);
+
+    BoxCollider rightWallCollider = BoxCollider(&camera, rightWall.getPosition(), rightWall.getRotation(), rightWall.getScale());
+    colliders.push_back(&rightWallCollider);
+
+    BoxCollider rightWall2Collider = BoxCollider(&camera, rightWall2.getPosition(), rightWall2.getRotation(), rightWall2.getScale());
+    colliders.push_back(&rightWall2Collider);
+
+    BoxCollider backWallCollider = BoxCollider(&camera, backWall.getPosition(), backWall.getRotation(), backWall.getScale());
+    colliders.push_back(&backWallCollider);
 
     std::vector<Motor*> motorObjects;
 
@@ -255,7 +310,7 @@ int main(int argc, char* argv[])
             camera.Update(deltaTime);
             
             // Reset rotations to avoid accelerating to infinity
-            int brushListSize = brushObjects.size();
+            /*int brushListSize = brushObjects.size();
             
             for (int i = 0; i < brushListSize; i++)
                 brushObjects.at(i)->ResetRotations();
@@ -269,7 +324,7 @@ int main(int argc, char* argv[])
             int rotatorListSize = rotatorObjects.size();
 
             for (int i = 0; i < rotatorListSize; i++)
-                rotatorObjects.at(i)->Rotate(deltaTime);
+                rotatorObjects.at(i)->Rotate(deltaTime);*/
         }
 
         glm::vec3 pos = camera.getPosition();
