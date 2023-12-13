@@ -320,9 +320,8 @@ int main(int argc, char* argv[])
     lavalFloor.setTextureScaleX(2);
     brushObjects.push_back(&lavalFloor);
 
-    Cube lavaPlane = Cube(&defaultShader, LAVA, -11, -3, 29, 0, 0, 0, 11, 1, 14);
-    lavaPlane.setTextureScaleY(5);
-    lavaPlane.setTextureScaleX(2);
+    Cube lavaPlane = Cube(&unlitShader, LAVA, -11, -3, 29, 0, 0, 0, 11, 1, 14);
+    lavaPlane.setTextureScale(5);
     brushObjects.push_back(&lavaPlane);
 
     std::vector<Collider*> colliders;

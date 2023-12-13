@@ -174,6 +174,9 @@ void Brush::Draw(glm::vec3 cameraPosition, glm::mat4 projectionMatrix, glm::mat4
     shader -> setUniformMat4("view", &viewMatrix);
     shader -> setUniformMat4("projection", &projectionMatrix);
 
+    shader -> setUniform1f("material.textureScaleX", material.textureScaleX);
+    shader -> setUniform1f("material.textureScaleY", material.textureScaleY);
+
     glDrawArrays(primitiveType, 0, numVertices);
 
     if (drawWireFrame)
