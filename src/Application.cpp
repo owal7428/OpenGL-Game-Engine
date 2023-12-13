@@ -202,7 +202,6 @@ int main(int argc, char* argv[])
 
     // Define objects in the scene
 
-
     //DirectionalLight sun = DirectionalLight(0, -0.5, -1, 0.86, 0.63, 0.34, 0.33, 0.70, 0.86, 0.75, 0.75, 0.75);
     DirectionalLight sun = DirectionalLight(1, -1, -0.1, 1  * 0.2, 0.97  * 0.2, 0.81 * 0.2, 1, 0.97, 0.81, 0.75, 0.75, 0.75);
 
@@ -360,10 +359,10 @@ int main(int argc, char* argv[])
     Cube rightLaneEnd = Cube(&defaultShader, BRICK2, -11.25, 3, 46, 0, 0, 0, 10.5, 8, 2);
     brushObjects.push_back(&rightLaneEnd);
 
-    Cube middleLaneEnd = Cube(&defaultShader, BRICK2, 0, 3, 30, 0, 0, 0, 10.5, 8, 2);
+    Cube middleLaneEnd = Cube(&defaultShader, BRICK2, 0, 3, 35, 0, 0, 0, 10.5, 8, 2);
     brushObjects.push_back(&middleLaneEnd);
 
-    Cube rotatingCube = Cube(&unlitShader_untextured, 0, 3, 10, 0, 0, 0, 1, 1, 1);
+    Cube rotatingCube = Cube(&unlitShader_untextured, 0, 3, 6, 0, 0, 0, 1, 1, 1);
     rotatingCube.setColor(1,1,1);
     rotatingCube.AddChild(&rotatingLight);
     brushObjects.push_back(&rotatingCube);
@@ -435,11 +434,12 @@ int main(int argc, char* argv[])
 
     std::vector<Motor*> motorObjects;
 
-
+    Motor boxMotor = Motor(&rotatingCube, 0, 90, 150);
+    motorObjects.push_back(&boxMotor);
 
     std::vector<Rotator*> rotatorObjects;
 
-    Rotator boxRotator = Rotator(&rotatingCube, 0, 5, 10, 0, 90, 80);
+    Rotator boxRotator = Rotator(&rotatingCube, 0, 3, 11, 0, 90, 150);
     rotatorObjects.push_back(&boxRotator);
 
     int run = 1;
@@ -459,16 +459,13 @@ int main(int argc, char* argv[])
             camera.Update(deltaTime);
             
             // Reset rotations to avoid accelerating to infinity
-            /*int brushListSize = brushObjects.size();
-            
-            for (int i = 0; i < brushListSize; i++)
-                brushObjects.at(i)->ResetRotations();
+            rotatingCube.ResetRotations();
             
             // Call actors
             int motorListSize = motorObjects.size();
 
             for (int i = 0; i < motorListSize; i++)
-                motorObjects.at(i)->Spin(deltaTime);*/
+                motorObjects.at(i)->Spin(deltaTime);
 
             int rotatorListSize = rotatorObjects.size();
 

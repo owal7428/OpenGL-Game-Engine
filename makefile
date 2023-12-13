@@ -79,7 +79,7 @@ final: Application.o objects.a
 
 link:
 	cd $(OBJ) && ar -rcs objects.a $(SRC)
-	cd $(OBJ) && g++ $(CFLG) -o ../../main Application.o objects.a $(LIBS)
+	cd $(OBJ) && g++ $(CFLG) -o ../../final Application.o objects.a $(LIBS)
 
 #  Clean
 clean:
