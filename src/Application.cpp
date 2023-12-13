@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
     leftLane.setTextureScaleX(2);
     brushObjects.push_back(&leftLane);
 
-    Cube leftWall = Cube(&defaultShader, BRICK, 17.5, 1, 9.5, 0, 0, 0, 2, 8, 25);
+    Cube leftWall = Cube(&defaultShader, BRICK, 17.5, 1.5, 9.5, 0, 0, 0, 2, 9, 25);
     leftWall.setColor(1, 0.8, 0.5);
     leftWall.setTextureScaleY(1);
     leftWall.setTextureScaleX(5);
@@ -241,7 +241,19 @@ int main(int argc, char* argv[])
     leftWall2.setTextureScaleX(5);
     brushObjects.push_back(&leftWall2);
 
-    Cube rightWall = Cube(&defaultShader, BRICK, -17.5, 1, 9.5, 0, 0, 0, 2, 8, 25);
+    Cube middleLeftWall = Cube(&defaultShader, BRICK, 5.5, 2, 34.5, 0, 0, 0, 1, 10, 25);
+    middleLeftWall.setColor(1, 0.8, 0.5);
+    middleLeftWall.setTextureScaleY(1.25);
+    middleLeftWall.setTextureScaleX(5);
+    brushObjects.push_back(&middleLeftWall);
+
+    Cube middleRightWall = Cube(&defaultShader, BRICK, -5.5, 2, 34.5, 0, 0, 0, 1, 10, 25);
+    middleRightWall.setColor(1, 0.8, 0.5);
+    middleRightWall.setTextureScaleY(1.25);
+    middleRightWall.setTextureScaleX(5);
+    brushObjects.push_back(&middleRightWall);
+
+    Cube rightWall = Cube(&defaultShader, BRICK, -17.5, 1.5, 9.5, 0, 0, 0, 2, 9, 25);
     rightWall.setColor(1, 0.8, 0.5);
     rightWall.setTextureScaleY(1);
     rightWall.setTextureScaleX(5);
@@ -253,11 +265,46 @@ int main(int argc, char* argv[])
     rightWall2.setTextureScaleX(5);
     brushObjects.push_back(&rightWall2);
 
-    Cube backWall = Cube(&defaultShader, BRICK, 0, 3.25, -4, 0, 0, 0, 37, 3.5, 2);
+    Cube backWall = Cube(&defaultShader, BRICK, 0, 3.75, -4, 0, 0, 0, 37, 4.5, 2);
     backWall.setColor(1, 0.8, 0.5);
     backWall.setTextureScaleY(0.5);
     backWall.setTextureScaleX(4);
     brushObjects.push_back(&backWall);
+
+    Cube pillar1 = Cube(&defaultShader, TREAD_STEEL, -5.5, 3, 21, 0, 0, 0, 2, 8, 2);
+    pillar1.setTextureScaleY(1.5);
+    brushObjects.push_back(&pillar1);
+
+    Cube pillar2 = Cube(&defaultShader, TREAD_STEEL, 5.5, 3, 21, 0, 0, 0, 2, 8, 2);
+    pillar2.setTextureScaleY(1.5);
+    brushObjects.push_back(&pillar2);
+
+    Cube pillar3 = Cube(&defaultShader, TREAD_STEEL, 16, 3, 21, 0, 0, 0, 1, 8, 2);
+    pillar3.setTextureScaleY(1.5);
+    brushObjects.push_back(&pillar3);
+
+    Cube pillar4 = Cube(&defaultShader, TREAD_STEEL, -16, 3, 21, 0, 0, 0, 1, 8, 2);
+    pillar4.setTextureScaleY(1.5);
+    brushObjects.push_back(&pillar4);
+
+    Cube bigPillar = Cube(&defaultShader, TREAD_STEEL, 0, 8, 21, 0, 0, 0, 22.5, 2, 2);
+    bigPillar.setTextureScaleY(1.5);
+    bigPillar.setTextureScaleX(3);
+    brushObjects.push_back(&bigPillar);
+
+    Rhombus leftRhombus = Rhombus(&defaultShader, TREAD_STEEL, 13.375, 6, 21, 0, -90, 0, 2, 4.25, 2);
+    leftRhombus.setTextureScaleY(1.5);
+    brushObjects.push_back(&leftRhombus);
+
+    leftRhombus.SetRotation(glm::angleAxis(glm::radians(90.0f), glm::vec3(0,0,1)) * leftRhombus.getRotation());
+    leftRhombus.SetRotation(glm::angleAxis(glm::radians(180.0f), glm::vec3(0,1,0)) * leftRhombus.getRotation());
+
+    Rhombus rightRhombus = Rhombus(&defaultShader, TREAD_STEEL, -13.375, 6, 21, 0, 90, 0, 2, 4.25, 2);
+    rightRhombus.setTextureScaleY(1.5);
+    brushObjects.push_back(&rightRhombus);
+
+    rightRhombus.SetRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(0,0,1)) * rightRhombus.getRotation());
+    rightRhombus.SetRotation(glm::angleAxis(glm::radians(-180.0f), glm::vec3(0,1,0)) * rightRhombus.getRotation());
 
     std::vector<Collider*> colliders;
 
@@ -276,6 +323,12 @@ int main(int argc, char* argv[])
     BoxCollider leftWallCollider2 = BoxCollider(&camera, leftWall2.getPosition(), leftWall2.getRotation(), leftWall2.getScale());
     colliders.push_back(&leftWallCollider2);
 
+    BoxCollider middleLeftWallCollider = BoxCollider(&camera, middleLeftWall.getPosition(), middleLeftWall.getRotation(), middleLeftWall.getScale());
+    colliders.push_back(&middleLeftWallCollider);
+    
+    BoxCollider middleRightWallCollider = BoxCollider(&camera, middleRightWall.getPosition(), middleRightWall.getRotation(), middleRightWall.getScale());
+    colliders.push_back(&middleRightWallCollider);
+
     BoxCollider rightWallCollider = BoxCollider(&camera, rightWall.getPosition(), rightWall.getRotation(), rightWall.getScale());
     colliders.push_back(&rightWallCollider);
 
@@ -284,6 +337,18 @@ int main(int argc, char* argv[])
 
     BoxCollider backWallCollider = BoxCollider(&camera, backWall.getPosition(), backWall.getRotation(), backWall.getScale());
     colliders.push_back(&backWallCollider);
+
+    BoxCollider pillar1Collider = BoxCollider(&camera, pillar1.getPosition(), pillar1.getRotation(), pillar1.getScale());
+    colliders.push_back(&pillar1Collider);
+
+    BoxCollider pillar2Collider = BoxCollider(&camera, pillar2.getPosition(), pillar2.getRotation(), pillar2.getScale());
+    colliders.push_back(&pillar2Collider);
+
+    BoxCollider pillar3Collider = BoxCollider(&camera, pillar3.getPosition(), pillar3.getRotation(), pillar3.getScale());
+    colliders.push_back(&pillar3Collider);
+
+    BoxCollider pillar4Collider = BoxCollider(&camera, pillar4.getPosition(), pillar4.getRotation(), pillar4.getScale());
+    colliders.push_back(&pillar4Collider);
 
     std::vector<Motor*> motorObjects;
 
