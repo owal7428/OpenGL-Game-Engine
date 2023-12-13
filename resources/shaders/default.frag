@@ -1,4 +1,5 @@
 //  Default fragment shader
+//  References used in the creation of this shader: ex26, learnopengl.com
 #version 330
 
 in vec3 VertexPos;
