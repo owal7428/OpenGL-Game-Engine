@@ -4,6 +4,10 @@ Final Project
 Owen Allison
 CSCI-4229 Fall 2023
 
+## How to compile
+
+Open a terminal in the root directory and run the command `make`.
+
 ## How to use
      
     - Use w, a, s, and d to move.
